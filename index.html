@@ -24,29 +24,6 @@
       font-family: 'IBM Plex Serif', serif;
       min-height: 100vh;
       overflow-x: hidden;
-      position: relative;
-    }
-
-    #bg-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -2;
-      filter: contrast(1.15) brightness(0.65);
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: -1;
-      pointer-events: none;
     }
 
     header {
@@ -57,7 +34,7 @@
       padding: 24px 16px;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.7);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       z-index: 100;
       display: flex;
@@ -109,7 +86,7 @@
       width: 100%;
     }
 
-    /* Asymetria układu */
+    /* Asymetria sekcji */
     .hero {
       align-self: flex-start;
       text-align: left;
@@ -143,7 +120,7 @@
       margin-right: 3%;
     }
 
-    /* Teksty i glow */
+    /* Zblurwany biały cień */
     .glow-text {
       color: #ffffff;
       text-shadow: 0 0 8px rgba(255, 255, 255, 0.45), 0 0 22px rgba(255, 255, 255, 0.25);
@@ -263,12 +240,6 @@
   </style>
 </head>
 <body>
-
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="/media/bg-vid.mp4" type="video/mp4">
-  </video>
-
-  <div class="overlay"></div>
 
   <header>
     <nav>
