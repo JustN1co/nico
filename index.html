@@ -27,58 +27,14 @@
       overflow-x: hidden;
     }
 
-    /* Pasek nawigacyjny */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 18px 16px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      background: rgba(10, 10, 12, 0.65);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      z-index: 100;
-      display: flex;
-      justify-content: center;
-    }
-
-    nav {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    nav a {
-      color: #ffffff;
-      text-decoration: none;
-      font-size: 0.85rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
-      transition: text-shadow 0.25s ease;
-    }
-
-    nav a:hover {
-      text-shadow: 0 0 12px #ffffff, 0 0 25px #ffffff;
-    }
-
-    .nav-divider {
-      color: rgba(255, 255, 255, 0.2);
-      user-select: none;
-      font-size: 0.8rem;
-    }
-
-    /* Kompaktowy kontener */
+    /* Główny kontener */
     main {
       max-width: 760px;
       margin: 0 auto;
-      padding: 120px 24px 60px;
+      padding: 80px 24px 60px;
       display: flex;
       flex-direction: column;
-      gap: 65px;
+      gap: 70px;
       width: 100%;
     }
 
@@ -89,14 +45,8 @@
       width: 100%;
     }
 
-    /* Subtelna asymetria */
-    .hero {
-      text-align: left;
-      max-width: 580px;
-      padding-top: 10px;
-    }
-
-    #o-mnie {
+    /* Asymetria sekcji */
+    #about {
       align-self: flex-start;
       text-align: left;
       max-width: 540px;
@@ -122,7 +72,7 @@
       max-width: 480px;
     }
 
-    /* Typografia z poświatą */
+    /* Typografia z białym blurem/glowem */
     .glow-text {
       color: #ffffff;
       text-shadow: 0 0 6px rgba(255, 255, 255, 0.4), 0 0 18px rgba(255, 255, 255, 0.2);
@@ -144,13 +94,6 @@
       margin-left: auto;
     }
 
-    .hero-pitch {
-      font-size: 1.45rem;
-      line-height: 1.6;
-      font-weight: 300;
-      font-style: italic;
-    }
-
     p.content {
       font-size: 1.05rem;
       line-height: 1.7;
@@ -158,6 +101,7 @@
       color: rgba(255, 255, 255, 0.9);
     }
 
+    /* Linki z białym podświetleniem */
     .interactive-link {
       color: #ffffff;
       text-decoration: none;
@@ -181,6 +125,7 @@
       margin-top: 6px;
     }
 
+    /* Listy */
     .text-list {
       display: flex;
       flex-direction: column;
@@ -216,14 +161,11 @@
 
     @media (max-width: 768px) {
       main {
-        padding: 100px 18px 50px;
+        padding: 50px 18px 40px;
         gap: 50px;
       }
-      nav { gap: 10px; }
-      nav a { font-size: 0.72rem; }
-      .nav-divider { display: none; }
       
-      .hero, #o-mnie, #projekty, #social-media, #kontakt {
+      #about, #projekty, #social-media, #kontakt {
         align-self: flex-start !important;
         text-align: left !important;
         margin: 0 !important;
@@ -236,34 +178,17 @@
         margin-left: 0 !important;
       }
 
-      .hero-pitch { font-size: 1.2rem; }
-      p.content, .list-item, .interactive-link { font-size: 0.95rem; }
+      p.content, .list-item, .interactive-link { 
+        font-size: 0.95rem; 
+      }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <nav>
-      <a href="#o-mnie">O MNIE</a>
-      <span class="nav-divider">/</span>
-      <a href="#projekty">PROJEKTY</a>
-      <span class="nav-divider">/</span>
-      <a href="#social-media">SOCIAL MEDIA</a>
-      <span class="nav-divider">/</span>
-      <a href="#kontakt">KONTAKT</a>
-    </nav>
-  </header>
-
   <main>
-    <section class="hero">
-      <p class="hero-pitch glow-text">
-        Tworzę surowe, minimalistyczne i szybkie strony internetowe dla firm, które cenią indywidualny charakter zamiast powtarzalnych szablonów.
-      </p>
-    </section>
-
-    <section id="o-mnie">
-      <h2 class="section-title glow-text">O MNIE</h2>
+    <section id="about">
+      <h2 class="section-title glow-text">ABOUT</h2>
       <p class="content glow-text">
         Nazywam się Nico. Uczę się w 4. klasie technikum informatycznego i zajmuję się programowaniem stron w czystym HTML oraz skryptami w Pythonie. Tworzę lekkie witryny pozbawione śmieciowego kodu, nastawione na czytelność i natychmiastowe ładowanie.
       </p>
