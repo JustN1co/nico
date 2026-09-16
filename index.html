@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nico — Web Development</title>
+  <title>Nico - BioSite</title>
+  <link rel="icon" type="image/webp" href="/media/icon.webp">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -19,13 +21,12 @@
     body {
       background-color: #000000;
       color: #ffffff;
-      font-family: 'IM Fell English', serif;
+      font-family: 'IBM Plex Serif', serif;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
     }
 
-    /* Wideo w tle */
     #bg-video {
       position: fixed;
       top: 0;
@@ -34,7 +35,7 @@
       height: 100vh;
       object-fit: cover;
       z-index: -2;
-      filter: contrast(1.15) brightness(0.7);
+      filter: contrast(1.15) brightness(0.65);
     }
 
     .overlay {
@@ -48,15 +49,14 @@
       pointer-events: none;
     }
 
-    /* Pasek nawigacji */
     header {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       padding: 24px 16px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       background: rgba(0, 0, 0, 0.4);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       z-index: 100;
@@ -76,9 +76,10 @@
     nav a {
       color: #ffffff;
       text-decoration: none;
-      font-size: 1.15rem;
-      letter-spacing: 0.08em;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
       transition: text-shadow 0.25s ease;
     }
 
@@ -91,63 +92,100 @@
       user-select: none;
     }
 
-    /* Kontener strony */
     main {
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
-      padding: 160px 24px 100px;
+      padding: 180px 32px 100px;
       display: flex;
       flex-direction: column;
-      gap: 120px;
+      gap: 140px;
+      width: 100%;
     }
 
     section {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 28px;
+      gap: 24px;
+      width: 100%;
     }
 
-    /* Zblurwany biały cień dla całego tekstu */
+    /* Asymetria układu */
+    .hero {
+      align-self: flex-start;
+      text-align: left;
+      max-width: 650px;
+    }
+
+    #o-mnie {
+      align-self: flex-start;
+      text-align: left;
+      max-width: 580px;
+      margin-left: 4%;
+    }
+
+    #projekty {
+      align-self: flex-end;
+      text-align: right;
+      max-width: 550px;
+    }
+
+    #social-media {
+      align-self: flex-start;
+      text-align: left;
+      margin-left: 12%;
+      max-width: 450px;
+    }
+
+    #kontakt {
+      align-self: flex-end;
+      text-align: right;
+      max-width: 500px;
+      margin-right: 3%;
+    }
+
+    /* Teksty i glow */
     .glow-text {
       color: #ffffff;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.2);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.45), 0 0 22px rgba(255, 255, 255, 0.25);
     }
 
     h2.section-title {
-      font-size: 2rem;
-      letter-spacing: 0.18em;
+      font-size: 1.8rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       font-weight: 400;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      padding-bottom: 10px;
-      width: 100%;
-      max-width: 380px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 8px;
+      display: inline-block;
+      width: fit-content;
     }
 
-    /* Tekst wstępny */
+    #projekty h2.section-title,
+    #kontakt h2.section-title {
+      margin-left: auto;
+    }
+
     .hero-pitch {
-      font-size: 1.85rem;
+      font-size: 1.7rem;
       line-height: 1.6;
-      max-width: 720px;
+      font-weight: 300;
       font-style: italic;
     }
 
     p.content {
-      font-size: 1.35rem;
+      font-size: 1.15rem;
       line-height: 1.8;
-      max-width: 680px;
-      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.92);
     }
 
-    /* Linki z czysto białą animacją */
     .interactive-link {
       color: #ffffff;
       text-decoration: none;
-      font-size: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-      padding-bottom: 4px;
+      font-size: 1.35rem;
+      font-weight: 400;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+      padding-bottom: 3px;
       transition: text-shadow 0.25s ease, border-color 0.25s ease;
       display: inline-block;
     }
@@ -158,24 +196,30 @@
     }
 
     .project-subtitle {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
+      font-weight: 300;
       color: rgba(255, 255, 255, 0.7);
       margin-top: 10px;
     }
 
-    /* Listy */
     .text-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .list-item {
-      font-size: 1.35rem;
+      font-size: 1.15rem;
+      font-weight: 300;
       text-decoration: none;
       color: #ffffff;
       transition: text-shadow 0.25s ease;
       display: inline-block;
+      width: fit-content;
+    }
+
+    #kontakt .list-item {
+      margin-left: auto;
     }
 
     .list-item:hover {
@@ -184,19 +228,37 @@
 
     footer {
       text-align: center;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.4);
-      padding: 40px 0 20px;
-      letter-spacing: 0.05em;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.35);
+      padding: 40px 0 24px;
+      letter-spacing: 0.08em;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
+      main {
+        padding: 140px 20px 80px;
+        gap: 90px;
+      }
       nav { gap: 12px; }
-      nav a { font-size: 0.85rem; }
+      nav a { font-size: 0.75rem; }
       .nav-divider { display: none; }
-      h2.section-title { font-size: 1.5rem; }
+      
+      .hero, #o-mnie, #projekty, #social-media, #kontakt {
+        align-self: flex-start !important;
+        text-align: left !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+
+      #projekty h2.section-title,
+      #kontakt h2.section-title,
+      #kontakt .list-item {
+        margin-left: 0 !important;
+      }
+
       .hero-pitch { font-size: 1.3rem; }
-      p.content, .interactive-link, .list-item { font-size: 1.1rem; }
+      p.content, .list-item, .interactive-link { font-size: 1rem; }
     }
   </style>
 </head>
