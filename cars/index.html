@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>iCar Garage • iOS Glass Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.14);
+      --glass-card: rgba(255, 255, 255, 0.16);
+      --glass-hover: rgba(255, 255, 255, 0.24);
+      --glass-active: rgba(255, 255, 255, 0.32);
+      --glass-border: rgba(255, 255, 255, 0.28);
+      --glass-border-light: rgba(255, 255, 255, 0.45);
+      --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --glass-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.65), inset 0 -1px 1px rgba(0, 0, 0, 0.12);
+      
+      --ios-blue: #0A84FF;
+      --ios-green: #30D158;
+      --ios-orange: #FF9F0A;
+      --ios-red: #FF453A;
+      --ios-purple: #BF5AF2;
+      
+      --radius-sm: 14px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      min-height: 100vh;
+      color: #ffffff;
+      background: url('background.jpg') center center / cover no-repeat fixed, 
+                  linear-gradient(145deg, #091c2b, #102e48, #05101a);
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 70px;
+    }
+
+    /* Efekt świetlnej poświaty w tle na wypadek braku background.jpg */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -20%;
+      left: 10%;
+      width: 50vw;
+      height: 50vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(10, 132, 255, 0.28), transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(60px);
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -10%;
+      right: 5%;
+      width: 45vw;
+      height: 45vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(48, 209, 88, 0.2), transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(70px);
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* iOS Glass Shell */
+    .glass-shell {
+      background: var(--glass-bg);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow), var(--glass-inner-glow);
+      border-radius: var(--radius-lg);
+    }
+
+    /* Header & Dynamic Island bar */
+    .ios-header {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      position: sticky;
+      top: 15px;
+      z-index: 100;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .ios-squircle-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      border: 1px solid var(--glass-border-light);
+      box-shadow: var(--glass-inner-glow);
+    }
+
+    .header-title h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .header-title p {
+      font-size: 0.78rem;
+      opacity: 0.7;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* iOS Pill Buttons */
+    .ios-pill-btn {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      padding: 9px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--glass-inner-glow);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ios-pill-btn:hover {
+      background: var(--glass-hover);
+      transform: translateY(-2px);
+      border-color: var(--glass-border-light);
+    }
+
+    .ios-pill-btn:active {
+      transform: scale(0.97);
+    }
+
+    .ios-pill-btn.primary {
+      background: linear-gradient(135deg, rgba(10, 132, 255, 0.85), rgba(0, 113, 227, 0.95));
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .ios-pill-btn.danger {
+      background: linear-gradient(135deg, rgba(255, 69, 58, 0.85), rgba(215, 0, 21, 0.95));
+    }
+
+    /* Widoki: Listy vs Wnętrze Tabeli */
+    .view-section {
+      display: none;
+      animation: fadeIn 0.35s ease-out forwards;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Home View - Karty Kolekcji */
+    .collections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .collection-card {
+      padding: 24px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 170px;
+    }
+
+    .collection-card:hover {
+      background: var(--glass-hover);
+      transform: translateY(-4px) scale(1.01);
+      border-color: var(--glass-border-light);
+    }
+
+    .col-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .col-author {
+      font-size: 0.85rem;
+      opacity: 0.75;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .col-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 0.82rem;
+      opacity: 0.9;
+    }
+
+    /* Stylizowany iOS Search Pill - wzorowany na zdjęciu */
+    .ios-search-bar {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-inner-glow);
+      border-radius: var(--radius-pill);
+      padding: 10px 18px;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto 20px auto;
+      transition: all 0.25s ease;
+    }
+
+    .ios-search-bar:focus-within {
+      background: rgba(255, 255, 255, 0.22);
+      border-color: var(--ios-blue);
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
+    }
+
+    .ios-search-bar input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 0.95rem;
+      margin-left: 10px;
+      width: 100%;
+      font-family: inherit;
+    }
+
+    .ios-search-bar input::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* Pasek Filtrów i Sortowania */
+    .filter-dock {
+      padding: 14px 20px;
+      margin-bottom: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-chip.active {
+      background: var(--ios-blue);
+      border-color: var(--ios-blue);
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(10, 132, 255, 0.4);
+    }
+
+    .ios-select {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-pill);
+      color: #fff;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .ios-select option {
+      background: #152232;
+      color: #fff;
+    }
+
+    /* Siatka Samochodów */
+    .cars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px;
+    }
+
+    .car-card {
+      border-radius: var(--radius-md);
+      padding: 22px;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .car-card:hover {
+      transform: translateY(-4px);
+      background: var(--glass-hover);
+    }
+
+    .car-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .car-brand-model {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .car-year {
+      font-size: 0.85rem;
+      opacity: 0.65;
+      margin-top: 2px;
+    }
+
+    .fav-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.35);
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .fav-btn.is-fav {
+      color: #ff3b30;
+      transform: scale(1.15);
+      text-shadow: 0 0 12px rgba(255, 59, 48, 0.6);
+    }
+
+    /* Kafelki parametrów technicznych */
+    .specs-matrix {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .spec-item {
+      background: rgba(0, 0, 0, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+    }
+
+    .spec-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.6;
+      margin-bottom: 2px;
+    }
+
+    .spec-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .spec-unit {
+      font-size: 0.72rem;
+      opacity: 0.75;
+      font-weight: 400;
+    }
+
+    /* Badges dla kosztów i nadwozia */
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      box-shadow: var(--glass-inner-glow);
+    }
+
+    .badge-body {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .cost-bardzo-tanie { background: rgba(48, 209, 88, 0.25); border: 1px solid #30D158; color: #72ff95; }
+    .cost-tanie { background: rgba(50, 215, 75, 0.2); border: 1px solid #32d74b; color: #a4ffb6; }
+    .cost-srednie { background: rgba(255, 214, 10, 0.25); border: 1px solid #ffd60a; color: #ffe668; }
+    .cost-drogie { background: rgba(255, 159, 10, 0.25); border: 1px solid #ff9f0a; color: #ffbe61; }
+    .cost-bardzo-drogie { background: rgba(255, 69, 58, 0.28); border: 1px solid #ff453a; color: #ffa29c; }
+
+    .car-notes {
+      font-size: 0.82rem;
+      background: rgba(255, 255, 255, 0.07);
+      border-left: 3px solid var(--ios-blue);
+      padding: 8px 12px;
+      border-radius: 4px 10px 10px 4px;
+      margin-top: auto;
+      margin-bottom: 14px;
+      line-height: 1.4;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .car-card-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Modal iOS Sheet */
+    .ios-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      padding: 15px;
+    }
+
+    .ios-modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .ios-modal {
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+      border-radius: var(--radius-lg);
+      transform: scale(0.92) translateY(20px);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ios-modal-backdrop.open .ios-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .form-grid .full-span {
+      grid-column: span 2;
+    }
+
+    .input-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-field label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-field input, 
+    .input-field select, 
+    .input-field textarea {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .input-field input:focus,
+    .input-field select:focus,
+    .input-field textarea:focus {
+      border-color: var(--ios-blue);
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    /* Pusty stan */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      grid-column: 1 / -1;
+    }
+
+    .empty-state-icon {
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+      opacity: 0.8;
+    }
+
+    /* Toast Notification */
+    .ios-toast {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(30, 30, 30, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(25px);
+      padding: 12px 24px;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 2000;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ios-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 650px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-grid .full-span {
+        grid-column: span 1;
+      }
+      .specs-matrix {
+        grid-template-columns: 1fr;
+      }
+      .ios-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .header-actions {
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- iOS Dynamic Glass Header -->
+    <header class="glass-shell ios-header">
+      <div class="header-logo" id="homeBtn">
+        <div class="ios-squircle-icon">🏎️</div>
+        <div class="header-title">
+          <h1 id="appHeaderTitle">iCar Garage</h1>
+          <p id="appHeaderSub">iOS 26 Liquid Edition • nico03.pl/cars</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="ios-pill-btn" id="navBackBtn" style="display:none;">← Wszystkie tabele</button>
+        <button class="ios-pill-btn primary" id="actionPrimaryBtn">+ Nowa Tabela</button>
+      </div>
+    </header>
+
+    <!-- WIDOK 1: LISTA WSZYSTKICH TABEL (HOME SCREEN) -->
+    <section id="viewCollections" class="view-section active">
+      <div class="ios-search-bar">
+        <span>🔍</span>
+        <input type="text" id="collectionSearch" placeholder="Szukaj listy po nazwie lub autorze...">
+      </div>
+
+      <div class="collections-grid" id="collectionsGrid">
+        <!-- Renderowane przez JS -->
+      </div>
+    </section>
+
+    <!-- WIDOK 2: SZCZEGÓŁY KONKRETNEJ TABELI AUT -->
+    <section id="viewCarList" class="view-section">
+      <!-- Searchbar wzorowany na kapsułce "Search" z Twojego zdjęcia iOS -->
+      <div class="ios-search-bar">
+        <span>🔍</span>
+        <input type="text" id="carSearch" placeholder="Szukaj marki, modelu, silnika...">
+      </div>
+
+      <!-- Pasek filtrów, ulubionych i sortowania -->
+      <div class="glass-shell filter-dock">
+        <div class="filter-group">
+          <button class="filter-chip active" data-filter="all">Wszystkie</button>
+          <button class="filter-chip" data-filter="fav">❤️ Ulubione (<span id="favCount">0</span>)</button>
+          
+          <select id="bodyFilter" class="ios-select">
+            <option value="">Wszystkie nadwozia</option>
+            <option value="Coupe">Coupe</option>
+            <option value="Hatchback">Hatchback</option>
+            <option value="Sedan">Sedan</option>
+            <option value="Kombi">Kombi</option>
+            <option value="SUV">SUV</option>
+            <option value="3D">3D</option>
+            <option value="5D">5D</option>
+          </select>
+
+          <select id="costFilter" class="ios-select">
+            <option value="">Wszystkie koszty utrzymania</option>
+            <option value="BARDZO TANIE">Bardzo tanie</option>
+            <option value="TANIE">Tanie</option>
+            <option value="SREDNIE">Średnie</option>
+            <option value="DROGIE">Drogie</option>
+            <option value="BARDZO DROGIE">Bardzo drogie</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label style="font-size: 0.8rem; opacity: 0.7;">Sortuj:</label>
+          <select id="sortSelect" class="ios-select">
+            <option value="default">Domyślnie</option>
+            <option value="price-asc">Cena (od najniższej)</option>
+            <option value="price-desc">Cena (od najwyższej)</option>
+            <option value="power-desc">Moc (KM) malejąco</option>
+            <option value="acc-asc">0-100 km/h (najszybsze)</option>
+            <option value="year-desc">Rok (najnowsze)</option>
+          </select>
+
+          <button class="ios-pill-btn" id="lockStatusBtn">🔒 Tryb podglądu</button>
+          <button class="ios-pill-btn primary" id="addCarBtn" style="display:none;">+ Dodaj auto</button>
+          <button class="ios-pill-btn primary" id="saveRemoteBtn" style="display:none;">💾 Zapisz zmiany</button>
+        </div>
+      </div>
+
+      <!-- Karty samochodów -->
+      <div class="cars-grid" id="carsGrid">
+        <!-- Renderowane przez JS -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- MODAL: TWORZENIE NOWEJ TABELI -->
+  <div class="ios-modal-backdrop" id="newCollectionModal">
+    <div class="glass-shell ios-modal">
+      <div class="modal-header">
+        <h2>Utwórz nową kolekcję aut</h2>
+        <button class="ios-pill-btn" onclick="closeModal('newCollectionModal')">✕</button>
+      </div>
+      <form id="createCollectionForm">
+        <div class="form-grid">
+          <div class="input-field full-span">
+            <label>Nazwa Tabeli / Kolekcji *</label>
+            <input type="text" id="colTitleInput" placeholder="np. Wymarzone Daily, Legendy JDM, Auta do 40k" required>
+          </div>
+          <div class="input-field">
+            <label>Twój Nick / Autor</label>
+            <input type="text" id="colAuthorInput" placeholder="np. Nico">
+          </div>
+          <div class="input-field">
+            <label>Hasło do edycji (zapamiętaj!) *</label>
+            <input type="password" id="colPasswordInput" placeholder="Hasło do późniejszych zmian" required>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ios-pill-btn" onclick="closeModal('newCollectionModal')">Anuluj</button>
+          <button type="submit" class="ios-pill-btn primary">Utwórz i otwórz</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ODBLOKOWANIE EDYCJI DANEJ TABELI -->
+  <div class="ios-modal-backdrop" id="unlockModal">
+    <div class="glass-shell ios-modal" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2>Autoryzacja Edycji</h2>
+        <button class="ios-pill-btn" onclick="closeModal('unlockModal')">✕</button>
+      </div>
+      <p style="font-size:0.85rem; opacity:0.8; margin-bottom:15px;">Wpisz hasło nadane podczas tworzenia tej tabeli, aby dodawać, edytować i usuwać pojazdy.</p>
+      <form id="unlockForm">
+        <div class="input-field">
+          <label>Hasło Tabeli</label>
+          <input type="password" id="unlockPasswordInput" required placeholder="Wpisz hasło...">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ios-pill-btn" onclick="closeModal('unlockModal')">Anuluj</button>
+          <button type="submit" class="ios-pill-btn primary">Odblokuj</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: DODAWANIE / EDYCJA SAMOCHODU -->
+  <div class="ios-modal-backdrop" id="carModal">
+    <div class="glass-shell ios-modal">
+      <div class="modal-header">
+        <h2 id="carModalTitle">Dodaj Samochód</h2>
+        <button class="ios-pill-btn" onclick="closeModal('carModal')">✕</button>
+      </div>
+      <form id="carForm">
+        <input type="hidden" id="carEditId">
+        <div class="form-grid">
+          
+          <div class="input-field">
+            <label>Marka *</label>
+            <input type="text" id="carBrand" placeholder="np. BMW, Toyota, Porsche" required>
+          </div>
+
+          <div class="input-field">
+            <label>Model *</label>
+            <input type="text" id="carModel" placeholder="np. M3 E46, Supra MK4, 911" required>
+          </div>
+
+          <div class="input-field">
+            <label>Moc (KM) *</label>
+            <input type="number" id="carHp" placeholder="np. 343" required>
+          </div>
+
+          <div class="input-field">
+            <label>Moment obrotowy (Nm)</label>
+            <input type="number" id="carTorque" placeholder="np. 365">
+          </div>
+
+          <div class="input-field">
+            <label>Spalanie Miasto (l/100km)</label>
+            <input type="text" id="carFuelCity" placeholder="np. 14.5">
+          </div>
+
+          <div class="input-field">
+            <label>Spalanie Trasa (l/100km)</label>
+            <input type="text" id="carFuelHighway" placeholder="np. 9.2">
+          </div>
+
+          <div class="input-field">
+            <label>Wygląd / Nadwozie *</label>
+            <select id="carBody" required>
+              <option value="Coupe">Coupe</option>
+              <option value="Hatchback">Hatchback</option>
+              <option value="Sedan">Sedan</option>
+              <option value="Kombi">Kombi</option>
+              <option value="SUV">SUV</option>
+              <option value="3D">3D</option>
+              <option value="5D">5D</option>
+              <option value="Kabriolet">Kabriolet</option>
+            </select>
+          </div>
+
+          <div class="input-field">
+            <label>Utrzymanie / Koszt części *</label>
+            <select id="carCost" required>
+              <option value="BARDZO TANIE">BARDZO TANIE</option>
+              <option value="TANIE">TANIE</option>
+              <option value="SREDNIE" selected>ŚREDNIE</option>
+              <option value="DROGIE">DROGIE</option>
+              <option value="BARDZO DROGIE">BARDZO DROGIE</option>
+            </select>
+          </div>
+
+          <div class="input-field full-span">
+            <label>Silnik (pojemność, oznaczenie, układ) *</label>
+            <input type="text" id="carEngine" placeholder="np. 3.2L R6 S54 N/A lub 2.0 TSI EA888" required>
+          </div>
+
+          <div class="input-field">
+            <label>Szacowana cena (PLN) *</label>
+            <input type="number" id="carPrice" placeholder="np. 95000" required>
+          </div>
+
+          <div class="input-field">
+            <label>0-100 km/h (sekundy) *</label>
+            <input type="number" step="0.1" id="carAcc" placeholder="np. 5.2" required>
+          </div>
+
+          <div class="input-field">
+            <label>Rok produkcji *</label>
+            <input type="number" id="carYear" placeholder="np. 2003" required>
+          </div>
+
+          <div class="input-field full-span">
+            <label>Uwagi (własne notatki, wady, zalety)</label>
+            <textarea id="carNotes" rows="3" placeholder="Wpisz cokolwiek: bolączki modelu, stan podłogi, wersje wyposażenia..."></textarea>
+          </div>
+
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ios-pill-btn" onclick="closeModal('carModal')">Anuluj</button>
+          <button type="submit" class="ios-pill-btn primary">Zapisz auto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- iOS Toast Notification -->
+  <div class="ios-toast" id="toast">Komunikat</div>
+
+  <script>
+    // Konfiguracja API
+    const API_URL = 'api.php';
+
+    // Globalny stan aplikacji
+    let collectionsList = [];
+    let currentCollection = null; // { id, title, author, cars: [] }
+    let currentPassword = null;   // Odblokowane hasło edytora
+    let isEditingUnlocked = false;
+
+    // Filtry
+    let activeFilter = 'all';
+    let searchQuery = '';
+    let selectedBody = '';
+    let selectedCost = '';
+    let selectedSort = 'default';
+
+    // Toast
+    function showToast(msg, icon = '✓') {
+      const toast = document.getElementById('toast');
+      toast.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    // Otwieranie / zamykanie modali
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // Załaduj listę tabel z backendu (lub demo w razie braku PHP)
+    async function loadCollections() {
+      try {
+        const res = await fetch(`${API_URL}?action=list`);
+        if (!res.ok) throw new Error();
+        const json = await res.json();
+        collectionsList = json.data || [];
+      } catch (err) {
+        console.warn("Brak połączenia z api.php - tryb podglądu lokalnego");
+        // Fallback do localStorage jeśli ktoś testuje bez serwera PHP
+        const local = localStorage.getItem('demo_collections');
+        collectionsList = local ? JSON.parse(local) : [
+          {
+            id: 'demo1',
+            title: 'Kandydaci na weekendowe auto',
+            author: 'Nico',
+            car_count: 2,
+            updated_at: '2026-09-29 12:00:00'
+          }
+        ];
+      }
+      renderCollectionsList();
+    }
+
+    function renderCollectionsList() {
+      const grid = document.getElementById('collectionsGrid');
+      const search = document.getElementById('collectionSearch').value.toLowerCase();
+      
+      const filtered = collectionsList.filter(c => 
+        c.title.toLowerCase().includes(search) || 
+        c.author.toLowerCase().includes(search)
+      );
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📂</div>
+            <h3>Brak tabel do wyświetlenia</h3>
+            <p style="opacity:0.7; margin-top:6px;">Bądź pierwszy i utwórz nową tabelę za pomocą przycisku powyżej!</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(col => `
+        <div class="glass-shell collection-card" onclick="openCollection('${col.id}')">
+          <div>
+            <div class="col-title">${escapeHtml(col.title)}</div>
+            <div class="col-author">👤 ${escapeHtml(col.author || 'Anonim')}</div>
+          </div>
+          <div class="col-meta">
+            <span>🚗 Aut w liście: <b>${col.car_count || 0}</b></span>
+            <span>🕒 ${col.updated_at ? col.updated_at.substring(0, 10) : ''}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Otwarcie konkretnej tabeli
+    async function openCollection(id) {
+      try {
+        const res = await fetch(`${API_URL}?action=get&id=${id}`);
+        if (!res.ok) throw new Error();
+        const json = await res.json();
+        currentCollection = json.data;
+      } catch (e) {
+        // Fallback localStorage
+        currentCollection = {
+          id: id,
+          title: 'Przykładowa Kolekcja Demo',
+          author: 'Nico',
+          cars: [
+            {
+              id: 'c1',
+              brand: 'BMW',
+              model: 'M3 E46',
+              hp: 343,
+              torque: 365,
+              fuelCity: '15.2',
+              fuelHighway: '9.8',
+              body: 'Coupe',
+              cost: 'DROGIE',
+              engine: '3.2 R6 S54',
+              price: 110000,
+              acc: 5.2,
+              year: 2003,
+              notes: 'Zwrócić uwagę na panewki i mocowanie wózka tył!',
+              isFav: true
+            },
+            {
+              id: 'c2',
+              brand: 'Honda',
+              model: 'Civic Type-R EP3',
+              hp: 200,
+              torque: 196,
+              fuelCity: '11.0',
+              fuelHighway: '7.8',
+              body: 'Hatchback',
+              cost: 'TANIE',
+              engine: '2.0 VTEC K20A2',
+              price: 42000,
+              acc: 6.6,
+              year: 2004,
+              notes: 'Szpera opcjonalna, sprawdzić stan progów i nadkoli.',
+              isFav: false
+            }
+          ]
+        };
+      }
+
+      // Aktualizuj widok
+      document.getElementById('viewCollections').classList.remove('active');
+      document.getElementById('viewCarList').classList.add('active');
+      document.getElementById('navBackBtn').style.display = 'inline-flex';
+      document.getElementById('actionPrimaryBtn').style.display = 'none';
+
+      document.getElementById('appHeaderTitle').innerText = currentCollection.title;
+      document.getElementById('appHeaderSub').innerText = `Autor: ${currentCollection.author || 'Anonim'} • Tabela aut`;
+
+      updateLockState(false);
+      renderCars();
+    }
+
+    // Powrót do widoku głównego
+    document.getElementById('homeBtn').addEventListener('click', backToHome);
+    document.getElementById('navBackBtn').addEventListener('click', backToHome);
+
+    function backToHome() {
+      document.getElementById('viewCarList').classList.remove('active');
+      document.getElementById('viewCollections').classList.add('active');
+      document.getElementById('navBackBtn').style.display = 'none';
+      document.getElementById('actionPrimaryBtn').style.display = 'inline-flex';
+      document.getElementById('appHeaderTitle').innerText = 'iCar Garage';
+      document.getElementById('appHeaderSub').innerText = 'iOS 26 Liquid Edition • nico03.pl/cars';
+
+      currentCollection = null;
+      currentPassword = null;
+      updateLockState(false);
+      loadCollections();
+    }
+
+    // Aktualizacja widoczności przycisków w zależności od statusu hasła
+    function updateLockState(unlocked, password = null) {
+      isEditingUnlocked = unlocked;
+      currentPassword = password;
+
+      const lockBtn = document.getElementById('lockStatusBtn');
+      const addCarBtn = document.getElementById('addCarBtn');
+      const saveRemoteBtn = document.getElementById('saveRemoteBtn');
+
+      if (unlocked) {
+        lockBtn.innerHTML = '🔓 Edycja aktywna';
+        lockBtn.classList.add('primary');
+        addCarBtn.style.display = 'inline-flex';
+        saveRemoteBtn.style.display = 'inline-flex';
+      } else {
+        lockBtn.innerHTML = '🔒 Odblokuj edycję';
+        lockBtn.classList.remove('primary');
+        addCarBtn.style.display = 'none';
+        saveRemoteBtn.style.display = 'none';
+      }
+      renderCars();
+    }
+
+    // Przycisk kłódki
+    document.getElementById('lockStatusBtn').addEventListener('click', () => {
+      if (isEditingUnlocked) {
+        if (confirm("Czy chcesz zablokować edycję?")) {
+          updateLockState(false);
+          showToast("Zablokowano tryb edycji");
+        }
+      } else {
+        openModal('unlockModal');
+      }
+    });
+
+    // Weryfikacja hasła
+    document.getElementById('unlockForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pw = document.getElementById('unlockPasswordInput').value;
+
+      // Sprawdzamy hasło wysyłając próbny update
+      try {
+        const res = await fetch(`${API_URL}?action=update`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: currentCollection.id,
+            password: pw,
+            cars: currentCollection.cars
+          })
+        });
+
+        const json = await res.json();
+        if (res.ok && json.status === 'success') {
+          closeModal('unlockModal');
+          document.getElementById('unlockPasswordInput').value = '';
+          updateLockState(true, pw);
+          showToast("Kolekcja odblokowana do edycji!", "🔓");
+        } else {
+          alert("Błędne hasło! Nie możesz edytować tej tabeli.");
+        }
+      } catch (err) {
+        // Fallback dla trybu offline
+        closeModal('unlockModal');
+        updateLockState(true, pw);
+        showToast("Odblokowano (tryb offline)", "🔓");
+      }
+    });
+
+    // Tworzenie nowej tabeli
+    document.getElementById('actionPrimaryBtn').addEventListener('click', () => {
+      openModal('newCollectionModal');
+    });
+
+    document.getElementById('createCollectionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('colTitleInput').value.trim();
+      const author = document.getElementById('colAuthorInput').value.trim() || 'Anonim';
+      const password = document.getElementById('colPasswordInput').value;
+
+      try {
+        const res = await fetch(`${API_URL}?action=create`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, author, password, cars: [] })
+        });
+        const json = await res.json();
+
+        if (res.ok && json.status === 'success') {
+          closeModal('newCollectionModal');
+          document.getElementById('createCollectionForm').reset();
+          showToast("Tabela została utworzona!");
+          await openCollection(json.id);
+          updateLockState(true, password);
+        } else {
+          alert(json.message || "Błąd podczas tworzenia tabeli");
+        }
+      } catch (err) {
+        // Tryb demo offline
+        const newId = 'local_' + Date.now();
+        currentCollection = { id: newId, title, author, cars: [] };
+        closeModal('newCollectionModal');
+        document.getElementById('createCollectionForm').reset();
+        openCollection(newId);
+        updateLockState(true, password);
+        showToast("Utworzono tabelę lokalnie!");
+      }
+    });
+
+    // Zapisywanie zmian na serwerze
+    document.getElementById('saveRemoteBtn').addEventListener('click', async () => {
+      if (!isEditingUnlocked || !currentPassword) return;
+
+      try {
+        const res = await fetch(`${API_URL}?action=update`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: currentCollection.id,
+            password: currentPassword,
+            cars: currentCollection.cars
+          })
+        });
+        const json = await res.json();
+        if (res.ok && json.status === 'success') {
+          showToast("Wszystkie auta zostały zapisane w chmurze!", "☁️");
+        } else {
+          alert(json.message || "Błąd zapisu!");
+        }
+      } catch (e) {
+        showToast("Zapisano w pamięci lokalnej (offline)", "💾");
+      }
+    });
+
+    // Obsługa dodawania / edycji samochodu
+    document.getElementById('addCarBtn').addEventListener('click', () => {
+      document.getElementById('carForm').reset();
+      document.getElementById('carEditId').value = '';
+      document.getElementById('carModalTitle').innerText = 'Dodaj Samochód';
+      openModal('carModal');
+    });
+
+    document.getElementById('carForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const editId = document.getElementById('carEditId').value;
+      const carData = {
+        id: editId || 'car_' + Date.now(),
+        brand: document.getElementById('carBrand').value.trim(),
+        model: document.getElementById('carModel').value.trim(),
+        hp: Number(document.getElementById('carHp').value) || 0,
+        torque: Number(document.getElementById('carTorque').value) || 0,
+        fuelCity: document.getElementById('carFuelCity').value.trim() || '-',
+        fuelHighway: document.getElementById('carFuelHighway').value.trim() || '-',
+        body: document.getElementById('carBody').value,
+        cost: document.getElementById('carCost').value,
+        engine: document.getElementById('carEngine').value.trim(),
+        price: Number(document.getElementById('carPrice').value) || 0,
+        acc: Number(document.getElementById('carAcc').value) || 0,
+        year: Number(document.getElementById('carYear').value) || 0,
+        notes: document.getElementById('carNotes').value.trim(),
+        isFav: editId ? (currentCollection.cars.find(c => c.id === editId)?.isFav || false) : false
+      };
+
+      if (editId) {
+        const index = currentCollection.cars.findIndex(c => c.id === editId);
+        if (index !== -1) currentCollection.cars[index] = carData;
+        showToast("Zaktualizowano specyfikację auta");
+      } else {
+        currentCollection.cars.unshift(carData);
+        showToast("Dodano auto do tabeli!");
+      }
+
+      closeModal('carModal');
+      renderCars();
+    });
+
+    // Edycja auta
+    window.editCar = function(carId) {
+      if (!isEditingUnlocked) return;
+      const car = currentCollection.cars.find(c => c.id === carId);
+      if (!car) return;
+
+      document.getElementById('carEditId').value = car.id;
+      document.getElementById('carBrand').value = car.brand;
+      document.getElementById('carModel').value = car.model;
+      document.getElementById('carHp').value = car.hp;
+      document.getElementById('carTorque').value = car.torque || '';
+      document.getElementById('carFuelCity').value = car.fuelCity !== '-' ? car.fuelCity : '';
+      document.getElementById('carFuelHighway').value = car.fuelHighway !== '-' ? car.fuelHighway : '';
+      document.getElementById('carBody').value = car.body;
+      document.getElementById('carCost').value = car.cost;
+      document.getElementById('carEngine').value = car.engine;
+      document.getElementById('carPrice').value = car.price;
+      document.getElementById('carAcc').value = car.acc;
+      document.getElementById('carYear').value = car.year;
+      document.getElementById('carNotes').value = car.notes || '';
+
+      document.getElementById('carModalTitle').innerText = 'Edytuj Samochód';
+      openModal('carModal');
+    };
+
+    // Usuwanie auta
+    window.deleteCar = function(carId) {
+      if (!isEditingUnlocked) return;
+      if (confirm("Czy na pewno chcesz usunąć to auto z tabeli?")) {
+        currentCollection.cars = currentCollection.cars.filter(c => c.id !== carId);
+        showToast("Usunięto auto");
+        renderCars();
+      }
+    };
+
+    // Toggle Favorite
+    window.toggleFav = function(carId, event) {
+      event.stopPropagation();
+      const car = currentCollection.cars.find(c => c.id === carId);
+      if (car) {
+        car.isFav = !car.isFav;
+        renderCars();
+        showToast(car.isFav ? "Dodano do ulubionych" : "Usunięto z ulubionych", "❤️");
+      }
+    };
+
+    // Renderowanie aut z filtrami i sortowaniem
+    function renderCars() {
+      if (!currentCollection) return;
+
+      const grid = document.getElementById('carsGrid');
+      const search = document.getElementById('carSearch').value.toLowerCase();
+      
+      // Zliczanie ulubionych
+      const favTotal = currentCollection.cars.filter(c => c.isFav).length;
+      document.getElementById('favCount').innerText = favTotal;
+
+      let list = [...currentCollection.cars];
+
+      // Filtrowanie: Wyszukiwarka
+      if (search) {
+        list = list.filter(c => 
+          c.brand.toLowerCase().includes(search) ||
+          c.model.toLowerCase().includes(search) ||
+          c.engine.toLowerCase().includes(search) ||
+          (c.notes && c.notes.toLowerCase().includes(search))
+        );
+      }
+
+      // Filtrowanie: Ulubione
+      if (activeFilter === 'fav') {
+        list = list.filter(c => c.isFav);
+      }
+
+      // Filtrowanie: Nadwozie
+      if (selectedBody) {
+        list = list.filter(c => c.body === selectedBody);
+      }
+
+      // Filtrowanie: Koszt utrzymania
+      if (selectedCost) {
+        list = list.filter(c => c.cost === selectedCost);
+      }
+
+      // Sortowanie
+      if (selectedSort === 'price-asc') list.sort((a, b) => a.price - b.price);
+      if (selectedSort === 'price-desc') list.sort((a, b) => b.price - a.price);
+      if (selectedSort === 'power-desc') list.sort((a, b) => b.hp - a.hp);
+      if (selectedSort === 'acc-asc') list.sort((a, b) => a.acc - b.acc);
+      if (selectedSort === 'year-desc') list.sort((a, b) => b.year - a.year);
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🏎️</div>
+            <h3>Brak samochodów spełniających kryteria</h3>
+            <p style="opacity:0.7; margin-top:6px;">
+              ${isEditingUnlocked ? 'Kliknij "+ Dodaj auto", aby powiększyć swój garaż!' : 'Autor nie dodał jeszcze samochodów lub filtry nic nie znalazły.'}
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = list.map(car => {
+        const costClass = 'cost-' + car.cost.toLowerCase().replace(/\s+/g, '-');
+        return `
+          <div class="glass-shell car-card">
+            
+            <div class="car-header">
+              <div>
+                <div class="car-brand-model">${escapeHtml(car.brand)} ${escapeHtml(car.model)}</div>
+                <div class="car-year">Rocznik: <b>${car.year}</b> • ${car.engine}</div>
+              </div>
+              <button class="fav-btn ${car.isFav ? 'is-fav' : ''}" onclick="toggleFav('${car.id}', event)" title="Ulubione">
+                ${car.isFav ? '❤️' : '🤍'}
+              </button>
+            </div>
+
+            <div class="badge-bar">
+              <span class="badge badge-body">${car.body}</span>
+              <span class="badge ${costClass}">Części: ${car.cost}</span>
+            </div>
+
+            <div class="specs-matrix">
+              <div class="spec-item">
+                <div class="spec-label">Moc & Moment</div>
+                <div class="spec-value">${car.hp} <span class="spec-unit">KM</span> ${car.torque ? '/ ' + car.torque + ' Nm' : ''}</div>
+              </div>
+
+              <div class="spec-item">
+                <div class="spec-label">0-100 km/h</div>
+                <div class="spec-value">⚡ ${car.acc} <span class="spec-unit">s</span></div>
+              </div>
+
+              <div class="spec-item">
+                <div class="spec-label">Spalanie (M / T)</div>
+                <div class="spec-value">⛽ ${car.fuelCity} / ${car.fuelHighway} <span class="spec-unit">l</span></div>
+              </div>
+
+              <div class="spec-item">
+                <div class="spec-label">Szacowana Cena</div>
+                <div class="spec-value" style="color: #72ff95;">💰 ${formatPrice(car.price)} <span class="spec-unit">PLN</span></div>
+              </div>
+            </div>
+
+            ${car.notes ? `<div class="car-notes">💬 „${escapeHtml(car.notes)}”</div>` : ''}
+
+            ${isEditingUnlocked ? `
+              <div class="car-card-actions">
+                <button class="ios-pill-btn" onclick="editCar('${car.id}')">✏️ Edytuj</button>
+                <button class="ios-pill-btn danger" onclick="deleteCar('${car.id}')">🗑️ Usuń</button>
+              </div>
+            ` : ''}
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Formatowanie ceny
+    function formatPrice(val) {
+      return Number(val).toLocaleString('pl-PL');
+    }
+
+    // Bezpieczny HTML
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Event Listenery Filtrów i Wyszukiwarki
+    document.getElementById('collectionSearch').addEventListener('input', renderCollectionsList);
+    document.getElementById('carSearch').addEventListener('input', renderCars);
+
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activeFilter = chip.dataset.filter;
+        renderCars();
+      });
+    });
+
+    document.getElementById('bodyFilter').addEventListener('change', (e) => {
+      selectedBody = e.target.value;
+      renderCars();
+    });
+
+    document.getElementById('costFilter').addEventListener('change', (e) => {
+      selectedCost = e.target.value;
+      renderCars();
+    });
+
+    document.getElementById('sortSelect').addEventListener('change', (e) => {
+      selectedSort = e.target.value;
+      renderCars();
+    });
+
+    // Inicjalizacja przy starcie
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCollections();
+    });
+  </script>
+</body>
+</html>
