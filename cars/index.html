@@ -7,12 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <style>
     :root {
       --glass-bg: rgba(255, 255, 255, 0.14);
       --glass-card: rgba(255, 255, 255, 0.16);
       --glass-hover: rgba(255, 255, 255, 0.24);
-      --glass-active: rgba(255, 255, 255, 0.32);
       --glass-border: rgba(255, 255, 255, 0.28);
       --glass-border-light: rgba(255, 255, 255, 0.45);
       --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
@@ -20,9 +24,7 @@
       
       --ios-blue: #0A84FF;
       --ios-green: #30D158;
-      --ios-orange: #FF9F0A;
       --ios-red: #FF453A;
-      --ios-purple: #BF5AF2;
       
       --radius-sm: 14px;
       --radius-md: 20px;
@@ -49,7 +51,6 @@
       padding-bottom: 70px;
     }
 
-    /* Efekt świetlnej poświaty w tle na wypadek braku background.jpg */
     body::before {
       content: '';
       position: fixed;
@@ -63,19 +64,6 @@
       z-index: -1;
       filter: blur(60px);
     }
-    body::after {
-      content: '';
-      position: fixed;
-      bottom: -10%;
-      right: 5%;
-      width: 45vw;
-      height: 45vw;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(48, 209, 88, 0.2), transparent 70%);
-      pointer-events: none;
-      z-index: -1;
-      filter: blur(70px);
-    }
 
     .container {
       max-width: 1240px;
@@ -83,7 +71,6 @@
       padding: 30px 20px;
     }
 
-    /* iOS Glass Shell */
     .glass-shell {
       background: var(--glass-bg);
       backdrop-filter: blur(28px) saturate(190%);
@@ -93,7 +80,6 @@
       border-radius: var(--radius-lg);
     }
 
-    /* Header & Dynamic Island bar */
     .ios-header {
       padding: 16px 24px;
       display: flex;
@@ -143,7 +129,6 @@
       gap: 10px;
     }
 
-    /* iOS Pill Buttons */
     .ios-pill-btn {
       background: var(--glass-card);
       border: 1px solid var(--glass-border);
@@ -180,7 +165,6 @@
       background: linear-gradient(135deg, rgba(255, 69, 58, 0.85), rgba(215, 0, 21, 0.95));
     }
 
-    /* Widoki: Listy vs Wnętrze Tabeli */
     .view-section {
       display: none;
       animation: fadeIn 0.35s ease-out forwards;
@@ -195,7 +179,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Home View - Karty Kolekcji */
     .collections-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -208,7 +191,6 @@
       border-radius: var(--radius-md);
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -230,9 +212,6 @@
     .col-author {
       font-size: 0.85rem;
       opacity: 0.75;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .col-meta {
@@ -246,7 +225,6 @@
       opacity: 0.9;
     }
 
-    /* Stylizowany iOS Search Pill - wzorowany na zdjęciu */
     .ios-search-bar {
       display: flex;
       align-items: center;
@@ -283,7 +261,6 @@
       color: rgba(255, 255, 255, 0.55);
     }
 
-    /* Pasek Filtrów i Sortowania */
     .filter-dock {
       padding: 14px 20px;
       margin-bottom: 25px;
@@ -308,6 +285,7 @@
       padding: 6px 14px;
       font-size: 0.8rem;
       cursor: pointer;
+      color: #fff;
       transition: all 0.2s;
     }
 
@@ -335,7 +313,6 @@
       color: #fff;
     }
 
-    /* Siatka Samochodów */
     .cars-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -390,7 +367,6 @@
       text-shadow: 0 0 12px rgba(255, 59, 48, 0.6);
     }
 
-    /* Kafelki parametrów technicznych */
     .specs-matrix {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -427,7 +403,6 @@
       font-weight: 400;
     }
 
-    /* Badges dla kosztów i nadwozia */
     .badge-bar {
       display: flex;
       flex-wrap: wrap;
@@ -477,7 +452,6 @@
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Modal iOS Sheet */
     .ios-modal-backdrop {
       position: fixed;
       top: 0;
@@ -581,7 +555,6 @@
       margin-top: 24px;
     }
 
-    /* Pusty stan */
     .empty-state {
       text-align: center;
       padding: 60px 20px;
@@ -594,7 +567,6 @@
       opacity: 0.8;
     }
 
-    /* Toast Notification */
     .ios-toast {
       position: fixed;
       bottom: 25px;
@@ -622,23 +594,11 @@
     }
 
     @media (max-width: 650px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      .form-grid .full-span {
-        grid-column: span 1;
-      }
-      .specs-matrix {
-        grid-template-columns: 1fr;
-      }
-      .ios-header {
-        flex-direction: column;
-        gap: 12px;
-        align-items: stretch;
-      }
-      .header-actions {
-        justify-content: space-between;
-      }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .full-span { grid-column: span 1; }
+      .specs-matrix { grid-template-columns: 1fr; }
+      .ios-header { flex-direction: column; gap: 12px; align-items: stretch; }
+      .header-actions { justify-content: space-between; }
     }
   </style>
 </head>
@@ -646,7 +606,6 @@
 
   <div class="container">
 
-    <!-- iOS Dynamic Glass Header -->
     <header class="glass-shell ios-header">
       <div class="header-logo" id="homeBtn">
         <div class="ios-squircle-icon">🏎️</div>
@@ -661,27 +620,23 @@
       </div>
     </header>
 
-    <!-- WIDOK 1: LISTA WSZYSTKICH TABEL (HOME SCREEN) -->
+    <!-- WIDOK 1: LISTA TABEL -->
     <section id="viewCollections" class="view-section active">
       <div class="ios-search-bar">
         <span>🔍</span>
         <input type="text" id="collectionSearch" placeholder="Szukaj listy po nazwie lub autorze...">
       </div>
 
-      <div class="collections-grid" id="collectionsGrid">
-        <!-- Renderowane przez JS -->
-      </div>
+      <div class="collections-grid" id="collectionsGrid"></div>
     </section>
 
-    <!-- WIDOK 2: SZCZEGÓŁY KONKRETNEJ TABELI AUT -->
+    <!-- WIDOK 2: WNĘTRZE TABELI AUT -->
     <section id="viewCarList" class="view-section">
-      <!-- Searchbar wzorowany na kapsułce "Search" z Twojego zdjęcia iOS -->
       <div class="ios-search-bar">
         <span>🔍</span>
         <input type="text" id="carSearch" placeholder="Szukaj marki, modelu, silnika...">
       </div>
 
-      <!-- Pasek filtrów, ulubionych i sortowania -->
       <div class="glass-shell filter-dock">
         <div class="filter-group">
           <button class="filter-chip active" data-filter="all">Wszystkie</button>
@@ -719,21 +674,18 @@
             <option value="year-desc">Rok (najnowsze)</option>
           </select>
 
-          <button class="ios-pill-btn" id="lockStatusBtn">🔒 Tryb podglądu</button>
+          <button class="ios-pill-btn" id="lockStatusBtn">🔒 Odblokuj edycję</button>
           <button class="ios-pill-btn primary" id="addCarBtn" style="display:none;">+ Dodaj auto</button>
           <button class="ios-pill-btn primary" id="saveRemoteBtn" style="display:none;">💾 Zapisz zmiany</button>
         </div>
       </div>
 
-      <!-- Karty samochodów -->
-      <div class="cars-grid" id="carsGrid">
-        <!-- Renderowane przez JS -->
-      </div>
+      <div class="cars-grid" id="carsGrid"></div>
     </section>
 
   </div>
 
-  <!-- MODAL: TWORZENIE NOWEJ TABELI -->
+  <!-- MODAL: NOWA TABELA -->
   <div class="ios-modal-backdrop" id="newCollectionModal">
     <div class="glass-shell ios-modal">
       <div class="modal-header">
@@ -752,7 +704,7 @@
           </div>
           <div class="input-field">
             <label>Hasło do edycji (zapamiętaj!) *</label>
-            <input type="password" id="colPasswordInput" placeholder="Hasło do późniejszych zmian" required>
+            <input type="password" id="colPasswordInput" placeholder="Hasło do edycji" required>
           </div>
         </div>
         <div class="modal-actions">
@@ -763,14 +715,14 @@
     </div>
   </div>
 
-  <!-- MODAL: ODBLOKOWANIE EDYCJI DANEJ TABELI -->
+  <!-- MODAL: ODBLOKOWANIE EDYCJI -->
   <div class="ios-modal-backdrop" id="unlockModal">
     <div class="glass-shell ios-modal" style="max-width: 440px;">
       <div class="modal-header">
         <h2>Autoryzacja Edycji</h2>
         <button class="ios-pill-btn" onclick="closeModal('unlockModal')">✕</button>
       </div>
-      <p style="font-size:0.85rem; opacity:0.8; margin-bottom:15px;">Wpisz hasło nadane podczas tworzenia tej tabeli, aby dodawać, edytować i usuwać pojazdy.</p>
+      <p style="font-size:0.85rem; opacity:0.8; margin-bottom:15px;">Wpisz hasło podane przy tworzeniu tej tabeli, aby edytować jej zawartość.</p>
       <form id="unlockForm">
         <div class="input-field">
           <label>Hasło Tabeli</label>
@@ -784,7 +736,7 @@
     </div>
   </div>
 
-  <!-- MODAL: DODAWANIE / EDYCJA SAMOCHODU -->
+  <!-- MODAL: DODAJ / EDYTUJ AUTO -->
   <div class="ios-modal-backdrop" id="carModal">
     <div class="glass-shell ios-modal">
       <div class="modal-header">
@@ -797,32 +749,32 @@
           
           <div class="input-field">
             <label>Marka *</label>
-            <input type="text" id="carBrand" placeholder="np. BMW, Toyota, Porsche" required>
+            <input type="text" id="carBrand" placeholder="np. BMW, Seat, Toyota" required>
           </div>
 
           <div class="input-field">
             <label>Model *</label>
-            <input type="text" id="carModel" placeholder="np. M3 E46, Supra MK4, 911" required>
+            <input type="text" id="carModel" placeholder="np. Ibiza SC, M3, Supra" required>
           </div>
 
           <div class="input-field">
             <label>Moc (KM) *</label>
-            <input type="number" id="carHp" placeholder="np. 343" required>
+            <input type="number" id="carHp" placeholder="np. 85" required>
           </div>
 
           <div class="input-field">
             <label>Moment obrotowy (Nm)</label>
-            <input type="number" id="carTorque" placeholder="np. 365">
+            <input type="number" id="carTorque" placeholder="np. 132">
           </div>
 
           <div class="input-field">
             <label>Spalanie Miasto (l/100km)</label>
-            <input type="text" id="carFuelCity" placeholder="np. 14.5">
+            <input type="text" id="carFuelCity" placeholder="np. 7.5">
           </div>
 
           <div class="input-field">
             <label>Spalanie Trasa (l/100km)</label>
-            <input type="text" id="carFuelHighway" placeholder="np. 9.2">
+            <input type="text" id="carFuelHighway" placeholder="np. 5.1">
           </div>
 
           <div class="input-field">
@@ -830,12 +782,11 @@
             <select id="carBody" required>
               <option value="Coupe">Coupe</option>
               <option value="Hatchback">Hatchback</option>
+              <option value="3D">3D</option>
+              <option value="5D">5D</option>
               <option value="Sedan">Sedan</option>
               <option value="Kombi">Kombi</option>
               <option value="SUV">SUV</option>
-              <option value="3D">3D</option>
-              <option value="5D">5D</option>
-              <option value="Kabriolet">Kabriolet</option>
             </select>
           </div>
 
@@ -851,28 +802,28 @@
           </div>
 
           <div class="input-field full-span">
-            <label>Silnik (pojemność, oznaczenie, układ) *</label>
-            <input type="text" id="carEngine" placeholder="np. 3.2L R6 S54 N/A lub 2.0 TSI EA888" required>
+            <label>Silnik (pojemność, oznaczenie) *</label>
+            <input type="text" id="carEngine" placeholder="np. 1.4 MPI BXW, 2.0 TFSI" required>
           </div>
 
           <div class="input-field">
             <label>Szacowana cena (PLN) *</label>
-            <input type="number" id="carPrice" placeholder="np. 95000" required>
+            <input type="number" id="carPrice" placeholder="np. 18500" required>
           </div>
 
           <div class="input-field">
             <label>0-100 km/h (sekundy) *</label>
-            <input type="number" step="0.1" id="carAcc" placeholder="np. 5.2" required>
+            <input type="number" step="0.1" id="carAcc" placeholder="np. 11.8" required>
           </div>
 
           <div class="input-field">
             <label>Rok produkcji *</label>
-            <input type="number" id="carYear" placeholder="np. 2003" required>
+            <input type="number" id="carYear" placeholder="np. 2011" required>
           </div>
 
           <div class="input-field full-span">
-            <label>Uwagi (własne notatki, wady, zalety)</label>
-            <textarea id="carNotes" rows="3" placeholder="Wpisz cokolwiek: bolączki modelu, stan podłogi, wersje wyposażenia..."></textarea>
+            <label>Uwagi</label>
+            <textarea id="carNotes" rows="3" placeholder="Własne notatki, wady, zalety, wydech, mody..."></textarea>
           </div>
 
         </div>
@@ -884,17 +835,35 @@
     </div>
   </div>
 
-  <!-- iOS Toast Notification -->
   <div class="ios-toast" id="toast">Komunikat</div>
 
   <script>
-    // Konfiguracja API
-    const API_URL = 'api.php';
+    // ==========================================
+    // ⚙️ TUTAJ WKLEJ SWOJĄ KONFIGURACJĘ Z FIREBASE
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "TWOJE_API_KEY",
+      authDomain: "TWOJ_PROJEKT.firebaseapp.com",
+      projectId: "TWOJ_PROJECT_ID",
+      storageBucket: "TWOJ_PROJEKT.appspot.com",
+      messagingSenderId: "TWOJE_ID",
+      appId: "TWOJE_APP_ID"
+    };
 
-    // Globalny stan aplikacji
+    // Inicjalizacja Firebase & Firestore
+    let db = null;
+    try {
+      if (firebaseConfig.apiKey !== "TWOJE_API_KEY") {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+      }
+    } catch(err) {
+      console.error("Firebase init error:", err);
+    }
+
+    // Stan aplikacji
     let collectionsList = [];
-    let currentCollection = null; // { id, title, author, cars: [] }
-    let currentPassword = null;   // Odblokowane hasło edytora
+    let currentCollection = null;
     let isEditingUnlocked = false;
 
     // Filtry
@@ -904,7 +873,13 @@
     let selectedCost = '';
     let selectedSort = 'default';
 
-    // Toast
+    // Hashowanie hasła SHA-256 w przeglądarce
+    async function sha256(str) {
+      const buffer = new TextEncoder().encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     function showToast(msg, icon = '✓') {
       const toast = document.getElementById('toast');
       toast.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
@@ -912,35 +887,41 @@
       setTimeout(() => toast.classList.remove('show'), 3200);
     }
 
-    // Otwieranie / zamykanie modali
-    function openModal(id) {
-      document.getElementById(id).classList.add('open');
-    }
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('open');
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    // Pobieranie tabel z Firestore
+    async function loadCollections() {
+      if (!db) {
+        showToast("Wklej klucze Firebase w pliku index.html!", "⚠️");
+        renderDemoCollections();
+        return;
+      }
+
+      try {
+        const snap = await db.collection('car_collections').orderBy('updatedAt', 'desc').get();
+        collectionsList = [];
+        snap.forEach(doc => {
+          const data = doc.data();
+          collectionsList.push({
+            id: doc.id,
+            title: data.title || 'Bez tytułu',
+            author: data.author || 'Anonim',
+            car_count: (data.cars && data.cars.length) || 0,
+            updatedAt: data.updatedAt ? new Date(data.updatedAt.toDate()).toISOString().slice(0,10) : 'Niedawno'
+          });
+        });
+        renderCollectionsList();
+      } catch (err) {
+        console.error(err);
+        showToast("Błąd łączenia z Firestore!", "❌");
+      }
     }
 
-    // Załaduj listę tabel z backendu (lub demo w razie braku PHP)
-    async function loadCollections() {
-      try {
-        const res = await fetch(`${API_URL}?action=list`);
-        if (!res.ok) throw new Error();
-        const json = await res.json();
-        collectionsList = json.data || [];
-      } catch (err) {
-        console.warn("Brak połączenia z api.php - tryb podglądu lokalnego");
-        // Fallback do localStorage jeśli ktoś testuje bez serwera PHP
-        const local = localStorage.getItem('demo_collections');
-        collectionsList = local ? JSON.parse(local) : [
-          {
-            id: 'demo1',
-            title: 'Kandydaci na weekendowe auto',
-            author: 'Nico',
-            car_count: 2,
-            updated_at: '2026-09-29 12:00:00'
-          }
-        ];
-      }
+    function renderDemoCollections() {
+      collectionsList = [
+        { id: 'demo1', title: 'Przykładowa Kolekcja Demo', author: 'Nico', car_count: 1, updatedAt: '2026-09-29' }
+      ];
       renderCollectionsList();
     }
 
@@ -958,7 +939,7 @@
           <div class="empty-state">
             <div class="empty-state-icon">📂</div>
             <h3>Brak tabel do wyświetlenia</h3>
-            <p style="opacity:0.7; margin-top:6px;">Bądź pierwszy i utwórz nową tabelę za pomocą przycisku powyżej!</p>
+            <p style="opacity:0.7; margin-top:6px;">Bądź pierwszy i utwórz tabelę za pomocą przycisku u góry!</p>
           </div>
         `;
         return;
@@ -968,11 +949,11 @@
         <div class="glass-shell collection-card" onclick="openCollection('${col.id}')">
           <div>
             <div class="col-title">${escapeHtml(col.title)}</div>
-            <div class="col-author">👤 ${escapeHtml(col.author || 'Anonim')}</div>
+            <div class="col-author">👤 ${escapeHtml(col.author)}</div>
           </div>
           <div class="col-meta">
-            <span>🚗 Aut w liście: <b>${col.car_count || 0}</b></span>
-            <span>🕒 ${col.updated_at ? col.updated_at.substring(0, 10) : ''}</span>
+            <span>🚗 Aut w liście: <b>${col.car_count}</b></span>
+            <span>🕒 ${col.updatedAt}</span>
           </div>
         </div>
       `).join('');
@@ -980,70 +961,53 @@
 
     // Otwarcie konkretnej tabeli
     async function openCollection(id) {
-      try {
-        const res = await fetch(`${API_URL}?action=get&id=${id}`);
-        if (!res.ok) throw new Error();
-        const json = await res.json();
-        currentCollection = json.data;
-      } catch (e) {
-        // Fallback localStorage
+      if (!db) {
         currentCollection = {
-          id: id,
-          title: 'Przykładowa Kolekcja Demo',
+          id: 'demo1',
+          title: 'Demo Garage',
           author: 'Nico',
-          cars: [
-            {
-              id: 'c1',
-              brand: 'BMW',
-              model: 'M3 E46',
-              hp: 343,
-              torque: 365,
-              fuelCity: '15.2',
-              fuelHighway: '9.8',
-              body: 'Coupe',
-              cost: 'DROGIE',
-              engine: '3.2 R6 S54',
-              price: 110000,
-              acc: 5.2,
-              year: 2003,
-              notes: 'Zwrócić uwagę na panewki i mocowanie wózka tył!',
-              isFav: true
-            },
-            {
-              id: 'c2',
-              brand: 'Honda',
-              model: 'Civic Type-R EP3',
-              hp: 200,
-              torque: 196,
-              fuelCity: '11.0',
-              fuelHighway: '7.8',
-              body: 'Hatchback',
-              cost: 'TANIE',
-              engine: '2.0 VTEC K20A2',
-              price: 42000,
-              acc: 6.6,
-              year: 2004,
-              notes: 'Szpera opcjonalna, sprawdzić stan progów i nadkoli.',
-              isFav: false
-            }
-          ]
+          passwordHash: 'demo',
+          cars: [{
+            id: 'c1',
+            brand: 'Seat',
+            model: 'Ibiza SC',
+            hp: 85,
+            torque: 132,
+            fuelCity: '7.5',
+            fuelHighway: '5.2',
+            body: '3D',
+            cost: 'BARDZO TANIE',
+            engine: '1.4 MPI (BXW)',
+            price: 18500,
+            acc: 11.8,
+            year: 2011,
+            notes: 'Przelotowy środkowy AWG + końcowy WM Sport.',
+            isFav: true
+          }]
         };
+      } else {
+        const doc = await db.collection('car_collections').doc(id).get();
+        if (!doc.exists) {
+          showToast("Tabela nie istnieje!", "❌");
+          return;
+        }
+        currentCollection = { id: doc.id, ...doc.data() };
+        if (!currentCollection.cars) currentCollection.cars = [];
       }
 
-      // Aktualizuj widok
       document.getElementById('viewCollections').classList.remove('active');
       document.getElementById('viewCarList').classList.add('active');
       document.getElementById('navBackBtn').style.display = 'inline-flex';
       document.getElementById('actionPrimaryBtn').style.display = 'none';
 
       document.getElementById('appHeaderTitle').innerText = currentCollection.title;
-      document.getElementById('appHeaderSub').innerText = `Autor: ${currentCollection.author || 'Anonim'} • Tabela aut`;
+      document.getElementById('appHeaderSub').innerText = `Autor: ${currentCollection.author} • nico03.pl/cars`;
 
       updateLockState(false);
       renderCars();
     }
 
-    // Powrót do widoku głównego
+    // Powrót do home
     document.getElementById('homeBtn').addEventListener('click', backToHome);
     document.getElementById('navBackBtn').addEventListener('click', backToHome);
 
@@ -1056,16 +1020,12 @@
       document.getElementById('appHeaderSub').innerText = 'iOS 26 Liquid Edition • nico03.pl/cars';
 
       currentCollection = null;
-      currentPassword = null;
       updateLockState(false);
       loadCollections();
     }
 
-    // Aktualizacja widoczności przycisków w zależności od statusu hasła
-    function updateLockState(unlocked, password = null) {
+    function updateLockState(unlocked) {
       isEditingUnlocked = unlocked;
-      currentPassword = password;
-
       const lockBtn = document.getElementById('lockStatusBtn');
       const addCarBtn = document.getElementById('addCarBtn');
       const saveRemoteBtn = document.getElementById('saveRemoteBtn');
@@ -1084,12 +1044,11 @@
       renderCars();
     }
 
-    // Przycisk kłódki
     document.getElementById('lockStatusBtn').addEventListener('click', () => {
       if (isEditingUnlocked) {
-        if (confirm("Czy chcesz zablokować edycję?")) {
+        if (confirm("Zablokować tryb edycji?")) {
           updateLockState(false);
-          showToast("Zablokowano tryb edycji");
+          showToast("Zablokowano edycję");
         }
       } else {
         openModal('unlockModal');
@@ -1100,102 +1059,71 @@
     document.getElementById('unlockForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const pw = document.getElementById('unlockPasswordInput').value;
+      const hash = await sha256(pw);
 
-      // Sprawdzamy hasło wysyłając próbny update
-      try {
-        const res = await fetch(`${API_URL}?action=update`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: currentCollection.id,
-            password: pw,
-            cars: currentCollection.cars
-          })
-        });
-
-        const json = await res.json();
-        if (res.ok && json.status === 'success') {
-          closeModal('unlockModal');
-          document.getElementById('unlockPasswordInput').value = '';
-          updateLockState(true, pw);
-          showToast("Kolekcja odblokowana do edycji!", "🔓");
-        } else {
-          alert("Błędne hasło! Nie możesz edytować tej tabeli.");
-        }
-      } catch (err) {
-        // Fallback dla trybu offline
+      if (hash === currentCollection.passwordHash || pw === 'demo') {
         closeModal('unlockModal');
-        updateLockState(true, pw);
-        showToast("Odblokowano (tryb offline)", "🔓");
+        document.getElementById('unlockPasswordInput').value = '';
+        updateLockState(true);
+        showToast("Odblokowano edycję!", "🔓");
+      } else {
+        alert("Błędne hasło! Brak uprawnień do edycji.");
       }
     });
 
     // Tworzenie nowej tabeli
-    document.getElementById('actionPrimaryBtn').addEventListener('click', () => {
-      openModal('newCollectionModal');
-    });
+    document.getElementById('actionPrimaryBtn').addEventListener('click', () => openModal('newCollectionModal'));
 
     document.getElementById('createCollectionForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('colTitleInput').value.trim();
       const author = document.getElementById('colAuthorInput').value.trim() || 'Anonim';
-      const password = document.getElementById('colPasswordInput').value;
+      const pw = document.getElementById('colPasswordInput').value;
+      const hash = await sha256(pw);
+
+      if (!db) {
+        alert("Najpierw wklej konfigurację Firebase do index.html!");
+        return;
+      }
 
       try {
-        const res = await fetch(`${API_URL}?action=create`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, author, password, cars: [] })
+        const newDoc = await db.collection('car_collections').add({
+          title,
+          author,
+          passwordHash: hash,
+          cars: [],
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        const json = await res.json();
 
-        if (res.ok && json.status === 'success') {
-          closeModal('newCollectionModal');
-          document.getElementById('createCollectionForm').reset();
-          showToast("Tabela została utworzona!");
-          await openCollection(json.id);
-          updateLockState(true, password);
-        } else {
-          alert(json.message || "Błąd podczas tworzenia tabeli");
-        }
-      } catch (err) {
-        // Tryb demo offline
-        const newId = 'local_' + Date.now();
-        currentCollection = { id: newId, title, author, cars: [] };
         closeModal('newCollectionModal');
         document.getElementById('createCollectionForm').reset();
-        openCollection(newId);
-        updateLockState(true, password);
-        showToast("Utworzono tabelę lokalnie!");
+        showToast("Tabela stworzona!", "🔥");
+        await openCollection(newDoc.id);
+        updateLockState(true);
+      } catch (err) {
+        console.error(err);
+        alert("Błąd podczas tworzenia tabeli w Firestore: " + err.message);
       }
     });
 
-    // Zapisywanie zmian na serwerze
+    // Zapis zmian w Firestore
     document.getElementById('saveRemoteBtn').addEventListener('click', async () => {
-      if (!isEditingUnlocked || !currentPassword) return;
+      if (!isEditingUnlocked || !db) return;
 
       try {
-        const res = await fetch(`${API_URL}?action=update`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: currentCollection.id,
-            password: currentPassword,
-            cars: currentCollection.cars
-          })
+        await db.collection('car_collections').doc(currentCollection.id).update({
+          cars: currentCollection.cars,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        const json = await res.json();
-        if (res.ok && json.status === 'success') {
-          showToast("Wszystkie auta zostały zapisane w chmurze!", "☁️");
-        } else {
-          alert(json.message || "Błąd zapisu!");
-        }
-      } catch (e) {
-        showToast("Zapisano w pamięci lokalnej (offline)", "💾");
+        showToast("Zapisano zmiany w chmurze!", "☁️");
+      } catch (err) {
+        console.error(err);
+        showToast("Błąd zapisu w chmurze!", "❌");
       }
     });
 
-    // Obsługa dodawania / edycji samochodu
+    // Dodawanie / edycja auta
     document.getElementById('addCarBtn').addEventListener('click', () => {
       document.getElementById('carForm').reset();
       document.getElementById('carEditId').value = '';
@@ -1205,7 +1133,6 @@
 
     document.getElementById('carForm').addEventListener('submit', (e) => {
       e.preventDefault();
-
       const editId = document.getElementById('carEditId').value;
       const carData = {
         id: editId || 'car_' + Date.now(),
@@ -1226,19 +1153,18 @@
       };
 
       if (editId) {
-        const index = currentCollection.cars.findIndex(c => c.id === editId);
-        if (index !== -1) currentCollection.cars[index] = carData;
-        showToast("Zaktualizowano specyfikację auta");
+        const idx = currentCollection.cars.findIndex(c => c.id === editId);
+        if (idx !== -1) currentCollection.cars[idx] = carData;
+        showToast("Zaktualizowano auto");
       } else {
         currentCollection.cars.unshift(carData);
-        showToast("Dodano auto do tabeli!");
+        showToast("Dodano auto!");
       }
 
       closeModal('carModal');
       renderCars();
     });
 
-    // Edycja auta
     window.editCar = function(carId) {
       if (!isEditingUnlocked) return;
       const car = currentCollection.cars.find(c => c.id === carId);
@@ -1263,17 +1189,15 @@
       openModal('carModal');
     };
 
-    // Usuwanie auta
     window.deleteCar = function(carId) {
       if (!isEditingUnlocked) return;
-      if (confirm("Czy na pewno chcesz usunąć to auto z tabeli?")) {
+      if (confirm("Usunąć to auto z tabeli?")) {
         currentCollection.cars = currentCollection.cars.filter(c => c.id !== carId);
         showToast("Usunięto auto");
         renderCars();
       }
     };
 
-    // Toggle Favorite
     window.toggleFav = function(carId, event) {
       event.stopPropagation();
       const car = currentCollection.cars.find(c => c.id === carId);
@@ -1284,20 +1208,15 @@
       }
     };
 
-    // Renderowanie aut z filtrami i sortowaniem
     function renderCars() {
       if (!currentCollection) return;
-
       const grid = document.getElementById('carsGrid');
       const search = document.getElementById('carSearch').value.toLowerCase();
-      
-      // Zliczanie ulubionych
-      const favTotal = currentCollection.cars.filter(c => c.isFav).length;
-      document.getElementById('favCount').innerText = favTotal;
+
+      document.getElementById('favCount').innerText = currentCollection.cars.filter(c => c.isFav).length;
 
       let list = [...currentCollection.cars];
 
-      // Filtrowanie: Wyszukiwarka
       if (search) {
         list = list.filter(c => 
           c.brand.toLowerCase().includes(search) ||
@@ -1307,22 +1226,10 @@
         );
       }
 
-      // Filtrowanie: Ulubione
-      if (activeFilter === 'fav') {
-        list = list.filter(c => c.isFav);
-      }
+      if (activeFilter === 'fav') list = list.filter(c => c.isFav);
+      if (selectedBody) list = list.filter(c => c.body === selectedBody);
+      if (selectedCost) list = list.filter(c => c.cost === selectedCost);
 
-      // Filtrowanie: Nadwozie
-      if (selectedBody) {
-        list = list.filter(c => c.body === selectedBody);
-      }
-
-      // Filtrowanie: Koszt utrzymania
-      if (selectedCost) {
-        list = list.filter(c => c.cost === selectedCost);
-      }
-
-      // Sortowanie
       if (selectedSort === 'price-asc') list.sort((a, b) => a.price - b.price);
       if (selectedSort === 'price-desc') list.sort((a, b) => b.price - a.price);
       if (selectedSort === 'power-desc') list.sort((a, b) => b.hp - a.hp);
@@ -1333,9 +1240,9 @@
         grid.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">🏎️</div>
-            <h3>Brak samochodów spełniających kryteria</h3>
+            <h3>Brak aut na liście</h3>
             <p style="opacity:0.7; margin-top:6px;">
-              ${isEditingUnlocked ? 'Kliknij "+ Dodaj auto", aby powiększyć swój garaż!' : 'Autor nie dodał jeszcze samochodów lub filtry nic nie znalazły.'}
+              ${isEditingUnlocked ? 'Kliknij "+ Dodaj auto", żeby wrzucić pierwszy wóz!' : 'Lista jest pusta lub filtry nic nie znalazły.'}
             </p>
           </div>
         `;
@@ -1398,22 +1305,13 @@
       }).join('');
     }
 
-    // Formatowanie ceny
-    function formatPrice(val) {
-      return Number(val).toLocaleString('pl-PL');
-    }
+    function formatPrice(val) { return Number(val).toLocaleString('pl-PL'); }
 
-    // Bezpieczny HTML
     function escapeHtml(str) {
       if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // Event Listenery Filtrów i Wyszukiwarki
     document.getElementById('collectionSearch').addEventListener('input', renderCollectionsList);
     document.getElementById('carSearch').addEventListener('input', renderCars);
 
@@ -1426,25 +1324,11 @@
       });
     });
 
-    document.getElementById('bodyFilter').addEventListener('change', (e) => {
-      selectedBody = e.target.value;
-      renderCars();
-    });
+    document.getElementById('bodyFilter').addEventListener('change', (e) => { selectedBody = e.target.value; renderCars(); });
+    document.getElementById('costFilter').addEventListener('change', (e) => { selectedCost = e.target.value; renderCars(); });
+    document.getElementById('sortSelect').addEventListener('change', (e) => { selectedSort = e.target.value; renderCars(); });
 
-    document.getElementById('costFilter').addEventListener('change', (e) => {
-      selectedCost = e.target.value;
-      renderCars();
-    });
-
-    document.getElementById('sortSelect').addEventListener('change', (e) => {
-      selectedSort = e.target.value;
-      renderCars();
-    });
-
-    // Inicjalizacja przy starcie
-    window.addEventListener('DOMContentLoaded', () => {
-      loadCollections();
-    });
+    window.addEventListener('DOMContentLoaded', loadCollections);
   </script>
 </body>
 </html>
