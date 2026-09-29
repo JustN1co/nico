@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Firebase SDK (Compat) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -646,11 +646,11 @@
             <option value="">Wszystkie nadwozia</option>
             <option value="Coupe">Coupe</option>
             <option value="Hatchback">Hatchback</option>
+            <option value="3D">3D</option>
+            <option value="5D">5D</option>
             <option value="Sedan">Sedan</option>
             <option value="Kombi">Kombi</option>
             <option value="SUV">SUV</option>
-            <option value="3D">3D</option>
-            <option value="5D">5D</option>
           </select>
 
           <select id="costFilter" class="ios-select">
@@ -838,28 +838,20 @@
   <div class="ios-toast" id="toast">Komunikat</div>
 
   <script>
-    // ==========================================
-    // ⚙️ TUTAJ WKLEJ SWOJĄ KONFIGURACJĘ Z FIREBASE
-    // ==========================================
+    // TWOJA PRAWDZIWA KONFIGURACJA Z FIREBASE
     const firebaseConfig = {
-      apiKey: "TWOJE_API_KEY",
-      authDomain: "TWOJ_PROJEKT.firebaseapp.com",
-      projectId: "TWOJ_PROJECT_ID",
-      storageBucket: "TWOJ_PROJEKT.appspot.com",
-      messagingSenderId: "TWOJE_ID",
-      appId: "TWOJE_APP_ID"
+      apiKey: "AIzaSyD-pfjzkPR2Qq-Q8vHia35YcVME6_Fj9m8",
+      authDomain: "cars-57b35.firebaseapp.com",
+      projectId: "cars-57b35",
+      storageBucket: "cars-57b35.firebasestorage.app",
+      messagingSenderId: "1038986523541",
+      appId: "1:1038986523541:web:ccde49e347dbbe763efc9c",
+      measurementId: "G-HMKXM8VKJV"
     };
 
     // Inicjalizacja Firebase & Firestore
-    let db = null;
-    try {
-      if (firebaseConfig.apiKey !== "TWOJE_API_KEY") {
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore();
-      }
-    } catch(err) {
-      console.error("Firebase init error:", err);
-    }
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
     // Stan aplikacji
     let collectionsList = [];
@@ -873,7 +865,7 @@
     let selectedCost = '';
     let selectedSort = 'default';
 
-    // Hashowanie hasła SHA-256 w przeglądarce
+    // Hashowanie SHA-256
     async function sha256(str) {
       const buffer = new TextEncoder().encode(str);
       const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
@@ -892,12 +884,6 @@
 
     // Pobieranie tabel z Firestore
     async function loadCollections() {
-      if (!db) {
-        showToast("Wklej klucze Firebase w pliku index.html!", "⚠️");
-        renderDemoCollections();
-        return;
-      }
-
       try {
         const snap = await db.collection('car_collections').orderBy('updatedAt', 'desc').get();
         collectionsList = [];
@@ -914,15 +900,8 @@
         renderCollectionsList();
       } catch (err) {
         console.error(err);
-        showToast("Błąd łączenia z Firestore!", "❌");
+        showToast("Sprawdź reguły bazy danych Firestore!", "❌");
       }
-    }
-
-    function renderDemoCollections() {
-      collectionsList = [
-        { id: 'demo1', title: 'Przykładowa Kolekcja Demo', author: 'Nico', car_count: 1, updatedAt: '2026-09-29' }
-      ];
-      renderCollectionsList();
     }
 
     function renderCollectionsList() {
@@ -939,7 +918,7 @@
           <div class="empty-state">
             <div class="empty-state-icon">📂</div>
             <h3>Brak tabel do wyświetlenia</h3>
-            <p style="opacity:0.7; margin-top:6px;">Bądź pierwszy i utwórz tabelę za pomocą przycisku u góry!</p>
+            <p style="opacity:0.7; margin-top:6px;">Kliknij „+ Nowa Tabela” i stwórz pierwszy garaż w trenches!</p>
           </div>
         `;
         return;
@@ -961,31 +940,7 @@
 
     // Otwarcie konkretnej tabeli
     async function openCollection(id) {
-      if (!db) {
-        currentCollection = {
-          id: 'demo1',
-          title: 'Demo Garage',
-          author: 'Nico',
-          passwordHash: 'demo',
-          cars: [{
-            id: 'c1',
-            brand: 'Seat',
-            model: 'Ibiza SC',
-            hp: 85,
-            torque: 132,
-            fuelCity: '7.5',
-            fuelHighway: '5.2',
-            body: '3D',
-            cost: 'BARDZO TANIE',
-            engine: '1.4 MPI (BXW)',
-            price: 18500,
-            acc: 11.8,
-            year: 2011,
-            notes: 'Przelotowy środkowy AWG + końcowy WM Sport.',
-            isFav: true
-          }]
-        };
-      } else {
+      try {
         const doc = await db.collection('car_collections').doc(id).get();
         if (!doc.exists) {
           showToast("Tabela nie istnieje!", "❌");
@@ -993,21 +948,24 @@
         }
         currentCollection = { id: doc.id, ...doc.data() };
         if (!currentCollection.cars) currentCollection.cars = [];
+
+        document.getElementById('viewCollections').classList.remove('active');
+        document.getElementById('viewCarList').classList.add('active');
+        document.getElementById('navBackBtn').style.display = 'inline-flex';
+        document.getElementById('actionPrimaryBtn').style.display = 'none';
+
+        document.getElementById('appHeaderTitle').innerText = currentCollection.title;
+        document.getElementById('appHeaderSub').innerText = `Autor: ${currentCollection.author} • nico03.pl/cars`;
+
+        updateLockState(false);
+        renderCars();
+      } catch (err) {
+        console.error(err);
+        showToast("Błąd pobierania danych", "❌");
       }
-
-      document.getElementById('viewCollections').classList.remove('active');
-      document.getElementById('viewCarList').classList.add('active');
-      document.getElementById('navBackBtn').style.display = 'inline-flex';
-      document.getElementById('actionPrimaryBtn').style.display = 'none';
-
-      document.getElementById('appHeaderTitle').innerText = currentCollection.title;
-      document.getElementById('appHeaderSub').innerText = `Autor: ${currentCollection.author} • nico03.pl/cars`;
-
-      updateLockState(false);
-      renderCars();
     }
 
-    // Powrót do home
+    // Powrót
     document.getElementById('homeBtn').addEventListener('click', backToHome);
     document.getElementById('navBackBtn').addEventListener('click', backToHome);
 
@@ -1055,23 +1013,23 @@
       }
     });
 
-    // Weryfikacja hasła
+    // Sprawdzanie hasła
     document.getElementById('unlockForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const pw = document.getElementById('unlockPasswordInput').value;
       const hash = await sha256(pw);
 
-      if (hash === currentCollection.passwordHash || pw === 'demo') {
+      if (hash === currentCollection.passwordHash) {
         closeModal('unlockModal');
         document.getElementById('unlockPasswordInput').value = '';
         updateLockState(true);
         showToast("Odblokowano edycję!", "🔓");
       } else {
-        alert("Błędne hasło! Brak uprawnień do edycji.");
+        alert("Błędne hasło, gng! Nic tu nie zmienisz.");
       }
     });
 
-    // Tworzenie nowej tabeli
+    // Tworzenie tabeli
     document.getElementById('actionPrimaryBtn').addEventListener('click', () => openModal('newCollectionModal'));
 
     document.getElementById('createCollectionForm').addEventListener('submit', async (e) => {
@@ -1080,11 +1038,6 @@
       const author = document.getElementById('colAuthorInput').value.trim() || 'Anonim';
       const pw = document.getElementById('colPasswordInput').value;
       const hash = await sha256(pw);
-
-      if (!db) {
-        alert("Najpierw wklej konfigurację Firebase do index.html!");
-        return;
-      }
 
       try {
         const newDoc = await db.collection('car_collections').add({
@@ -1103,13 +1056,13 @@
         updateLockState(true);
       } catch (err) {
         console.error(err);
-        alert("Błąd podczas tworzenia tabeli w Firestore: " + err.message);
+        alert("Błąd Firestore: " + err.message);
       }
     });
 
-    // Zapis zmian w Firestore
+    // Zapisywanie zmian w chmurze
     document.getElementById('saveRemoteBtn').addEventListener('click', async () => {
-      if (!isEditingUnlocked || !db) return;
+      if (!isEditingUnlocked) return;
 
       try {
         await db.collection('car_collections').doc(currentCollection.id).update({
@@ -1119,11 +1072,11 @@
         showToast("Zapisano zmiany w chmurze!", "☁️");
       } catch (err) {
         console.error(err);
-        showToast("Błąd zapisu w chmurze!", "❌");
+        showToast("Błąd zapisu!", "❌");
       }
     });
 
-    // Dodawanie / edycja auta
+    // Dodawanie / edycja fury
     document.getElementById('addCarBtn').addEventListener('click', () => {
       document.getElementById('carForm').reset();
       document.getElementById('carEditId').value = '';
