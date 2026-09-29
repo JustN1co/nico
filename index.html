@@ -201,16 +201,42 @@
       transform: translateX(2px);
     }
 
+    .projects-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
     .project-box {
       background: rgba(20, 28, 24, 0.4);
       border: 1px solid var(--border-subtle);
       padding: 16px 20px;
       border-radius: 4px;
-      transition: border-color 0.2s ease;
+      transition: all 0.25s ease;
     }
 
     .project-box:hover {
-      border-color: rgba(230, 237, 243, 0.3);
+      border-color: rgba(134, 167, 152, 0.45);
+      background: rgba(20, 28, 24, 0.65);
+      transform: translateY(-2px);
+    }
+
+    .project-header-inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .project-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: rgba(134, 167, 152, 0.15);
+      border: 1px solid rgba(134, 167, 152, 0.3);
+      color: var(--accent-sage);
     }
 
     .project-desc {
@@ -278,15 +304,35 @@
 
     <!-- PROJEKTY -->
     <section id="projekty">
-      <div class="section-tag">COMMERCIAL_DEPLOYMENTS</div>
+      <div class="section-tag">DEPLOYED_SYSTEMS</div>
       <h2 class="section-title" data-i18n="projects_title">UKOŃCZONE PROJEKTY</h2>
-      <div class="project-box">
-        <a href="https://matersbloembollen.nl/" target="_blank" class="raw-link">
-          Maters Bloembollen ↗
-        </a>
-        <p class="project-desc" data-i18n="project_desc">
-          Komercyjna witryna wykonana od podstaw na zamówienie w 8 dni. Czysty kod, szybki deployment.
-        </p>
+      
+      <div class="projects-container">
+        <!-- iCar Garage Web App -->
+        <div class="project-box">
+          <div class="project-header-inline">
+            <a href="/cars" class="raw-link">
+              iCar Garage ↗
+            </a>
+            <span class="project-tag">WEB_APP // FIRESTORE</span>
+          </div>
+          <p class="project-desc" data-i18n="cars_desc">
+            Baza specyfikacji aut i generator tabel w estetyce iOS Glass. Filtrowanie, metryki osiągów i synchronizacja w chmurze zabezpieczona hasłem.
+          </p>
+        </div>
+
+        <!-- Maters Bloembollen -->
+        <div class="project-box">
+          <div class="project-header-inline">
+            <a href="https://matersbloembollen.nl/" target="_blank" class="raw-link">
+              Maters Bloembollen ↗
+            </a>
+            <span class="project-tag">COMMERCIAL</span>
+          </div>
+          <p class="project-desc" data-i18n="project_desc">
+            Komercyjna witryna wykonana od podstaw na zamówienie w 8 dni. Czysty kod, szybki deployment.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -324,6 +370,7 @@
         about_title: "O MNIE",
         about_desc: "Nazywam się Nico. Jestem w 4. klasie technikum informatycznego. Programuję w czystym HTML i automatyzuję procesy w Pythonie. Tworzę lekkie, surowe strony pozbawione bloatware'u, zoptymalizowane pod natychmiastowe ładowanie.",
         projects_title: "UKOŃCZONE PROJEKTY",
+        cars_desc: "Baza specyfikacji aut i generator tabel w estetyce iOS Glass. Filtrowanie, metryki osiągów i synchronizacja w chmurze zabezpieczona hasłem.",
         project_desc: "Komercyjna witryna wykonana od podstaw na zamówienie w 8 dni. Czysty kod, szybki deployment.",
         contact_title: "KONTAKT"
       },
@@ -331,6 +378,7 @@
         about_title: "ABOUT",
         about_desc: "My name is Nico. I am a 4th-year IT technical school student. I code in vanilla HTML and automate processes using Python. I build lightweight, raw websites free of bloatware, optimized for instant load times.",
         projects_title: "COMPLETED PROJECTS",
+        cars_desc: "Car specs database and custom list builder built in iOS Glass aesthetic. Filtering, performance metrics, and password-protected cloud synchronization.",
         project_desc: "Commercial website built from scratch on commission in 8 days. Clean code, rapid deployment.",
         contact_title: "CONTACT"
       }
