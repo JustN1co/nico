@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Korepetycje z Angielskiego • Nico Jankowiak (Ruda Śląska & Online)</title>
+  
+  <!-- Czcionka Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            warmwhite: '#FAF8F5',
+            paper: '#FFFFFF',
+            pistachio: {
+              50: '#F5F8F3',
+              100: '#EAF1E7',
+              200: '#D2E3CC',
+              300: '#A9C79F',
+              500: '#5F7D4E',
+              600: '#48623B',
+              700: '#384C2E',
+              800: '#273520'
+            },
+            sand: {
+              50: '#FDFCF9',
+              100: '#F7F4EE',
+              200: '#EDE8DF',
+              300: '#E2DBD0',
+              400: '#C7BDAD'
+            },
+            terracotta: {
+              50: '#FDF5F2',
+              100: '#FCE7DF',
+              500: '#C95D3B'
+            },
+            charcoal: {
+              900: '#1F221E',
+              800: '#2E332D',
+              600: '#545C52',
+              400: '#869083'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          },
+          boxShadow: {
+            'soft': '0 6px 24px -2px rgba(31, 34, 30, 0.05)',
+            'lift': '0 14px 34px -6px rgba(40, 53, 34, 0.12)',
+            'card': '0 2px 14px 0 rgba(31, 34, 30, 0.04)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FAF8F5;
+      color: #1F221E;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .bg-warm-dots {
+      background-image: radial-gradient(#E2DBD0 1.2px, transparent 1.2px);
+      background-size: 22px 22px;
+    }
+
+    .smooth-transition {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .notebook-spine {
+      border-left: 4px solid #5F7D4E;
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #EDE8DF;
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #C7BDAD;
+      border-radius: 9999px;
+    }
+
+    .focus-ring-animate {
+      animation: highlightPulse 1.8s ease-in-out;
+    }
+    @keyframes highlightPulse {
+      0% { box-shadow: 0 0 0 0 rgba(95, 125, 78, 0.5); }
+      50% { box-shadow: 0 0 0 10px rgba(95, 125, 78, 0.2); }
+      100% { box-shadow: 0 0 0 0 rgba(95, 125, 78, 0); }
+    }
+
+    /* POPRAWIONY FORMAT DRUKU (Eliminuje 9 pustych stron) */
+    @media print {
+      body > *:not(#worksheetModal) {
+        display: none !important;
+      }
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+      }
+      #worksheetModal {
+        display: block !important;
+        position: static !important;
+        inset: auto !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+        box-shadow: none !important;
+      }
+      #worksheetModal > div {
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        max-height: none !important;
+        overflow: visible !important;
+        position: static !important;
+      }
+      #worksheetPrintArea {
+        position: static !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #worksheetDynamicContent > div {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="bg-warmwhite min-h-screen text-charcoal-900 selection:bg-pistachio-100 selection:text-pistachio-800">
+
+  <header class="sticky top-0 z-40 bg-warmwhite/95 backdrop-blur-md border-b border-sand-200 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Marka korepetytora -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-2xl bg-pistachio-100 border border-pistachio-200 flex items-center justify-center text-pistachio-700 font-extrabold text-xl group-hover:scale-105 smooth-transition">
+          🌱
+        </div>
+        <div>
+          <span class="text-lg font-bold tracking-tight text-charcoal-900 block leading-tight">Spokojny Angielski</span>
+          <span class="text-xs font-semibold text-pistachio-700 block">Nico Jankowiak • Ruda Śląska & Online</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nawigacja -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-charcoal-600">
+        <a href="#czasy" class="hover:text-pistachio-600 smooth-transition">Formułki i Czasy</a>
+        <a href="#quizy" class="hover:text-pistachio-600 smooth-transition">Baza Quizów & Kart</a>
+        <a href="#dlaczego-ja" class="hover:text-pistachio-600 smooth-transition">Dlaczego ja?</a>
+        <a href="#kontakt" class="hover:text-pistachio-600 smooth-transition">Kontakt & Zapisy</a>
+      </nav>
+
+      <!-- Szybki kontakt -->
+      <div class="hidden sm:flex items-center gap-3">
+        <a href="tel:+48660803916" class="text-xs font-bold text-charcoal-800 hover:text-pistachio-700 px-3.5 py-2 rounded-xl bg-sand-100 border border-sand-200 smooth-transition">
+          📞 +48 660 803 916
+        </a>
+        <a href="#kontakt" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-white bg-pistachio-600 hover:bg-pistachio-700 rounded-xl shadow-soft smooth-transition">
+          Zapisz na lekcję próbną
+        </a>
+      </div>
+
+      <!-- Przycisk menu mobilnego -->
+      <button id="mobileMenuBtn" aria-label="Menu" class="md:hidden p-2 rounded-xl text-charcoal-800 hover:bg-sand-100">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobilna rozwijana lista -->
+    <div id="mobileMenu" class="hidden md:hidden border-b border-sand-200 bg-warmwhite px-6 py-5 space-y-3">
+      <a href="#czasy" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600 mobile-nav-link">Formułki i Czasy</a>
+      <a href="#quizy" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600 mobile-nav-link">Baza Quizów & Kart</a>
+      <a href="#dlaczego-ja" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600 mobile-nav-link">Dlaczego ja?</a>
+      <a href="#kontakt" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600 mobile-nav-link">Kontakt & Zapisy</a>
+      <a href="tel:+48660803916" class="block text-center py-2.5 rounded-xl bg-sand-100 text-xs font-bold text-charcoal-800">
+        Zadzwoń: +48 660 803 916
+      </a>
+    </div>
+  </header>
+
+  <section class="relative pt-10 pb-16 md:pt-16 md:pb-24 overflow-hidden bg-warm-dots">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        
+        <!-- Lewa kolumna powitalna -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pistachio-100 border border-pistachio-200 text-pistachio-800 text-xs sm:text-sm font-bold">
+            <span>🌿</span>
+            <span>Indywidualne lekcje dla klas 4–8 • Bezpieczna, bezstresowa atmosfera</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-charcoal-900 tracking-tight leading-[1.15]">
+            Angielski dla podstawówki <br class="hidden sm:inline">
+            <span class="text-pistachio-600 underline decoration-sand-300 decoration-wavy decoration-2 underline-offset-8">składany jak klocki LEGO.</span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-charcoal-600 max-w-2xl leading-relaxed">
+            Koniec z bezmyślnym wkuwaniem skomplikowanych reguł! Uczę dzieci budować zdania z prostych, zrozumiałych klocków, pomagam podnieść oceny i skutecznie oswajam z Egzaminem Ósmoklasisty.
+          </p>
+
+          <!-- Karta z 3 dokładnymi linijkami -->
+          <div class="p-5 rounded-2xl bg-white border border-sand-200 shadow-card space-y-3 max-w-xl">
+            <div class="flex items-center gap-3 text-xs sm:text-sm text-charcoal-800 font-medium">
+              <span class="w-8 h-8 rounded-xl bg-pistachio-100 text-pistachio-700 flex items-center justify-center text-sm shrink-0">📍</span>
+              <span><strong>Zajęcia:</strong> Zajęcia stacjonarne (Ruda Śląska) lub online</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs sm:text-sm text-charcoal-800 font-medium">
+              <span class="w-8 h-8 rounded-xl bg-sand-200 text-charcoal-700 flex items-center justify-center text-sm shrink-0">⏱️</span>
+              <span><strong>Czas trwania:</strong> 60 minut</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs sm:text-sm text-charcoal-800 font-medium">
+              <span class="w-8 h-8 rounded-xl bg-pistachio-100 text-pistachio-700 flex items-center justify-center text-sm shrink-0">📞</span>
+              <span><strong>Kontakt:</strong> <a href="tel:+48660803916" class="font-bold text-pistachio-700 hover:underline">+48 660 803 916</a> lub <a href="mailto:jankowiaknico03@gmail.com" class="font-bold text-pistachio-700 hover:underline">jankowiaknico03@gmail.com</a></span>
+            </div>
+          </div>
+
+          <!-- Przyciski akcji w Hero -->
+          <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <a href="#czasy" class="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-sm shadow-soft smooth-transition">
+              Zobacz formułki czasów
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </a>
+            <button onclick="openQuizModal('present')" class="inline-flex items-center justify-center px-6 py-3.5 rounded-2xl bg-sand-100 hover:bg-sand-200 border border-sand-300 text-charcoal-800 font-bold text-sm smooth-transition">
+              🎯 Wypróbuj quiz z czasów (10 pytań)
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5">
+          <div class="bg-white rounded-3xl p-6 sm:p-7 border border-sand-200 shadow-card notebook-spine">
+            <div class="flex items-center justify-between pb-3 border-b border-sand-200">
+              <span class="text-xs font-bold uppercase tracking-wide text-pistachio-700">Metoda klocków LEGO</span>
+              <span class="text-[11px] bg-sand-100 px-2 py-0.5 rounded text-charcoal-600 font-mono">Przykładowy schemat</span>
+            </div>
+
+            <div class="mt-4 space-y-3">
+              <h3 class="text-lg font-bold text-charcoal-900">3 proste pytania do każdego zdania</h3>
+              <p class="text-xs text-charcoal-600 leading-relaxed">
+                Uczeń nie musi uczyć się na pamięć trudnych reguł. Każde angielskie zdanie składamy jak układankę:
+              </p>
+              
+              <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                <div class="p-2.5 rounded-xl bg-sand-100 border border-sand-200">
+                  <div class="font-bold text-pistachio-700">1. KTO?</div>
+                  <div class="text-[11px] text-charcoal-500 mt-0.5">Podmiot (I, He, We)</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-pistachio-100 border border-pistachio-200">
+                  <div class="font-bold text-pistachio-800">2. CO ROBI?</div>
+                  <div class="text-[11px] text-charcoal-500 mt-0.5">Czasownik / forma</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-sand-100 border border-sand-200">
+                  <div class="font-bold text-pistachio-700">3. KIEDY?</div>
+                  <div class="text-[11px] text-charcoal-500 mt-0.5">Teraz czy wczoraj?</div>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-pistachio-50 border border-pistachio-200 text-xs text-charcoal-800 leading-relaxed">
+                <strong>💡 Efekt:</strong> Dziecko natychmiast rozumie, skąd bierze się dane słowo, zamiast zgadywać na chybił-trafił na klasówkach.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="czasy" class="py-16 md:py-24 bg-white border-y border-sand-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="max-w-3xl">
+        <span class="text-xs font-bold uppercase tracking-wider text-pistachio-700 bg-pistachio-100 px-3 py-1 rounded-full">
+          Ściąga dla ucznia i rodzica
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-charcoal-900 tracking-tight mt-3">
+          Budowa czasów w języku angielskim
+        </h2>
+        <p class="mt-2 text-sm sm:text-base text-charcoal-600">
+          Proste, czytelne formułki stworzone na wzorze klocków LEGO. Kliknij kategorię, aby przefiltrować:
+        </p>
+      </div>
+
+      <!-- Filtry czasów -->
+      <div class="mt-6 flex flex-wrap gap-2" id="grammarFilters">
+        <button data-filter="all" class="filter-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-pistachio-600 text-white shadow-soft smooth-transition">
+          Wszystkie czasy (5)
+        </button>
+        <button data-filter="present" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-sand-100 hover:bg-sand-200 text-charcoal-700 smooth-transition">
+          Teraźniejsze (Present)
+        </button>
+        <button data-filter="past" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-sand-100 hover:bg-sand-200 text-charcoal-700 smooth-transition">
+          Przeszłe (Past)
+        </button>
+        <button data-filter="future" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-sand-100 hover:bg-sand-200 text-charcoal-700 smooth-transition">
+          Przyszłe (Future)
+        </button>
+      </div>
+
+      <!-- Karty czasów -->
+      <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6" id="grammarContainer">
+
+        <!-- KARTA 1: PRESENT CONTINUOUS -->
+        <article class="p-6 rounded-3xl bg-warmwhite border border-sand-200 flex flex-col justify-between notebook-spine" data-category="present">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wide text-pistachio-700 bg-pistachio-100 px-2.5 py-1 rounded-md">Klasy 4–8</span>
+              <span class="text-xs font-mono text-charcoal-400">Present Continuous</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-charcoal-900 mt-3">Present Continuous (Czas teraźniejszy ciągły)</h3>
+            <p class="text-xs text-charcoal-600 mt-1">Używamy, gdy czynność <strong>DZIEJE SIĘ DOKŁADNIE W TEJ CHWILI</strong> lub w tym okresie.</p>
+
+            <div class="mt-4 space-y-2.5 text-xs">
+              <!-- [+] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-pistachio-700 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-pistachio-100 flex items-center justify-center text-xs">[+]</span>
+                  Podmiot + be (odmienione: am / is / are) + czasownik z -ing + reszta zdania
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em>I <strong>am studying</strong> English right now.</em> (Uczę się w tej chwili.)</p>
+                  <p>• <em>She <strong>is playing</strong> Minecraft now.</em> (Ona teraz gra w Minecrafta.)</p>
+                </div>
+              </div>
+
+              <!-- [-] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-terracotta-500 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-terracotta-100 flex items-center justify-center text-xs">[–]</span>
+                  Podmiot + be z przeczeniem (am not / isn't / aren't) + czasownik z -ing + reszta
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em>He <strong>isn't sleeping</strong>.</em> (On teraz nie śpi.)</p>
+                  <p>• <em>They <strong>aren't watching</strong> TV at the moment.</em> (Nie oglądają teraz telewizji.)</p>
+                </div>
+              </div>
+
+              <!-- [?] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-charcoal-800 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-sand-200 flex items-center justify-center text-xs">[?]</span>
+                  Be (Am / Is / Are) + Podmiot + czasownik z -ing + reszta zdania?
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em><strong>Are you listening</strong> to the teacher?</em> (Czy słuchasz nauczyciela?)</p>
+                  <p>• <em><strong>Is she doing</strong> her homework?</em> (Czy ona odrabia teraz lekcje?)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-sand-200 flex flex-wrap items-center gap-1.5 text-xs">
+              <span class="font-bold text-charcoal-600 text-[11px] mr-1">Słowa klucze:</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">now</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">at the moment</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">right now</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">Look!</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">Listen!</span>
+            </div>
+          </div>
+
+          <div class="mt-4 p-3 rounded-xl bg-pistachio-100/70 border border-pistachio-200 text-xs text-charcoal-900 leading-relaxed">
+            <strong>💡 Złota zasada:</strong> Musi być OSOBA + BYĆ (am/is/are) + CZASOWNIK Z -ING. Bez <em>am/is/are</em> albo bez <em>-ing</em> zdanie jest błędne!
+          </div>
+        </article>
+
+        <!-- KARTA 2: PRESENT SIMPLE -->
+        <article class="p-6 rounded-3xl bg-warmwhite border border-sand-200 flex flex-col justify-between notebook-spine" data-category="present">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wide text-pistachio-700 bg-pistachio-100 px-2.5 py-1 rounded-md">Klasy 4–8</span>
+              <span class="text-xs font-mono text-charcoal-400">Present Simple</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-charcoal-900 mt-3">Present Simple (Czas teraźniejszy prosty)</h3>
+            <p class="text-xs text-charcoal-600 mt-1">Używamy do: <strong>RUTYNY, NAWYKÓW, ZWYCZAJÓW</strong> i prawd ogólnych.</p>
+
+            <div class="mt-4 space-y-2.5 text-xs">
+              <!-- [+] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-pistachio-700 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-pistachio-100 flex items-center justify-center text-xs">[+]</span>
+                  Podmiot + bezokolicznik (+s/-es dla he/she/it) + reszta zdania
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em>I <strong>train</strong> football every Tuesday.</em> (Trenuję piłkę w każdy wtorek.)</p>
+                  <p>• <em>She <strong>reads</strong> books in the evening.</em> (Ona czyta książki wieczorami.)</p>
+                </div>
+              </div>
+
+              <!-- [-] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-terracotta-500 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-terracotta-100 flex items-center justify-center text-xs">[–]</span>
+                  Podmiot + don't / doesn't + bezokolicznik (bez -s!) + reszta zdania
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em>We <strong>don't like</strong> getting up early.</em> (Nie lubimy wcześnie wstawać.)</p>
+                  <p>• <em>He <strong>doesn't drink</strong> coffee.</em> (On nie pije kawy.)</p>
+                </div>
+              </div>
+
+              <!-- [?] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-charcoal-800 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-sand-200 flex items-center justify-center text-xs">[?]</span>
+                  Do / Does + Podmiot + bezokolicznik + reszta zdania?
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em><strong>Do you live</strong> in Ruda Śląska?</em> (Czy mieszkasz w Rudzie Śląskiej?)</p>
+                  <p>• <em><strong>Does he play</strong> the guitar?</em> (Czy on gra na gitarze?)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-sand-200 flex flex-wrap items-center gap-1.5 text-xs">
+              <span class="font-bold text-charcoal-600 text-[11px] mr-1">Słowa klucze:</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">always</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">usually</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">every day</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">often</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">never</span>
+            </div>
+          </div>
+
+          <div class="mt-4 p-3 rounded-xl bg-pistachio-100/70 border border-pistachio-200 text-xs text-charcoal-900 leading-relaxed">
+            <strong>💡 Złota zasada:</strong> Dla <em>he/she/it</em> dodajemy <em>-s</em> w twierdzeniach. W pytaniach i przeczeniach pojawia się <em>does/doesn't</em> i "zjada" to <em>-s</em>!
+          </div>
+        </article>
+
+        <!-- KARTA 3: PAST SIMPLE -->
+        <article class="p-6 rounded-3xl bg-warmwhite border border-sand-200 flex flex-col justify-between notebook-spine" data-category="past">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wide text-pistachio-700 bg-pistachio-100 px-2.5 py-1 rounded-md">Klasy 5–8</span>
+              <span class="text-xs font-mono text-charcoal-400">Past Simple</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-charcoal-900 mt-3">Past Simple (Czas przeszły prosty)</h3>
+            <p class="text-xs text-charcoal-600 mt-1">Używamy do: czynności <strong>ZAKOŃCZONEJ W OKREŚLONYM CZASIE W PRZESZŁOŚCI</strong>.</p>
+
+            <div class="mt-4 space-y-2.5 text-xs">
+              <!-- [+] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-pistachio-700 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-pistachio-100 flex items-center justify-center text-xs">[+]</span>
+                  Podmiot + czasownik z -ed (lub II forma z tabelki) + reszta zdania
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em>I <strong>played</strong> tennis yesterday.</em> (Grałem wczoraj w tenisa.)</p>
+                  <p>• <em>We <strong>went</strong> to the zoo last Saturday.</em> (Poszliśmy do zoo – 'go' zmienia się w 'went'.)</p>
+                </div>
+              </div>
+
+              <!-- [-] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-terracotta-500 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-terracotta-100 flex items-center justify-center text-xs">[–]</span>
+                  Podmiot + didn't + czasownik w 1. formie (podstawowej!) + reszta
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em>She <strong>didn't watch</strong> the match.</em> (Ona nie obejrzała meczu.)</p>
+                  <p>• <em>I <strong>didn't see</strong> your message.</em> (Nie widziałem twojej wiadomości.)</p>
+                </div>
+              </div>
+
+              <!-- [?] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-charcoal-800 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-sand-200 flex items-center justify-center text-xs">[?]</span>
+                  Did + Podmiot + czasownik w 1. formie (podstawowej!) + reszta?
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em><strong>Did you finish</strong> your project?</em> (Czy skończyłeś projekt?)</p>
+                  <p>• <em><strong>Did they buy</strong> tickets yesterday?</em> (Czy kupili wczoraj bilety?)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-sand-200 flex flex-wrap items-center gap-1.5 text-xs">
+              <span class="font-bold text-charcoal-600 text-[11px] mr-1">Słowa klucze:</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">yesterday</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">last week / month</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">two days ago</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">in 2023</span>
+            </div>
+          </div>
+
+          <div class="mt-4 p-3 rounded-xl bg-pistachio-100/70 border border-pistachio-200 text-xs text-charcoal-900 leading-relaxed">
+            <strong>💡 Złota zasada:</strong> Gdy w zdaniu pojawia się pomocnik <em>did</em> lub <em>didn't</em>, czasownik WRACA do zwykłej, 1. formy (mówimy <em>didn't go</em>, nigdy <em>didn't went</em>!).
+          </div>
+        </article>
+
+        <!-- KARTA 4: FUTURE SIMPLE -->
+        <article class="p-6 rounded-3xl bg-warmwhite border border-sand-200 flex flex-col justify-between notebook-spine" data-category="future">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wide text-pistachio-700 bg-pistachio-100 px-2.5 py-1 rounded-md">Klasy 5–8</span>
+              <span class="text-xs font-mono text-charcoal-400">Future Simple</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-charcoal-900 mt-3">Future Simple (Czas przyszły prosty)</h3>
+            <p class="text-xs text-charcoal-600 mt-1">Używamy do: <strong>SPONTANICZNYCH DECYZJI, OBIETNIC</strong> i przewidywań.</p>
+
+            <div class="mt-4 space-y-2.5 text-xs">
+              <!-- [+] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-pistachio-700 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-pistachio-100 flex items-center justify-center text-xs">[+]</span>
+                  Podmiot + will + czasownik w bezokoliczniku + reszta zdania
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em>I <strong>will help</strong> you with your English.</em> (Pomogę ci z angielskim.)</p>
+                  <p>• <em>They <strong>will win</strong> the match tomorrow.</em> (Wygrają jutrzejszy mecz.)</p>
+                </div>
+              </div>
+
+              <!-- [-] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-terracotta-500 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-terracotta-100 flex items-center justify-center text-xs">[–]</span>
+                  Podmiot + won't (skrót od will not) + bezokolicznik + reszta
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em>I <strong>won't tell</strong> anyone.</em> (Nikomu nie powiem.)</p>
+                  <p>• <em>We <strong>won't stay</strong> here for long.</em> (Nie zostaniemy tu długo.)</p>
+                </div>
+              </div>
+
+              <!-- [?] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-charcoal-800 flex items-center gap-1.5 mb-1">
+                  <span class="w-4 h-4 rounded bg-sand-200 flex items-center justify-center text-xs">[?]</span>
+                  Will + Podmiot + czasownik w bezokoliczniku + reszta zdania?
+                </div>
+                <div class="text-charcoal-700 pl-5 text-[11px] space-y-0.5">
+                  <p>• <em><strong>Will you come</strong> to my birthday party?</em> (Przyjdziesz na moje urodziny?)</p>
+                  <p>• <em><strong>Will it rain</strong> tomorrow?</em> (Czy jutro będzie padać?)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-sand-200 flex flex-wrap items-center gap-1.5 text-xs">
+              <span class="font-bold text-charcoal-600 text-[11px] mr-1">Słowa klucze:</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">tomorrow</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">next week</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">soon</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">I think / I hope</span>
+            </div>
+          </div>
+
+          <div class="mt-4 p-3 rounded-xl bg-pistachio-100/70 border border-pistachio-200 text-xs text-charcoal-900 leading-relaxed">
+            <strong>💡 Złota zasada:</strong> Słowo <em>will / won't</em> ma taką samą formę dla każdego podmiotu (<em>I will, He will, They will</em>). Czasownik po nim nigdy się nie odmienia!
+          </div>
+        </article>
+
+        <!-- KARTA 5: PRESENT PERFECT -->
+        <article class="p-6 rounded-3xl bg-warmwhite border border-sand-200 flex flex-col justify-between notebook-spine lg:col-span-2" data-category="present">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wide text-pistachio-700 bg-pistachio-100 px-2.5 py-1 rounded-md">Klasy 7–8 (Egzamin E8)</span>
+              <span class="text-xs font-mono text-charcoal-400">Present Perfect</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-charcoal-900 mt-3">Present Perfect (Czas przeszło-teraźniejszy)</h3>
+            <p class="text-xs text-charcoal-600 mt-1">Używamy, gdy przeszłe wydarzenie ma <strong>BEZPOŚREDNI SKUTEK DLA TERAŹNIEJSZOŚCI</strong> lub opisujemy życiowe doświadczenia.</p>
+
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <!-- [+] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-pistachio-700 mb-1">
+                  [+] Podmiot + have / has + III forma (lub -ed) + reszta
+                </div>
+                <div class="text-charcoal-700 text-[11px] space-y-0.5">
+                  <p>• <em>I <strong>have lost</strong> my keys.</em> (Zgubiłem klucze i teraz stoję pod drzwiami!)</p>
+                  <p>• <em>She <strong>has already finished</strong>.</em> (Ona już skończyła.)</p>
+                </div>
+              </div>
+
+              <!-- [-] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-terracotta-500 mb-1">
+                  [–] Podmiot + haven't / hasn't + III forma + reszta
+                </div>
+                <div class="text-charcoal-700 text-[11px] space-y-0.5">
+                  <p>• <em>We <strong>haven't seen</strong> this film yet.</em> (Jeszcze nie widzieliśmy tego filmu.)</p>
+                  <p>• <em>He <strong>hasn't called</strong> me today.</em> (Nie zadzwonił do mnie dzisiaj.)</p>
+                </div>
+              </div>
+
+              <!-- [?] -->
+              <div class="p-3 bg-white rounded-xl border border-sand-200">
+                <div class="font-bold text-charcoal-800 mb-1">
+                  [?] Have / Has + Podmiot + III forma + reszta?
+                </div>
+                <div class="text-charcoal-700 text-[11px] space-y-0.5">
+                  <p>• <em><strong>Have you ever been</strong> to London?</em> (Czy kiedykolwiek byłeś w Londynie?)</p>
+                  <p>• <em><strong>Has she cleaned</strong> her room?</em> (Czy ona posprzątała pokój?)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-sand-200 flex flex-wrap items-center gap-1.5 text-xs">
+              <span class="font-bold text-charcoal-600 text-[11px] mr-1">Słowa klucze:</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">already</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">just</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">yet</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">ever / never</span>
+              <span class="bg-sand-100 px-2 py-0.5 rounded text-[11px]">since / for</span>
+            </div>
+          </div>
+
+          <div class="mt-4 p-3 rounded-xl bg-pistachio-100/70 border border-pistachio-200 text-xs text-charcoal-900 leading-relaxed">
+            <strong>💡 Złota zasada:</strong> Nie podajemy dokładnej daty w przeszłości! Ważny jest rezultat w tym momencie. Pamiętaj: <em>has</em> dla <em>he/she/it</em>, a <em>have</em> dla reszty osób!
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="quizy" class="py-16 md:py-24 bg-warmwhite">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-pistachio-700 bg-pistachio-100 px-3 py-1 rounded-full">
+            Karty pracy & Testy kontrolne
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-charcoal-900 tracking-tight mt-3">
+            Baza Quizów & Kart Pracy
+          </h2>
+          <p class="text-charcoal-600 text-sm sm:text-base mt-2 max-w-2xl">
+            Każdy temat posiada <strong>odrębny, autorski quiz (10 pytań)</strong> z natychmiastowym wyjaśnieniem oraz <strong>kompletną kartę pracy do wydruku / zapisu PDF</strong> z możliwością sprawdzenia klucza odpowiedzi.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button onclick="openQuizModal('present')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-xs shadow-soft smooth-transition">
+            <span>⚡ Start: Quiz Czasów</span>
+          </button>
+          <button onclick="openQuizModal('e8')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sand-200 hover:bg-sand-300 text-charcoal-800 font-bold text-xs smooth-transition">
+            <span>📝 Start: Quiz Egzamin E8</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabela materiałów -->
+      <div class="bg-white rounded-3xl border border-sand-200 overflow-hidden shadow-card">
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-left border-collapse min-w-[700px]">
+            <thead>
+              <tr class="bg-sand-50 border-b border-sand-200 text-xs font-bold uppercase tracking-wider text-charcoal-600">
+                <th class="py-4 px-6">Temat i Zagadnienie</th>
+                <th class="py-4 px-6">Zakres materiału</th>
+                <th class="py-4 px-6">Klasa docelowa</th>
+                <th class="py-4 px-6">Baza materiału</th>
+                <th class="py-4 px-6 text-right">Dedykowane Działania</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-sand-200 text-sm text-charcoal-800">
+              
+              <!-- 1. Present Simple vs Present Continuous -->
+              <tr class="hover:bg-warmwhite/80 transition-colors">
+                <td class="py-4 px-6 font-bold text-charcoal-900 flex items-center gap-2.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-pistachio-500"></span>
+                  Present Simple vs Present Continuous
+                </td>
+                <td class="py-4 px-6 text-charcoal-600 text-xs sm:text-sm">Różnica: stałe nawyki vs czynności dziejące się teraz</td>
+                <td class="py-4 px-6">
+                  <span class="inline-block px-2.5 py-1 rounded-md bg-sand-100 text-charcoal-700 font-semibold text-xs">Klasy 4–6</span>
+                </td>
+                <td class="py-4 px-6">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-pistachio-100 text-pistachio-800 font-medium text-xs">
+                    📄 Pełny arkusz + 10 pytań
+                  </span>
+                </td>
+                <td class="py-4 px-6 text-right space-x-2">
+                  <button onclick="openWorksheetModal('present')" class="px-3 py-1.5 rounded-xl border border-sand-300 hover:border-pistachio-600 hover:text-pistachio-700 text-xs font-bold smooth-transition">
+                    Podgląd karty
+                  </button>
+                  <button onclick="openQuizModal('present')" class="px-3.5 py-1.5 rounded-xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-xs smooth-transition">
+                    Rozwiąż quiz (10)
+                  </button>
+                </td>
+              </tr>
+
+              <!-- 2. Czasowniki nieregularne Top 30 -->
+              <tr class="hover:bg-warmwhite/80 transition-colors">
+                <td class="py-4 px-6 font-bold text-charcoal-900 flex items-center gap-2.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-sand-400"></span>
+                  Czasowniki nieregularne (Top 30)
+                </td>
+                <td class="py-4 px-6 text-charcoal-600 text-xs sm:text-sm">II forma w zdaniach czasu przeszłego Past Simple</td>
+                <td class="py-4 px-6">
+                  <span class="inline-block px-2.5 py-1 rounded-md bg-sand-100 text-charcoal-700 font-semibold text-xs">Klasy 5–8</span>
+                </td>
+                <td class="py-4 px-6">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-sand-200 text-charcoal-800 font-medium text-xs">
+                    📄 Pełny arkusz + 10 pytań
+                  </span>
+                </td>
+                <td class="py-4 px-6 text-right space-x-2">
+                  <button onclick="openWorksheetModal('verbs')" class="px-3 py-1.5 rounded-xl border border-sand-300 hover:border-pistachio-600 hover:text-pistachio-700 text-xs font-bold smooth-transition">
+                    Podgląd karty
+                  </button>
+                  <button onclick="openQuizModal('verbs')" class="px-3.5 py-1.5 rounded-xl bg-sand-200 hover:bg-sand-300 text-charcoal-800 font-bold text-xs smooth-transition">
+                    Rozwiąż quiz (10)
+                  </button>
+                </td>
+              </tr>
+
+              <!-- 3. Reakcje Językowe na Egzaminie E8 -->
+              <tr class="hover:bg-warmwhite/80 transition-colors">
+                <td class="py-4 px-6 font-bold text-charcoal-900 flex items-center gap-2.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-pistachio-500"></span>
+                  Reakcje Językowe na Egzaminie E8
+                </td>
+                <td class="py-4 px-6 text-charcoal-600 text-xs sm:text-sm">Pytanie o drogę, zakupy, uprzejme prośby i zwroty CKE</td>
+                <td class="py-4 px-6">
+                  <span class="inline-block px-2.5 py-1 rounded-md bg-sand-100 text-charcoal-700 font-semibold text-xs">Klasa 8 (E8)</span>
+                </td>
+                <td class="py-4 px-6">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-pistachio-100 text-pistachio-800 font-medium text-xs">
+                    📄 Arkusz CKE + 10 pytań
+                  </span>
+                </td>
+                <td class="py-4 px-6 text-right space-x-2">
+                  <button onclick="openWorksheetModal('e8')" class="px-3 py-1.5 rounded-xl border border-sand-300 hover:border-pistachio-600 hover:text-pistachio-700 text-xs font-bold smooth-transition">
+                    Podgląd karty
+                  </button>
+                  <button onclick="openQuizModal('e8')" class="px-3.5 py-1.5 rounded-xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-xs smooth-transition">
+                    Rozwiąż quiz (10)
+                  </button>
+                </td>
+              </tr>
+
+              <!-- 4. Stopniowanie przymiotników -->
+              <tr class="hover:bg-warmwhite/80 transition-colors">
+                <td class="py-4 px-6 font-bold text-charcoal-900 flex items-center gap-2.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-sand-400"></span>
+                  Stopniowanie przymiotników
+                </td>
+                <td class="py-4 px-6 text-charcoal-600 text-xs sm:text-sm">Formy krótkie (-er/-est), długie (more/most) i wyjątki</td>
+                <td class="py-4 px-6">
+                  <span class="inline-block px-2.5 py-1 rounded-md bg-sand-100 text-charcoal-700 font-semibold text-xs">Klasy 5–7</span>
+                </td>
+                <td class="py-4 px-6">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-sand-200 text-charcoal-800 font-medium text-xs">
+                    📄 Pełny arkusz + 10 pytań
+                  </span>
+                </td>
+                <td class="py-4 px-6 text-right space-x-2">
+                  <button onclick="openWorksheetModal('adjectives')" class="px-3 py-1.5 rounded-xl border border-sand-300 hover:border-pistachio-600 hover:text-pistachio-700 text-xs font-bold smooth-transition">
+                    Podgląd karty
+                  </button>
+                  <button onclick="openQuizModal('adjectives')" class="px-3.5 py-1.5 rounded-xl bg-sand-200 hover:bg-sand-300 text-charcoal-800 font-bold text-xs smooth-transition">
+                    Rozwiąż quiz (10)
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="dlaczego-ja" class="py-16 md:py-24 bg-white border-t border-sand-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-bold uppercase tracking-wider text-pistachio-700 bg-pistachio-100 px-3 py-1 rounded-full">
+          Indywidualne podejście
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-charcoal-900 tracking-tight mt-3">
+          Dlaczego dzieci wybierają właśnie mnie?
+        </h2>
+        <p class="text-charcoal-600 text-sm sm:text-base mt-2">
+          Nie jestem surowym nauczycielem z czerwonym długopisem. Tworzę przestrzeń, w której uczeń przestaje bać się popełniania błędów i wreszcie zaczyna swobodnie mówić.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <div class="p-7 rounded-3xl bg-warmwhite border border-sand-200 hover:border-pistachio-300 smooth-transition">
+          <div class="w-12 h-12 rounded-2xl bg-pistachio-100 flex items-center justify-center text-xl text-pistachio-700 mb-5">
+            🎮
+          </div>
+          <h3 class="text-lg font-bold text-charcoal-900">Przykłady z gier, YouTube'a i życia</h3>
+          <p class="text-charcoal-600 text-xs sm:text-sm mt-2 leading-relaxed">
+            Gramatykę tłumaczę na motywach ze świata ucznia (Minecraft, Roblox, filmy czy ulubiona muzyka). Dzięki temu angielski staje się przydatnym narzędziem, a nie nudnym szkolnym obowiązkiem.
+          </p>
+        </div>
+
+        <div class="p-7 rounded-3xl bg-warmwhite border border-sand-200 hover:border-pistachio-300 smooth-transition">
+          <div class="w-12 h-12 rounded-2xl bg-sand-200 flex items-center justify-center text-xl text-charcoal-800 mb-5">
+            🕊️
+          </div>
+          <h3 class="text-lg font-bold text-charcoal-900">Zero stresu i bezpieczna przestrzeń</h3>
+          <p class="text-charcoal-600 text-xs sm:text-sm mt-2 leading-relaxed">
+            Błąd na moich zajęciach to naturalny krok w nauce, a nie powód do wstydu. Dziecko zadaje każde, nawet najbardziej podstawowe pytanie bez obawy przed krytyką.
+          </p>
+        </div>
+
+        <div class="p-7 rounded-3xl bg-warmwhite border border-sand-200 hover:border-pistachio-300 smooth-transition">
+          <div class="w-12 h-12 rounded-2xl bg-pistachio-100 flex items-center justify-center text-xl text-pistachio-700 mb-5">
+            🎯
+          </div>
+          <h3 class="text-lg font-bold text-charcoal-900">Bieżące oceny & Egzamin E8</h3>
+          <p class="text-charcoal-600 text-xs sm:text-sm mt-2 leading-relaxed">
+            Działamy dwutorowo: nadrabiamy bieżący materiał z podręcznika (kartkówki, sprawdziany) oraz krok po kroku oswajamy typowe zadania i reakcje językowe z arkuszy CKE.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="kontakt" class="py-16 md:py-24 bg-warmwhite bg-warm-dots">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="bg-white rounded-3xl border border-sand-200 shadow-lift overflow-hidden grid grid-cols-1 md:grid-cols-12">
+        
+        <!-- Lewa kolumna: dane Nico -->
+        <div class="md:col-span-5 bg-sand-100 p-7 sm:p-9 flex flex-col justify-between border-b md:border-b-0 md:border-r border-sand-200">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-pistachio-700 bg-pistachio-100 px-3 py-1 rounded-full">
+              Bezpośredni kontakt
+            </span>
+            <h3 class="text-2xl font-extrabold text-charcoal-900 tracking-tight mt-4">
+              Porozmawiajmy o lekcjach
+            </h3>
+            <p class="text-xs sm:text-sm text-charcoal-600 mt-2 leading-relaxed">
+              Wypełnij krótki formularz, a wiadomość natychmiast trafi na moją skrzynkę. Możesz też napisać lub zadzwonić bezpośrednio.
+            </p>
+
+            <div class="mt-6 space-y-3 text-xs sm:text-sm text-charcoal-800">
+              <div class="flex items-start gap-3 p-3.5 bg-white/80 rounded-2xl border border-sand-200">
+                <span class="w-8 h-8 rounded-xl bg-pistachio-100 text-pistachio-700 flex items-center justify-center shrink-0">📍</span>
+                <div>
+                  <span class="text-xs text-charcoal-500 block">Forma nauki:</span>
+                  <span class="font-bold">Zajęcia stacjonarne (Ruda Śląska) lub online</span>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3 p-3.5 bg-white/80 rounded-2xl border border-sand-200">
+                <span class="w-8 h-8 rounded-xl bg-sand-200 text-charcoal-700 flex items-center justify-center shrink-0">⏱️</span>
+                <div>
+                  <span class="text-xs text-charcoal-500 block">Długość lekcji:</span>
+                  <span class="font-bold">Czas trwania: 60 minut</span>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3 p-3.5 bg-white/80 rounded-2xl border border-sand-200">
+                <span class="w-8 h-8 rounded-xl bg-pistachio-100 text-pistachio-700 flex items-center justify-center shrink-0">📞</span>
+                <div>
+                  <span class="text-xs text-charcoal-500 block">Kontakt do mnie:</span>
+                  <div class="font-bold space-y-0.5">
+                    <a href="tel:+48660803916" class="text-pistachio-700 hover:underline block">+48 660 803 916</a>
+                    <a href="mailto:jankowiaknico03@gmail.com" class="text-pistachio-700 hover:underline block break-all text-xs font-semibold">jankowiaknico03@gmail.com</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-sand-300 text-xs text-charcoal-600">
+            🌱 Nico Jankowiak • Ruda Śląska
+          </div>
+        </div>
+
+        <!-- Prawa kolumna: Prawdziwy formularz Web3Forms AJAX -->
+        <div class="md:col-span-7 p-7 sm:p-9" id="formWrapper">
+          
+          <!-- Box komunikatu o statusie wysyłki -->
+          <div id="formStatusBox" class="hidden mb-5 p-4 rounded-2xl text-xs sm:text-sm"></div>
+
+          <form id="enrollmentForm" class="space-y-4">
+            
+            <div>
+              <label for="parentName" class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">
+                Imię rodzica lub ucznia *
+              </label>
+              <input type="text" name="name" id="parentName" required placeholder="np. Anna Kowalska lub Bartek" class="w-full px-4 py-3 rounded-xl border border-sand-200 bg-warmwhite focus:bg-white focus:outline-none focus:border-pistachio-600 text-sm smooth-transition">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="grade" class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">
+                  Klasa ucznia *
+                </label>
+                <select name="grade" id="grade" required class="w-full px-4 py-3 rounded-xl border border-sand-200 bg-warmwhite focus:bg-white focus:outline-none focus:border-pistachio-600 text-sm smooth-transition">
+                  <option value="" disabled selected>Wybierz klasę</option>
+                  <option value="Klasa 4">Klasa 4</option>
+                  <option value="Klasa 5">Klasa 5</option>
+                  <option value="Klasa 6">Klasa 6</option>
+                  <option value="Klasa 7">Klasa 7</option>
+                  <option value="Klasa 8 (Egzamin E8)">Klasa 8 (Egzamin E8)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="mode" class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">
+                  Forma zajęć *
+                </label>
+                <select name="mode" id="mode" required class="w-full px-4 py-3 rounded-xl border border-sand-200 bg-warmwhite focus:bg-white focus:outline-none focus:border-pistachio-600 text-sm smooth-transition">
+                  <option value="Stacjonarnie (u Ciebie)" selected>Stacjonarnie (u Ciebie)</option>
+                  <option value="Online (wygodnie z domu)">Online (wygodnie z domu)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="contactInfo" class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">
+                Numer telefonu lub E-mail *
+              </label>
+              <input type="text" name="contact" id="contactInfo" required placeholder="np. +48 660 000 000 lub rodzic@wp.pl" class="w-full px-4 py-3 rounded-xl border border-sand-200 bg-warmwhite focus:bg-white focus:outline-none focus:border-pistachio-600 text-sm smooth-transition">
+            </div>
+
+            <div>
+              <label for="message" class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">
+                W czym mogę pomóc? (trudności, cele)
+              </label>
+              <textarea name="message" id="message" rows="3" placeholder="np. Przygotowanie do sprawdzianu, mylenie czasów, opór przed mówieniem, przygotowanie do egzaminu ósmoklasisty..." class="w-full px-4 py-3 rounded-xl border border-sand-200 bg-warmwhite focus:bg-white focus:outline-none focus:border-pistachio-600 text-sm smooth-transition resize-none"></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-pistachio-600 hover:bg-pistachio-700 shadow-soft smooth-transition text-sm flex items-center justify-center gap-2">
+              <span id="submitBtnText">Wyślij zgłoszenie na lekcję próbną</span>
+              <span id="submitSpinner" class="hidden">
+                <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+              </span>
+            </button>
+            
+            <p class="text-[11px] text-center text-charcoal-400">
+              Oddzwonię lub odpiszę w ciągu 24h, żeby ustalić dogodny termin pierwszego spotkania.
+            </p>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="bg-white border-t border-sand-200 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        
+        <div class="flex items-center gap-2.5">
+          <span class="text-lg">🌱</span>
+          <span class="text-sm font-bold text-charcoal-900">Spokojny Angielski • Nico Jankowiak (Ruda Śląska)</span>
+        </div>
+
+        <div class="flex items-center gap-4 text-xs font-medium text-charcoal-600">
+          <a href="#czasy" class="hover:text-pistachio-700 smooth-transition">Formułki</a>
+          <a href="#quizy" class="hover:text-pistachio-700 smooth-transition">Baza Quizów & Kart</a>
+          <a href="#kontakt" class="hover:text-pistachio-700 smooth-transition">Kontakt</a>
+        </div>
+
+        <p class="text-xs text-charcoal-400">
+          © 2026 Spokojny Angielski. Wszystkie prawa zastrzeżone.
+        </p>
+
+      </div>
+    </div>
+  </footer>
+
+  <div id="quizModal" class="fixed inset-0 z-50 bg-charcoal-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 border border-sand-200 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      
+      <!-- Nagłówek modala -->
+      <div class="flex items-center justify-between pb-4 border-b border-sand-200">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-pistachio-700 bg-pistachio-100 px-2.5 py-0.5 rounded" id="quizBadgeTopic">
+              Quiz: Present Simple vs Continuous
+            </span>
+            <span class="text-xs font-bold text-charcoal-500" id="quizQuestionCount">Pytanie 1 z 10</span>
+          </div>
+          <!-- Pasek postępu -->
+          <div class="w-48 bg-sand-200 h-1.5 rounded-full mt-2 overflow-hidden">
+            <div id="quizProgressBar" class="bg-pistachio-600 h-full rounded-full transition-all duration-300" style="width: 10%;"></div>
+          </div>
+        </div>
+
+        <button onclick="closeQuizModal()" aria-label="Zamknij" class="w-8 h-8 rounded-full bg-sand-100 text-charcoal-600 hover:bg-sand-200 flex items-center justify-center text-sm font-bold smooth-transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Treść quizu -->
+      <div id="quizBody" class="mt-5 space-y-4">
+        <div>
+          <p class="text-xs text-charcoal-500 font-medium" id="quizHint">Wskazówka: Zwróć uwagę na okolicznik czasu</p>
+          <p class="text-base sm:text-lg font-bold text-charcoal-900 mt-1" id="quizQuestionText">
+            Ładowanie pytania...
+          </p>
+        </div>
+
+        <!-- Odpowiedzi -->
+        <div id="quizOptions" class="space-y-2"></div>
+
+        <!-- Wyjaśnienie -->
+        <div id="quizFeedback" class="hidden p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed"></div>
+      </div>
+
+      <!-- Stopka quizu -->
+      <div class="mt-6 pt-4 border-t border-sand-200 flex items-center justify-between" id="quizFooterArea">
+        <div class="text-xs font-semibold text-charcoal-600" id="quizScoreTracker">
+          Punkty: 0 / 10
+        </div>
+        <button id="quizNextBtn" onclick="nextQuizQuestion()" class="hidden px-5 py-2.5 rounded-xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-xs smooth-transition">
+          Następne pytanie →
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="worksheetModal" class="fixed inset-0 z-50 bg-charcoal-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-sand-200 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      
+      <!-- Nagłówek modala karty (nie drukuje się) -->
+      <div class="flex items-center justify-between pb-4 border-b border-sand-200 no-print">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">📄</span>
+          <div>
+            <h4 class="text-base sm:text-lg font-bold text-charcoal-900" id="worksheetModalTitle">Karta Pracy</h4>
+            <span class="text-xs text-charcoal-500">Materiały szkolne • Korepetycje Nico Jankowiak (Ruda Śląska)</span>
+          </div>
+        </div>
+        <button onclick="closeWorksheetModal()" aria-label="Zamknij" class="w-8 h-8 rounded-full bg-sand-100 text-charcoal-600 hover:bg-sand-200 flex items-center justify-center text-sm font-bold smooth-transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Kontener arkusza do druku -->
+      <div id="worksheetPrintArea" class="mt-4 space-y-5 text-charcoal-900 font-sans">
+        
+        <!-- Pasek ucznia na karcie pracy -->
+        <div class="p-4 rounded-2xl bg-sand-50 border border-sand-300 text-xs sm:text-sm">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div><strong>Imię i nazwisko ucznia:</strong> ..............................................................</div>
+            <div><strong>Klasa:</strong> ..........</div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mt-3 pt-2 border-t border-sand-200">
+            <div><strong>Data:</strong> ....................................</div>
+            <div><strong>Twój wynik:</strong> ......... / <span id="worksheetMaxPoints">12</span> pkt</div>
+          </div>
+        </div>
+
+        <!-- Treść ćwiczeń generowana dynamicznie -->
+        <div id="worksheetDynamicContent" class="space-y-5"></div>
+
+        <!-- Klucz odpowiedzi z możliwością odkrycia/ukrycia -->
+        <div class="p-4 rounded-2xl bg-pistachio-50 border border-pistachio-200 text-xs sm:text-sm text-charcoal-800">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-pistachio-800 flex items-center gap-1.5">
+              <span>🗝️</span> Klucz odpowiedzi dla rodzica / samokontroli:
+            </span>
+            <button onclick="toggleAnswerKey()" class="no-print text-xs font-bold px-3 py-1 bg-white border border-pistachio-300 rounded-lg text-pistachio-700 hover:bg-pistachio-100 smooth-transition" id="toggleKeyBtn">
+              Pokaż klucz odpowiedzi
+            </button>
+          </div>
+          <div id="worksheetAnswerKey" class="hidden mt-3 pt-3 border-t border-pistachio-200 text-xs space-y-1"></div>
+        </div>
+
+      </div>
+
+      <!-- Stopka okna z przyciskiem wydruku (nie drukuje się) -->
+      <div class="mt-6 pt-4 border-t border-sand-200 flex flex-wrap items-center justify-between gap-3 no-print">
+        <span class="text-xs text-charcoal-500">Arkusz przygotowany w formacie do druku (A4).</span>
+        <div class="flex items-center gap-2">
+          <button onclick="closeWorksheetModal()" class="px-4 py-2 rounded-xl bg-sand-100 hover:bg-sand-200 text-charcoal-800 font-semibold text-xs smooth-transition">
+            Zamknij
+          </button>
+          <button onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-xs shadow-soft smooth-transition flex items-center gap-1.5">
+            <span>🖨️</span> Drukuj / Zapisz jako PDF
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /* -------------------------------------------------------------
+       1. BAZA DANYCH 4 ODRĘBNYCH QUIZÓW (PO 10 PYTAŃ KAŻDY)
+    -------------------------------------------------------------- */
+    const quizzesDatabase = {
+      present: {
+        title: "Present Simple vs Present Continuous",
+        badge: "Quiz: Czasy Teraźniejsze",
+        questions: [
+          {
+            question: "Look! The school bus ________ right now. We must hurry!",
+            hint: "Słowa 'Look!' i 'right now' oznaczają czynność dziejącą się dokładnie w tej chwili.",
+            options: ["comes", "is coming", "came", "will come"],
+            correct: 1,
+            explanation: "Świetnie! 'Look!' to sygnał czasu Present Continuous: be (am/is/are) + czasownik z -ing ('is coming')."
+          },
+          {
+            question: "My brother ________ basketball every Tuesday after school.",
+            hint: "'Every Tuesday' oznacza stały, powtarzający się nawyk.",
+            options: ["is playing", "plays", "play", "played"],
+            correct: 1,
+            explanation: "Zgadza się! Rutyna = Present Simple. Dla osoby 'he' (mój brat) dodajemy końcówkę -s: 'plays'."
+          },
+          {
+            question: "Listen! Somebody ________ beautiful music in the living room.",
+            hint: "Gdy ktoś mówi 'Listen!', to dzieje się to na naszych oczach/uszach w tym momencie.",
+            options: ["is playing", "plays", "played", "play"],
+            correct: 0,
+            explanation: "Brawo! 'Listen!' wymaga Present Continuous: 'is playing'."
+          },
+          {
+            question: "Water ________ at 100 degrees Celsius.",
+            hint: "To ogólna prawda naukowa i fakt przyrodniczy, nie czynność chwilowa.",
+            options: ["is boiling", "boil", "boils", "are boiling"],
+            correct: 2,
+            explanation: "Dokładnie! Prawa przyrody i fakty zawsze opisujemy w Present Simple: 'boils'."
+          },
+          {
+            question: "She ________ her homework right now, she is talking on the phone.",
+            hint: "Zwróć uwagę na przeczenie i okolicznik 'right now'.",
+            options: ["doesn't do", "isn't doing", "don't do", "not doing"],
+            correct: 1,
+            explanation: "Super! Przeczenie w Present Continuous tworzy isn't/aren't + czasownik z -ing: 'isn't doing'."
+          },
+          {
+            question: "________ in Ruda Śląska or in Katowice?",
+            hint: "Pytanie o stałe miejsce zamieszkania (rutyna / stan).",
+            options: ["Are you living", "Do you live", "Does you live", "Did you live"],
+            correct: 1,
+            explanation: "Prawidłowo! Stałe fakty życiowe pytamy w Present Simple: 'Do you live?'."
+          },
+          {
+            question: "Why ________? Did something bad happen?",
+            hint: "Pytamy o to, co dzieje się na naszych oczach w tej sekundzie.",
+            options: ["do you cry", "are you crying", "you cry", "does you cry"],
+            correct: 1,
+            explanation: "Znakomicie! Pytanie o czynność trwającą teraz: Are + osoba + verb-ing = 'are you crying?'."
+          },
+          {
+            question: "He never ________ breakfast before 7:30 AM.",
+            hint: "Słowo 'never' to typowy wskaźnik częstotliwości (Present Simple).",
+            options: ["is eating", "eats", "eat", "eating"],
+            correct: 1,
+            explanation: "Bardzo dobrze! 'Never' łączy się z Present Simple. Dla 'he' dodajemy -s: 'eats'."
+          },
+          {
+            question: "Right now, my parents ________ dinner together in the kitchen.",
+            hint: "'Right now' + liczba mnoga (parents = they).",
+            options: ["cook", "cooks", "are cooking", "is cooking"],
+            correct: 2,
+            explanation: "Świetnie! Parents to 'oni' (they), więc odmienione 'be' to 'are', a czasownik dostaje -ing: 'are cooking'."
+          },
+          {
+            question: "________ she like playing Minecraft?",
+            hint: "Pytanie o upodobania (lubienie to stan, nie czynność ciągła).",
+            options: ["Is", "Do", "Does", "Are"],
+            correct: 2,
+            explanation: "Idealnie! Czasownik 'like' nie występuje w formie ciągłej. W Present Simple dla 'she' pytamy przez 'Does'."
+          }
+        ]
+      },
+
+      verbs: {
+        title: "Czasowniki nieregularne Top 30 (Past Simple)",
+        badge: "Quiz: Czasowniki Nieregularne",
+        questions: [
+          {
+            question: "Yesterday, I ________ to the cinema with my friends. (go)",
+            hint: "Jaka jest II forma czasu przeszłego od czasownika 'go'?",
+            options: ["goed", "went", "gone", "was go"],
+            correct: 1,
+            explanation: "Brawo! 'Go' w Past Simple to nieregularne 'went'."
+          },
+          {
+            question: "We ________ a great movie on TV last night. (see)",
+            hint: "Forma przeszła od czasownika 'see' (widzieć).",
+            options: ["saw", "seed", "seen", "sawed"],
+            correct: 0,
+            explanation: "Super! 'See' zamienia się w Past Simple na 'saw'."
+          },
+          {
+            question: "My dad ________ a new bicycle for my birthday last week. (buy)",
+            hint: "Czasownik 'buy' ma nieregularną końcówkę -ought.",
+            options: ["buyed", "bought", "brought", "bote"],
+            correct: 1,
+            explanation: "Dokładnie! 'Buy' to w czasie przeszłym 'bought'."
+          },
+          {
+            question: "They ________ all the pizza because they were starving. (eat)",
+            hint: "Odwróć litery w słowie 'tea' lub przypomnij sobie tabelkę.",
+            options: ["eated", "ate", "eaten", "at"],
+            correct: 1,
+            explanation: "Zgadza się! II forma od 'eat' to 'ate'."
+          },
+          {
+            question: "I ________ a long letter to my pen pal two days ago. (write)",
+            hint: "Litera 'i' w czasowniku 'write' zmienia się na 'o'.",
+            options: ["writed", "wrote", "written", "wroted"],
+            correct: 1,
+            explanation: "Świetnie! 'Write' w czasie przeszłym to 'wrote'."
+          },
+          {
+            question: "She ________ all her chores before 5 PM. (do)",
+            hint: "II forma od podstawowego czasownika 'do'.",
+            options: ["did", "done", "doed", "does"],
+            correct: 0,
+            explanation: "Prawidłowo! Czasownik 'do' w czasie przeszłym to 'did'."
+          },
+          {
+            question: "The teacher ________ about the upcoming test yesterday. (speak)",
+            hint: "Forma przeszła od 'speak' brzmi podobnie do 'broke'.",
+            options: ["speaked", "spoke", "spoken", "spake"],
+            correct: 1,
+            explanation: "Znakomicie! 'Speak' zamienia się w 'spoke'."
+          },
+          {
+            question: "We ________ a great time at the amusement park last Saturday. (have)",
+            hint: "Forma przeszła od 'have' (mieć).",
+            options: ["haved", "had", "has", "hadden"],
+            correct: 1,
+            explanation: "Bardzo dobrze! 'Have' w Past Simple przyjmuje formę 'had'."
+          },
+          {
+            question: "Who ________ my pencil case from my desk? (take)",
+            hint: "II forma od czasownika 'take' (wziąć).",
+            options: ["took", "taked", "taken", "tooked"],
+            correct: 0,
+            explanation: "Idealnie! Czasownik 'take' w Past Simple to 'took'."
+          },
+          {
+            question: "He ________ two glasses of cold water after training. (drink)",
+            hint: "Litera 'i' w czasowniku 'drink' zmienia się na 'a'.",
+            options: ["drinked", "drank", "drunk", "dronk"],
+            correct: 1,
+            explanation: "Klasa! 'Drink' w czasie przeszłym ma formę 'drank'."
+          }
+        ]
+      },
+
+      e8: {
+        title: "Reakcje Językowe na Egzaminie E8",
+        badge: "Quiz: Egzamin Ósmoklasisty",
+        questions: [
+          {
+            question: "Chcesz zapytać przechodnia o drogę do najbliższej apteki. Co powiesz?",
+            hint: "Szukamy uprzejmego pytania o wskazanie drogi.",
+            options: [
+              "Where do you go pharmacy?",
+              "Excuse me, how can I get to the nearest pharmacy?",
+              "Are you going to the pharmacy?",
+              "Look at the pharmacy, please!"
+            ],
+            correct: 1,
+            explanation: "Świetnie! 'Excuse me, how can I get to...?' to klasyczny, elegancki zwrot egzaminacyjny."
+          },
+          {
+            question: "Kolega życzy Ci powodzenia przed trudnym sprawdzianem ('Good luck!'). Co odpowiesz?",
+            hint: "Podziękuj i wyraź gotowość do działania.",
+            options: [
+              "Thanks, I'll do my best!",
+              "Congratulations to you too!",
+              "Never mind!",
+              "I don't think so."
+            ],
+            correct: 0,
+            explanation: "Dokładnie! Na życzenia powodzenia odpowiadamy 'Thanks, I'll do my best!' (Dzięki, dam z siebie wszystko!)."
+          },
+          {
+            question: "W sklepie sprzedawca pyta: 'Can I help you?'. Chcesz tylko się rozejrzeć. Co powiesz?",
+            hint: "Uprzejma odmowa i wyjaśnienie, że tylko oglądasz.",
+            options: [
+              "No, you can't.",
+              "I am looking at you.",
+              "No, thanks. I'm just looking.",
+              "Please help someone else."
+            ],
+            correct: 2,
+            explanation: "Super! 'No, thanks. I'm just looking' to naturalna, kulturalna odpowiedź w sklepie."
+          },
+          {
+            question: "Znajomy proponuje wyjście na lody: 'Do you fancy getting some ice cream?'. Chętnie się zgadzasz:",
+            hint: "Entuzjastyczna zgoda na propozycję.",
+            options: [
+              "That sounds great! I'd love to.",
+              "I am not fancy.",
+              "Yes, you must buy it.",
+              "I prefer not today."
+            ],
+            correct: 0,
+            explanation: "Prawidłowo! 'That sounds great! I'd love to' to najlepszy sposób na przyjęcie propozycji."
+          },
+          {
+            question: "Ktoś potrącił Cię na korytarzu i mówi: 'I'm so sorry!'. Co odpowiesz, by uspokoić sytuację?",
+            hint: "Polski odpowiednik: 'Nic się nie stało / W porządku'.",
+            options: [
+              "You are welcome.",
+              "That's alright, don't worry.",
+              "Yes, you should be sorry.",
+              "Same to you!"
+            ],
+            correct: 1,
+            explanation: "Znakomicie! 'That's alright, don't worry' (W porządku, nie martw się) to idealna reakcja."
+          },
+          {
+            question: "W kawiarni chcesz zapytać o cenę kawałka sernika:",
+            hint: "Pytanie o cenę zaczynamy od 'How much...'.",
+            options: [
+              "How many is the cheesecake?",
+              "How much does this cheesecake cost?",
+              "What cost of cheesecake?",
+              "How expensive you are?"
+            ],
+            correct: 1,
+            explanation: "Bardzo dobrze! Pytamy: 'How much does this cheesecake cost?' lub 'How much is this cheesecake?'."
+          },
+          {
+            question: "Koleżanka dziękuje Ci za pomoc przy projekcie: 'Thank you so much!'. Co odpowiesz?",
+            hint: "Odpowiednik polskiego 'Nie ma za co / Proszę bardzo'.",
+            options: [
+              "You're welcome!",
+              "Please!",
+              "No problem to me.",
+              "Thanks a lot!"
+            ],
+            correct: 0,
+            explanation: "Idealnie! Na 'Thank you' zawsze odpowiadamy 'You're welcome!'."
+          },
+          {
+            question: "Chcesz poprosić brata o pożyczenie słuchawek:",
+            hint: "Uprzejma prośba z czasownikiem 'borrow' (pożyczyć od kogoś).",
+            options: [
+              "Give me headphones now.",
+              "Could I borrow your headphones, please?",
+              "Can you borrow me headphones?",
+              "I want to take your headphones."
+            ],
+            correct: 1,
+            explanation: "Świetnie! 'Could I borrow... please?' to wzorowa uprzejma prośba na teście CKE."
+          },
+          {
+            question: "Ktoś zaprasza Cię w sobotę do kina, ale musisz się uczyć i nie możesz pójść:",
+            hint: "Uprzejma odmowa ze zwrotem 'Obawiam się, że...'.",
+            options: [
+              "I don't want to see you.",
+              "I'm afraid I can't, I have to study.",
+              "Cinema is boring.",
+              "Never call me on Saturday."
+            ],
+            correct: 1,
+            explanation: "Doskonale! 'I'm afraid I can't...' to najgrzeczniejszy sposób odrzucenia zaproszenia."
+          },
+          {
+            question: "Gospodarz częstuje Cię herbatą: 'Would you like some tea?'. Chcesz się napić:",
+            hint: "Kulturalna zgoda z 'proszę'.",
+            options: [
+              "Yes, please. That would be lovely.",
+              "Give it to me.",
+              "Yes, I want tea.",
+              "Of course you can."
+            ],
+            correct: 0,
+            explanation: "Klasa! 'Yes, please' to poprawna, kulturalna forma przyjęcia poczęstunku."
+          }
+        ]
+      },
+
+      adjectives: {
+        title: "Stopniowanie przymiotników",
+        badge: "Quiz: Stopniowanie Przymiotników",
+        questions: [
+          {
+            question: "Mount Everest is the ________ mountain in the whole world.",
+            hint: "Stopień najwyższy od krótkiego przymiotnika 'high'.",
+            options: ["higher", "highest", "most high", "more high"],
+            correct: 1,
+            explanation: "Świetnie! Do krótkich przymiotników w stopniu najwyższym dodajemy -est: 'the highest'."
+          },
+          {
+            question: "A Ferrari is much ________ than a regular city bus.",
+            hint: "Porównanie dwóch rzeczy z 'than' od słowa 'fast'.",
+            options: ["faster", "fastest", "more fast", "most fast"],
+            correct: 0,
+            explanation: "Dokładnie! Stopień wyższy od 'fast' to 'faster' (+ than)."
+          },
+          {
+            question: "English grammar is sometimes ________ than vocabulary.",
+            hint: "'Difficult' to długi przymiotnik (3 sylaby).",
+            options: ["difficulter", "more difficult", "most difficult", "as difficult"],
+            correct: 1,
+            explanation: "Super! Długie przymiotniki stopniujemy przez 'more': 'more difficult than'."
+          },
+          {
+            question: "This is the ________ video game I have ever played!",
+            hint: "Stopień najwyższy od nieregularnego przymiotnika 'good'.",
+            options: ["goodest", "better", "best", "most good"],
+            correct: 2,
+            explanation: "Prawidłowo! 'Good' to wyjątek: good → better → the best."
+          },
+          {
+            question: "His mark in math was ________ than his mark in English.",
+            hint: "Stopień wyższy od nieregularnego przymiotnika 'bad' (zły).",
+            options: ["baddest", "worse", "worst", "more bad"],
+            correct: 1,
+            explanation: "Znakomicie! 'Bad' stopniuje się: bad → worse → the worst."
+          },
+          {
+            question: "An elephant is much ________ than a lion. (heavy)",
+            hint: "Litera 'y' po spółgłosce w krótkim słowie zamienia się na 'i'.",
+            options: ["heavyer", "heavier", "more heavy", "heaviest"],
+            correct: 1,
+            explanation: "Bardzo dobrze! 'Heavy' zamienia się na 'heavier' (y przechodzi w i + er)."
+          },
+          {
+            question: "This armchair is ________ than that wooden chair. (comfortable)",
+            hint: "'Comfortable' to długi, wielosylabowy przymiotnik.",
+            options: ["comfortabler", "more comfortable", "most comfortable", "as comfortable"],
+            correct: 1,
+            explanation: "Idealnie! Dla długich przymiotników w stopniu wyższym stosujemy 'more comfortable'."
+          },
+          {
+            question: "Today the weather is warm, but yesterday was even ________! (hot)",
+            hint: "W słowie 'hot' (spółgłoska-samogłoska-spółgłoska) podwajamy ostatnią literę.",
+            options: ["hotter", "hotest", "more hot", "hoter"],
+            correct: 0,
+            explanation: "Świetnie! 'Hot' podwaja spółgłoskę 't': hot → hotter → the hottest."
+          },
+          {
+            question: "Which subject in school is the ________ important to you?",
+            hint: "Stopień najwyższy od długiego słowa 'important'.",
+            options: ["more", "most", "importanter", "importanted"],
+            correct: 1,
+            explanation: "Doskonale! 'The most important' to stopień najwyższy dla długiego przymiotnika."
+          },
+          {
+            question: "My dog is ________ than my cat. (friendly)",
+            hint: "Dwu-sylabowe przymiotniki na -y zazwyczaj stopniują się z -ier.",
+            options: ["friendlier", "more friendlier", "friendliest", "friendlyer"],
+            correct: 0,
+            explanation: "Klasa! 'Friendly' przyjmuje końcówkę -ier: 'friendlier'."
+          }
+        ]
+      }
+    };
+
+    /* -------------------------------------------------------------
+       2. BAZA KOMPLETNYCH KART PRACY (ZADANIA + ROZWIJANY KLUCZ)
+    -------------------------------------------------------------- */
+    const worksheetsFullData = {
+      present: {
+        title: "Karta Pracy: Present Simple vs Present Continuous",
+        maxPoints: 12,
+        html: `
+          <div class="space-y-4">
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1">
+                Zadanie 1. (6 pkt) Wstaw czasownik w nawiasie w czasie Present Simple LUB Present Continuous:
+              </h5>
+              <ol class="list-decimal pl-5 space-y-2 mt-2 text-xs sm:text-sm">
+                <li>Listen! The baby ___________________________ (cry) in the other room.</li>
+                <li>Mark always ___________________________ (ride) his bike to school on sunny days.</li>
+                <li>Look at those dogs! They ___________________________ (run) across the street right now.</li>
+                <li>We ___________________________ (not go) to school on Saturdays and Sundays.</li>
+                <li>Why ___________________________ (you / wear) that heavy winter jacket today? It's warm outside!</li>
+                <li>My parents ___________________________ (drink) tea every single morning.</li>
+              </ol>
+            </div>
+
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1 pt-2">
+                Zadanie 2. (4 pkt) Wybierz poprawną opcję w nawiasie (zakreśl A lub B):
+              </h5>
+              <div class="space-y-2 mt-2 text-xs sm:text-sm pl-2">
+                <p>1. Right now, Tom (A: watches / B: is watching) a football match on his tablet.</p>
+                <p>2. How often (A: do you clean / B: are you cleaning) your bedroom?</p>
+                <p>3. She (A: doesn't like / B: isn't liking) eating mushrooms on her pizza.</p>
+                <p>4. Be quiet! The teacher (A: explains / B: is explaining) the exam rules!</p>
+              </div>
+            </div>
+
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1 pt-2">
+                Zadanie 3. (2 pkt) Przetłumacz fragmenty zdań w nawiasach na język angielski:
+              </h5>
+              <div class="space-y-2 mt-2 text-xs sm:text-sm pl-2">
+                <p>1. (Czy oni grają) ___________________________ computer games right now?</p>
+                <p>2. My sister (nie ogląda) ___________________________ cartoons every afternoon.</p>
+              </div>
+            </div>
+          </div>
+        `,
+        answers: `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <strong>Zadanie 1:</strong>
+              <p>1. is crying</p>
+              <p>2. rides</p>
+              <p>3. are running</p>
+              <p>4. don't go</p>
+              <p>5. are you wearing</p>
+              <p>6. drink</p>
+            </div>
+            <div>
+              <strong>Zadanie 2:</strong>
+              <p>1. B: is watching</p>
+              <p>2. A: do you clean</p>
+              <p>3. A: doesn't like (like nie ma -ing)</p>
+              <p>4. B: is explaining</p>
+            </div>
+            <div>
+              <strong>Zadanie 3:</strong>
+              <p>1. Are they playing</p>
+              <p>2. doesn't watch</p>
+            </div>
+          </div>
+        `
+      },
+
+      verbs: {
+        title: "Karta Pracy: Czasowniki nieregularne Top 30 (Past Simple)",
+        maxPoints: 12,
+        html: `
+          <div class="space-y-4">
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1">
+                Zadanie 1. (6 pkt) Uzupełnij II formę czasu przeszłego w tabeli:
+              </h5>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 text-xs sm:text-sm">
+                <div class="p-2 bg-sand-50 rounded-lg">1. see → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">2. buy → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">3. go → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">4. write → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">5. eat → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">6. have → <strong>__________</strong></div>
+              </div>
+            </div>
+
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1 pt-2">
+                Zadanie 2. (4 pkt) Uzupełnij luki czasownikami w czasie Past Simple:
+              </h5>
+              <ol class="list-decimal pl-5 space-y-2 mt-2 text-xs sm:text-sm">
+                <li>Yesterday, we ___________________________ (take) our dog for a long walk in the park.</li>
+                <li>I ___________________________ (not see) you at school two days ago. Where were you?</li>
+                <li>She ___________________________ (speak) to the teacher about her grade yesterday.</li>
+                <li>___________________________ (you / do) all your homework last night?</li>
+              </ol>
+            </div>
+
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1 pt-2">
+                Zadanie 3. (2 pkt) Przekształć zdania na czas przeszły (dodaj 'yesterday'):
+              </h5>
+              <div class="space-y-2 mt-2 text-xs sm:text-sm pl-2">
+                <p>1. I drink orange juice for breakfast. → Yesterday, ___________________________________</p>
+                <p>2. They buy bread at the bakery. → Yesterday, _______________________________________</p>
+              </div>
+            </div>
+          </div>
+        `,
+        answers: `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <strong>Zadanie 1:</strong>
+              <p>1. saw</p>
+              <p>2. bought</p>
+              <p>3. went</p>
+              <p>4. wrote</p>
+              <p>5. ate</p>
+              <p>6. had</p>
+            </div>
+            <div>
+              <strong>Zadanie 2:</strong>
+              <p>1. took</p>
+              <p>2. didn't see (po didn't forma zwykła!)</p>
+              <p>3. spoke</p>
+              <p>4. Did you do</p>
+            </div>
+            <div>
+              <strong>Zadanie 3:</strong>
+              <p>1. Yesterday, I drank orange juice for breakfast.</p>
+              <p>2. Yesterday, they bought bread at the bakery.</p>
+            </div>
+          </div>
+        `
+      },
+
+      e8: {
+        title: "Karta Pracy: Reakcje Językowe na Egzaminie E8 (CKE)",
+        maxPoints: 10,
+        html: `
+          <div class="space-y-4">
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1">
+                Zadanie 1. (4 pkt) Wybierz właściwą reakcję (A, B lub C) dla opisanej sytuacji:
+              </h5>
+              <div class="space-y-2.5 mt-2 text-xs sm:text-sm pl-2">
+                <div>
+                  <p class="font-semibold">1. Chcesz zapytać kolegę, czy pomoże Ci przenieść ciężkie pudło:</p>
+                  <p class="text-charcoal-600 pl-3">A) Could you help me with this box? | B) Do I help you with this? | C) Are you helping someone?</p>
+                </div>
+                <div>
+                  <p class="font-semibold">2. Koleżanka mówi, że zdała egzamin na 100%. Jak pogratulujesz?</p>
+                  <p class="text-charcoal-600 pl-3">A) Good luck! | B) Congratulations! Well done! | C) Cheer up!</p>
+                </div>
+                <div>
+                  <p class="font-semibold">3. W restauracji kelner pyta: 'Are you ready to order?'. Chcesz zamówić pizzę:</p>
+                  <p class="text-charcoal-600 pl-3">A) I would like a Margherita pizza, please. | B) Give pizza now. | C) Pizza is ready.</p>
+                </div>
+                <div>
+                  <p class="font-semibold">4. Ktoś pyta Cię o godzinę: 'What time is it?'. Jest 15:30:</p>
+                  <p class="text-charcoal-600 pl-3">A) It's half past three. | B) It's thirty to four. | C) I am half past three.</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1 pt-2">
+                Zadanie 2. (4 pkt) Uzupełnij luki jednym brakującym słowem:
+              </h5>
+              <div class="space-y-2 mt-2 text-xs sm:text-sm pl-2">
+                <p>1. _______________ me, how do I get to the bus stop?</p>
+                <p>2. Thank you for your help! – You're _______________!</p>
+                <p>3. Would you like a glass of water? – Yes, _______________.</p>
+                <p>4. I'm afraid I _______________ come to your party on Saturday.</p>
+              </div>
+            </div>
+
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1 pt-2">
+                Zadanie 3. (2 pkt) Przetłumacz na angielski:
+              </h5>
+              <div class="space-y-2 mt-2 text-xs sm:text-sm pl-2">
+                <p>1. (Ile kosztuje) ___________________________ this T-shirt?</p>
+                <p>2. (Nie ma za co) ___________________________!</p>
+              </div>
+            </div>
+          </div>
+        `,
+        answers: `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <strong>Zadanie 1:</strong>
+              <p>1. A</p>
+              <p>2. B</p>
+              <p>3. A</p>
+              <p>4. A</p>
+            </div>
+            <div>
+              <strong>Zadanie 2:</strong>
+              <p>1. Excuse</p>
+              <p>2. welcome</p>
+              <p>3. please</p>
+              <p>4. can't</p>
+            </div>
+            <div>
+              <strong>Zadanie 3:</strong>
+              <p>1. How much is / How much does ... cost</p>
+              <p>2. You're welcome / No problem</p>
+            </div>
+          </div>
+        `
+      },
+
+      adjectives: {
+        title: "Karta Pracy: Stopniowanie Przymiotników",
+        maxPoints: 12,
+        html: `
+          <div class="space-y-4">
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1">
+                Zadanie 1. (6 pkt) Wpisz stopień wyższy i najwyższy:
+              </h5>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 text-xs sm:text-sm">
+                <div class="p-2 bg-sand-50 rounded-lg">1. small → <strong>__________</strong> → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">2. fast → <strong>__________</strong> → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">3. expensive → <strong>__________</strong> → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">4. good → <strong>__________</strong> → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">5. bad → <strong>__________</strong> → <strong>__________</strong></div>
+                <div class="p-2 bg-sand-50 rounded-lg">6. big → <strong>__________</strong> → <strong>__________</strong></div>
+              </div>
+            </div>
+
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1 pt-2">
+                Zadanie 2. (4 pkt) Uzupełnij zdania przymiotnikiem w nawiasie (stopień wyższy lub najwyższy):
+              </h5>
+              <ol class="list-decimal pl-5 space-y-2 mt-2 text-xs sm:text-sm">
+                <li>A plane is ___________________________ (fast) than a train.</li>
+                <li>Which animal is the ___________________________ (dangerous) in Africa?</li>
+                <li>Today is ___________________________ (hot) than yesterday.</li>
+                <li>He is the ___________________________ (tall) student in our whole class.</li>
+              </ol>
+            </div>
+
+            <div>
+              <h5 class="font-bold text-sm text-charcoal-900 border-b border-sand-300 pb-1 pt-2">
+                Zadanie 3. (2 pkt) Popraw błąd w zdaniu:
+              </h5>
+              <div class="space-y-2 mt-2 text-xs sm:text-sm pl-2">
+                <p>1. This movie is more better than the book. → ___________________________________</p>
+                <p>2. Cheetah is the most fast runner. → ___________________________________</p>
+              </div>
+            </div>
+          </div>
+        `,
+        answers: `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <strong>Zadanie 1:</strong>
+              <p>1. smaller → the smallest</p>
+              <p>2. faster → the fastest</p>
+              <p>3. more expensive → the most expensive</p>
+              <p>4. better → the best</p>
+              <p>5. worse → the worst</p>
+              <p>6. bigger → the biggest</p>
+            </div>
+            <div>
+              <strong>Zadanie 2:</strong>
+              <p>1. faster</p>
+              <p>2. most dangerous</p>
+              <p>3. hotter</p>
+              <p>4. tallest</p>
+            </div>
+            <div>
+              <strong>Zadanie 3:</strong>
+              <p>1. ...is better than the book (usuń 'more')</p>
+              <p>2. ...is the fastest runner</p>
+            </div>
+          </div>
+        `
+      }
+    };
+
+    // Filtrowanie kart gramatycznych
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const grammarCards = document.querySelectorAll('#grammarContainer > article');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-pistachio-600', 'text-white', 'shadow-soft');
+          b.classList.add('bg-sand-100', 'text-charcoal-700');
+        });
+        btn.classList.add('bg-pistachio-600', 'text-white', 'shadow-soft');
+        btn.classList.remove('bg-sand-100', 'text-charcoal-700');
+
+        const category = btn.getAttribute('data-filter');
+
+        grammarCards.forEach(card => {
+          const cardCat = card.getAttribute('data-category');
+          if (category === 'all' || cardCat === category) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Menu mobilne
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
+
+    /* -------------------------------------------------------------
+       WYSYŁKA FORMULARZA (Web3Forms AJAX z Twoim kluczem)
+    -------------------------------------------------------------- */
+    const enrollmentForm = document.getElementById('enrollmentForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitBtnText = document.getElementById('submitBtnText');
+    const submitSpinner = document.getElementById('submitSpinner');
+    const formStatusBox = document.getElementById('formStatusBox');
+
+    if (enrollmentForm) {
+      enrollmentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        submitBtn.disabled = true;
+        submitBtnText.textContent = 'Wysyłanie zgłoszenia do Nico...';
+        submitSpinner.classList.remove('hidden');
+        formStatusBox.className = 'hidden';
+
+        const parentName = document.getElementById('parentName').value.trim();
+        const grade = document.getElementById('grade').value;
+        const mode = document.getElementById('mode').value;
+        const contactInfo = document.getElementById('contactInfo').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        const payload = {
+          access_key: "d25f9175-fb9f-448c-8172-c75ec4223064",
+          name: parentName,
+          grade: grade,
+          mode: mode,
+          contact: contactInfo,
+          message: message,
+          subject: `Nowe zgłoszenie na lekcję angielskiego: ${parentName} (${grade}, ${mode})`,
+          from_name: "Strona Korepetycje Nico"
+        };
+
+        try {
+          const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            formStatusBox.className = 'block mb-5 p-4 rounded-2xl text-xs sm:text-sm bg-pistachio-100 border border-pistachio-300 text-pistachio-800 leading-relaxed';
+            formStatusBox.innerHTML = `
+              <strong>✅ Zgłoszenie zostało wysłane prosto na skrzynkę Nico!</strong><br>
+              Dziękuję, <strong>${parentName}</strong>. Wiadomość dotarła pod adres <em>jankowiaknico03@gmail.com</em>. Skontaktuję się telefonicznie w ciągu 24h, aby ustalić dogodny termin lekcji próbnej.
+            `;
+            enrollmentForm.reset();
+          } else {
+            throw new Error(result.message || 'Błąd wysyłki');
+          }
+        } catch (err) {
+          formStatusBox.className = 'block mb-5 p-4 rounded-2xl text-xs sm:text-sm bg-terracotta-100 border border-terracotta-300 text-charcoal-900 leading-relaxed';
+          formStatusBox.innerHTML = `
+            <strong>⚠️ Nie udało się automatycznie wysłać wiadomości (${err.message}).</strong><br>
+            Nie martw się! Możesz skontaktować się bezpośrednio: zadzwoń pod numer <a href="tel:+48660803916" class="font-bold underline text-pistachio-800">+48 660 803 916</a> lub napisz na <a href="mailto:jankowiaknico03@gmail.com" class="font-bold underline text-pistachio-800">jankowiaknico03@gmail.com</a>.
+          `;
+        } finally {
+          submitBtn.disabled = false;
+          submitBtnText.textContent = 'Wyślij zgłoszenie na lekcję próbną';
+          submitSpinner.classList.add('hidden');
+        }
+      });
+    }
+
+    const worksheetModal = document.getElementById('worksheetModal');
+    const worksheetTitle = document.getElementById('worksheetModalTitle');
+    const worksheetContent = document.getElementById('worksheetDynamicContent');
+    const worksheetAnswerKey = document.getElementById('worksheetAnswerKey');
+    const worksheetMaxPoints = document.getElementById('worksheetMaxPoints');
+    const toggleKeyBtn = document.getElementById('toggleKeyBtn');
+
+    function openWorksheetModal(key) {
+      const data = worksheetsFullData[key] || worksheetsFullData.present;
+      worksheetTitle.textContent = data.title;
+      worksheetMaxPoints.textContent = data.maxPoints;
+      worksheetContent.innerHTML = data.html;
+      worksheetAnswerKey.innerHTML = data.answers;
+      worksheetAnswerKey.classList.add('hidden');
+      toggleKeyBtn.textContent = 'Pokaż klucz odpowiedzi';
+
+      worksheetModal.classList.remove('hidden');
+      worksheetModal.classList.add('flex');
+    }
+
+    function closeWorksheetModal() {
+      worksheetModal.classList.add('hidden');
+      worksheetModal.classList.remove('flex');
+    }
+
+    function toggleAnswerKey() {
+      const isHidden = worksheetAnswerKey.classList.contains('hidden');
+      if (isHidden) {
+        worksheetAnswerKey.classList.remove('hidden');
+        toggleKeyBtn.textContent = 'Ukryj klucz odpowiedzi';
+      } else {
+        worksheetAnswerKey.classList.add('hidden');
+        toggleKeyBtn.textContent = 'Pokaż klucz odpowiedzi';
+      }
+    }
+
+    let activeQuizKey = 'present';
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    function openQuizModal(quizKey = 'present') {
+      activeQuizKey = quizKey;
+      const modal = document.getElementById('quizModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      currentQuestionIndex = 0;
+      score = 0;
+      loadQuestion();
+    }
+
+    function closeQuizModal() {
+      const modal = document.getElementById('quizModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function loadQuestion() {
+      answered = false;
+      const quiz = quizzesDatabase[activeQuizKey];
+      const q = quiz.questions[currentQuestionIndex];
+      const total = quiz.questions.length;
+
+      document.getElementById('quizBadgeTopic').textContent = quiz.badge;
+      document.getElementById('quizQuestionCount').textContent = `Pytanie ${currentQuestionIndex + 1} z ${total}`;
+      
+      const percent = Math.round(((currentQuestionIndex + 1) / total) * 100);
+      document.getElementById('quizProgressBar').style.width = `${percent}%`;
+
+      document.getElementById('quizQuestionText').textContent = q.question;
+      document.getElementById('quizHint').textContent = `Wskazówka: ${q.hint}`;
+      document.getElementById('quizScoreTracker').textContent = `Twój wynik: ${score} / ${total}`;
+      
+      const feedbackBox = document.getElementById('quizFeedback');
+      feedbackBox.className = 'hidden p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed';
+      feedbackBox.innerHTML = '';
+
+      const nextBtn = document.getElementById('quizNextBtn');
+      nextBtn.classList.add('hidden');
+      nextBtn.textContent = (currentQuestionIndex === total - 1) ? 'Zakończ quiz 🎉' : 'Następne pytanie →';
+
+      const optionsContainer = document.getElementById('quizOptions');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full text-left p-3.5 rounded-xl border border-sand-200 bg-sand-50 hover:bg-sand-100 text-xs sm:text-sm font-medium text-charcoal-800 smooth-transition flex items-center justify-between';
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-charcoal-400 font-mono font-bold">${String.fromCharCode(65 + idx)}</span>`;
+        btn.onclick = () => selectOption(idx);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function selectOption(selectedIdx) {
+      if (answered) return;
+      answered = true;
+
+      const quiz = quizzesDatabase[activeQuizKey];
+      const q = quiz.questions[currentQuestionIndex];
+      const optionButtons = document.getElementById('quizOptions').children;
+      const feedbackBox = document.getElementById('quizFeedback');
+      const nextBtn = document.getElementById('quizNextBtn');
+
+      if (selectedIdx === q.correct) {
+        score++;
+        optionButtons[selectedIdx].className = 'w-full text-left p-3.5 rounded-xl border-2 border-pistachio-600 bg-pistachio-100 text-xs sm:text-sm font-bold text-pistachio-800 flex items-center justify-between';
+        feedbackBox.className = 'block p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed bg-pistachio-100 border border-pistachio-300 text-pistachio-800';
+        feedbackBox.innerHTML = `<strong>Znakomicie!</strong> ${q.explanation}`;
+      } else {
+        optionButtons[selectedIdx].className = 'w-full text-left p-3.5 rounded-xl border-2 border-terracotta-500 bg-terracotta-100 text-xs sm:text-sm font-bold text-charcoal-900 flex items-center justify-between';
+        optionButtons[q.correct].className = 'w-full text-left p-3.5 rounded-xl border-2 border-pistachio-600 bg-pistachio-100 text-xs sm:text-sm font-bold text-pistachio-800 flex items-center justify-between';
+        feedbackBox.className = 'block p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed bg-sand-100 border border-sand-300 text-charcoal-800';
+        feedbackBox.innerHTML = `<strong>Prawie! Prawidłowa odpowiedź to: "${q.options[q.correct]}".</strong> ${q.explanation}`;
+      }
+
+      document.getElementById('quizScoreTracker').textContent = `Twój wynik: ${score} / ${quiz.questions.length}`;
+      nextBtn.classList.remove('hidden');
+    }
+
+    function nextQuizQuestion() {
+      const quiz = quizzesDatabase[activeQuizKey];
+      if (currentQuestionIndex < quiz.questions.length - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+      } else {
+        const quizBody = document.getElementById('quizBody');
+        const nextBtn = document.getElementById('quizNextBtn');
+        const questionCount = document.getElementById('quizQuestionCount');
+
+        questionCount.textContent = 'Koniec testu!';
+        nextBtn.classList.add('hidden');
+
+        let message = '';
+        if (score >= 9) {
+          message = 'Klasa mistrzowska! Masz te reguły w małym paluszku, brawo!';
+        } else if (score >= 6) {
+          message = 'Bardzo dobry wynik! Kilka drobnych ćwiczeń na naszych zajęciach i będzie czysta szóstka.';
+        } else {
+          message = 'Dobry początek! Właśnie po to tu jestem – przećwiczymy to bez stresu na klockach LEGO.';
+        }
+
+        quizBody.innerHTML = `
+          <div class="text-center py-6 space-y-4">
+            <div class="text-5xl">🏆</div>
+            <h4 class="text-2xl font-extrabold text-charcoal-900">Twój wynik: ${score} / ${quiz.questions.length}</h4>
+            <p class="text-xs sm:text-sm text-charcoal-600 leading-relaxed max-w-sm mx-auto">
+              ${message}
+            </p>
+            <div class="pt-4 flex flex-col sm:flex-row gap-2.5 justify-center">
+              <button onclick="loadQuestionAgain()" class="px-5 py-2.5 rounded-xl bg-sand-200 hover:bg-sand-300 text-charcoal-800 font-bold text-xs smooth-transition">
+                Spróbuj jeszcze raz
+              </button>
+              <button onclick="handleQuizTrialClick()" class="px-5 py-2.5 rounded-xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-xs smooth-transition shadow-soft">
+                Zapisz się na lekcję próbną
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function handleQuizTrialClick() {
+      closeQuizModal();
+      const contactSection = document.getElementById('kontakt');
+      const parentInput = document.getElementById('parentName');
+      
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      setTimeout(() => {
+        if (parentInput) {
+          parentInput.focus();
+          parentInput.classList.add('focus-ring-animate');
+          setTimeout(() => {
+            parentInput.classList.remove('focus-ring-animate');
+          }, 1800);
+        }
+      }, 500);
+    }
+
+    function loadQuestionAgain() {
+      const quizBody = document.getElementById('quizBody');
+      quizBody.innerHTML = `
+        <div>
+          <p class="text-xs text-charcoal-500 font-medium" id="quizHint">Wskazówka</p>
+          <p class="text-base sm:text-lg font-bold text-charcoal-900 mt-1" id="quizQuestionText"></p>
+        </div>
+        <div id="quizOptions" class="space-y-2"></div>
+        <div id="quizFeedback" class="hidden p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed"></div>
+      `;
+      currentQuestionIndex = 0;
+      score = 0;
+      loadQuestion();
+    }
+  </script>
+</body>
+</html>
