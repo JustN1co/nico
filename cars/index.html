@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>iCar Garage</title>
+  <title>iCar Garage • Glass Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -80,7 +80,7 @@
       border-radius: var(--radius-lg);
     }
 
-    .-header {
+    .ios-header {
       padding: 16px 24px;
       display: flex;
       justify-content: space-between;
@@ -99,7 +99,7 @@
       cursor: pointer;
     }
 
-    .-squircle-icon {
+    .ios-squircle-icon {
       width: 44px;
       height: 44px;
       background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
@@ -129,7 +129,7 @@
       gap: 10px;
     }
 
-    .-pill-btn {
+    .ios-pill-btn {
       background: var(--glass-card);
       border: 1px solid var(--glass-border);
       color: #fff;
@@ -146,22 +146,22 @@
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .-pill-btn:hover {
+    .ios-pill-btn:hover {
       background: var(--glass-hover);
       transform: translateY(-2px);
       border-color: var(--glass-border-light);
     }
 
-    .-pill-btn:active {
+    .ios-pill-btn:active {
       transform: scale(0.97);
     }
 
-    .-pill-btn.primary {
+    .ios-pill-btn.primary {
       background: linear-gradient(135deg, rgba(10, 132, 255, 0.85), rgba(0, 113, 227, 0.95));
       border-color: rgba(255, 255, 255, 0.4);
     }
 
-    .-pill-btn.danger {
+    .ios-pill-btn.danger {
       background: linear-gradient(135deg, rgba(255, 69, 58, 0.85), rgba(215, 0, 21, 0.95));
     }
 
@@ -225,7 +225,7 @@
       opacity: 0.9;
     }
 
-    .-search-bar {
+    .ios-search-bar {
       display: flex;
       align-items: center;
       background: rgba(255, 255, 255, 0.15);
@@ -240,13 +240,13 @@
       transition: all 0.25s ease;
     }
 
-    .-search-bar:focus-within {
+    .ios-search-bar:focus-within {
       background: rgba(255, 255, 255, 0.22);
-      border-color: var(---blue);
+      border-color: var(--ios-blue);
       box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
     }
 
-    .-search-bar input {
+    .ios-search-bar input {
       background: transparent;
       border: none;
       outline: none;
@@ -257,7 +257,7 @@
       font-family: inherit;
     }
 
-    .-search-bar input::placeholder {
+    .ios-search-bar input::placeholder {
       color: rgba(255, 255, 255, 0.55);
     }
 
@@ -290,13 +290,13 @@
     }
 
     .filter-chip.active {
-      background: var(---blue);
-      border-color: var(---blue);
+      background: var(--ios-blue);
+      border-color: var(--ios-blue);
       font-weight: 600;
       box-shadow: 0 2px 10px rgba(10, 132, 255, 0.4);
     }
 
-    .-select {
+    .ios-select {
       background: rgba(0, 0, 0, 0.25);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-pill);
@@ -308,7 +308,7 @@
       cursor: pointer;
     }
 
-    .-select option {
+    .ios-select option {
       background: #152232;
       color: #fff;
     }
@@ -434,7 +434,7 @@
     .car-notes {
       font-size: 0.82rem;
       background: rgba(255, 255, 255, 0.07);
-      border-left: 3px solid var(---blue);
+      border-left: 3px solid var(--ios-blue);
       padding: 8px 12px;
       border-radius: 4px 10px 10px 4px;
       margin-top: auto;
@@ -452,7 +452,7 @@
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .-modal-backdrop {
+    .ios-modal-backdrop {
       position: fixed;
       top: 0;
       left: 0;
@@ -470,12 +470,12 @@
       padding: 15px;
     }
 
-    .-modal-backdrop.open {
+    .ios-modal-backdrop.open {
       opacity: 1;
       pointer-events: auto;
     }
 
-    .-modal {
+    .ios-modal {
       width: 100%;
       max-width: 620px;
       max-height: 90vh;
@@ -486,7 +486,7 @@
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .-modal-backdrop.open .-modal {
+    .ios-modal-backdrop.open .ios-modal {
       transform: scale(1) translateY(0);
     }
 
@@ -543,7 +543,7 @@
     .input-field input:focus,
     .input-field select:focus,
     .input-field textarea:focus {
-      border-color: var(---blue);
+      border-color: var(--ios-blue);
       box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
       background: rgba(0, 0, 0, 0.45);
     }
@@ -567,7 +567,7 @@
       opacity: 0.8;
     }
 
-    .-toast {
+    .ios-toast {
       position: fixed;
       bottom: 25px;
       left: 50%;
@@ -588,7 +588,7 @@
       gap: 8px;
     }
 
-    .-toast.show {
+    .ios-toast.show {
       transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
@@ -597,7 +597,7 @@
       .form-grid { grid-template-columns: 1fr; }
       .form-grid .full-span { grid-column: span 1; }
       .specs-matrix { grid-template-columns: 1fr; }
-      .-header { flex-direction: column; gap: 12px; align-items: stretch; }
+      .ios-header { flex-direction: column; gap: 12px; align-items: stretch; }
       .header-actions { justify-content: space-between; }
     }
   </style>
@@ -606,9 +606,9 @@
 
   <div class="container">
 
-    <header class="glass-shell -header">
+    <header class="glass-shell ios-header">
       <div class="header-logo" id="homeBtn">
-        <div class="-squircle-icon">🏎️</div>
+        <div class="ios-squircle-icon">🏎️</div>
         <div class="header-title">
           <h1 id="appHeaderTitle">iCar Garage</h1>
           <p id="appHeaderSub">Glass Edition • nico03.pl/cars</p>
@@ -646,7 +646,7 @@
             <option value="">Wszystkie nadwozia</option>
             <option value="Coupe">Coupe</option>
             <option value="Hatchback">Hatchback</option>
-            <option value="3D">Cabrio</option>
+            <option value="Cabrio">Cabrio</option>
             <option value="Sedan">Sedan</option>
             <option value="Kombi">Kombi</option>
             <option value="SUV">SUV</option>
@@ -780,8 +780,7 @@
             <select id="carBody" required>
               <option value="Coupe">Coupe</option>
               <option value="Hatchback">Hatchback</option>
-              <option value="3D">3D</option>
-              <option value="5D">5D</option>
+              <option value="Cabrio">Cabrio</option>
               <option value="Sedan">Sedan</option>
               <option value="Kombi">Kombi</option>
               <option value="SUV">SUV</option>
@@ -836,7 +835,6 @@
   <div class="ios-toast" id="toast">Komunikat</div>
 
   <script>
-    // TWOJA PRAWDZIWA KONFIGURACJA Z FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyD-pfjzkPR2Qq-Q8vHia35YcVME6_Fj9m8",
       authDomain: "cars-57b35.firebaseapp.com",
@@ -847,24 +845,19 @@
       measurementId: "G-HMKXM8VKJV"
     };
 
-    // Inicjalizacja Firebase & Firestore
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Stan aplikacji
     let collectionsList = [];
     let currentCollection = null;
     let isEditingUnlocked = false;
-    let _vaultHash = null;
 
-    // Filtry
     let activeFilter = 'all';
     let searchQuery = '';
     let selectedBody = '';
     let selectedCost = '';
     let selectedSort = 'default';
 
-    // Hashowanie SHA-256
     async function sha256(str) {
       const buffer = new TextEncoder().encode(str);
       const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
@@ -896,7 +889,6 @@
       }
     }
 
-    // Pobieranie tabel z Firestore
     async function loadCollections() {
       try {
         const snap = await db.collection('car_collections').orderBy('updatedAt', 'desc').get();
@@ -952,7 +944,6 @@
       `).join('');
     }
 
-    // Otwarcie konkretnej tabeli
     async function openCollection(id) {
       try {
         const doc = await db.collection('car_collections').doc(id).get();
@@ -960,12 +951,7 @@
           showToast("Tabela nie istnieje!", "❌");
           return;
         }
-
-        const data = doc.data();
-        _vaultHash = data.passwordHash || null;
-        delete data.passwordHash;
-
-        currentCollection = { id: doc.id, ...data };
+        currentCollection = { id: doc.id, ...doc.data() };
         if (!currentCollection.cars) currentCollection.cars = [];
 
         document.getElementById('viewCollections').classList.remove('active');
@@ -984,7 +970,6 @@
       }
     }
 
-    // Powrót
     document.getElementById('homeBtn').addEventListener('click', backToHome);
     document.getElementById('navBackBtn').addEventListener('click', backToHome);
 
@@ -997,7 +982,6 @@
       document.getElementById('appHeaderSub').innerText = 'Glass Edition • nico03.pl/cars';
 
       currentCollection = null;
-      _vaultHash = null;
       updateLockState(false);
       loadCollections();
     }
@@ -1030,13 +1014,12 @@
       }
     });
 
-    // Sprawdzanie hasła
     document.getElementById('unlockForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const pw = document.getElementById('unlockPasswordInput').value;
       const hash = await sha256(pw);
 
-      if (_vaultHash && hash === _vaultHash) {
+      if (hash === currentCollection.passwordHash) {
         closeModal('unlockModal');
         document.getElementById('unlockPasswordInput').value = '';
         updateLockState(true);
@@ -1046,7 +1029,6 @@
       }
     });
 
-    // Tworzenie tabeli
     document.getElementById('actionPrimaryBtn').addEventListener('click', () => openModal('newCollectionModal'));
 
     document.getElementById('createCollectionForm').addEventListener('submit', async (e) => {
@@ -1077,7 +1059,6 @@
       }
     });
 
-    // Dodawanie / edycja fury
     document.getElementById('addCarBtn').addEventListener('click', () => {
       document.getElementById('carForm').reset();
       document.getElementById('carEditId').value = '';
@@ -1154,13 +1135,16 @@
       }
     };
 
-    window.toggleFav = function(carId, event) {
+    window.toggleFav = async function(carId, event) {
       event.stopPropagation();
       const car = currentCollection.cars.find(c => c.id === carId);
       if (car) {
         car.isFav = !car.isFav;
         renderCars();
         showToast(car.isFav ? "Dodano do ulubionych" : "Usunięto z ulubionych", "❤️");
+        if (isEditingUnlocked) {
+          await autoSaveCars();
+        }
       }
     };
 
