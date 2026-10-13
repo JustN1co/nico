@@ -676,7 +676,6 @@
 
           <button class="ios-pill-btn" id="lockStatusBtn">🔒 Odblokuj edycję</button>
           <button class="ios-pill-btn primary" id="addCarBtn" style="display:none;">+ Dodaj auto</button>
-          <button class="ios-pill-btn primary" id="saveRemoteBtn" style="display:none;">💾 Zapisz zmiany</button>
         </div>
       </div>
 
@@ -857,6 +856,7 @@
     let collectionsList = [];
     let currentCollection = null;
     let isEditingUnlocked = false;
+    let _vaultHash = null;
 
     // Filtry
     let activeFilter = 'all';
@@ -881,6 +881,21 @@
 
     function openModal(id) { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    // Auto-Save do Firestore
+    async function autoSaveCars() {
+      if (!isEditingUnlocked || !currentCollection) return;
+      try {
+        await db.collection('car_collections').doc(currentCollection.id).update({
+          cars: currentCollection.cars,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast("Zapisano automatycznie w chmurze!", "☁️");
+      } catch (err) {
+        console.error(err);
+        showToast("Błąd zapisu w chmurze!", "❌");
+      }
+    }
 
     // Pobieranie tabel z Firestore
     async function loadCollections() {
@@ -946,7 +961,12 @@
           showToast("Tabela nie istnieje!", "❌");
           return;
         }
-        currentCollection = { id: doc.id, ...doc.data() };
+
+        const data = doc.data();
+        _vaultHash = data.passwordHash || null;
+        delete data.passwordHash;
+
+        currentCollection = { id: doc.id, ...data };
         if (!currentCollection.cars) currentCollection.cars = [];
 
         document.getElementById('viewCollections').classList.remove('active');
@@ -978,6 +998,7 @@
       document.getElementById('appHeaderSub').innerText = 'iOS 26 Liquid Edition • nico03.pl/cars';
 
       currentCollection = null;
+      _vaultHash = null;
       updateLockState(false);
       loadCollections();
     }
@@ -986,18 +1007,15 @@
       isEditingUnlocked = unlocked;
       const lockBtn = document.getElementById('lockStatusBtn');
       const addCarBtn = document.getElementById('addCarBtn');
-      const saveRemoteBtn = document.getElementById('saveRemoteBtn');
 
       if (unlocked) {
         lockBtn.innerHTML = '🔓 Edycja aktywna';
         lockBtn.classList.add('primary');
         addCarBtn.style.display = 'inline-flex';
-        saveRemoteBtn.style.display = 'inline-flex';
       } else {
         lockBtn.innerHTML = '🔒 Odblokuj edycję';
         lockBtn.classList.remove('primary');
         addCarBtn.style.display = 'none';
-        saveRemoteBtn.style.display = 'none';
       }
       renderCars();
     }
@@ -1019,7 +1037,7 @@
       const pw = document.getElementById('unlockPasswordInput').value;
       const hash = await sha256(pw);
 
-      if (hash === currentCollection.passwordHash) {
+      if (_vaultHash && hash === _vaultHash) {
         closeModal('unlockModal');
         document.getElementById('unlockPasswordInput').value = '';
         updateLockState(true);
@@ -1060,22 +1078,6 @@
       }
     });
 
-    // Zapisywanie zmian w chmurze
-    document.getElementById('saveRemoteBtn').addEventListener('click', async () => {
-      if (!isEditingUnlocked) return;
-
-      try {
-        await db.collection('car_collections').doc(currentCollection.id).update({
-          cars: currentCollection.cars,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showToast("Zapisano zmiany w chmurze!", "☁️");
-      } catch (err) {
-        console.error(err);
-        showToast("Błąd zapisu!", "❌");
-      }
-    });
-
     // Dodawanie / edycja fury
     document.getElementById('addCarBtn').addEventListener('click', () => {
       document.getElementById('carForm').reset();
@@ -1084,7 +1086,7 @@
       openModal('carModal');
     });
 
-    document.getElementById('carForm').addEventListener('submit', (e) => {
+    document.getElementById('carForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const editId = document.getElementById('carEditId').value;
       const carData = {
@@ -1116,6 +1118,7 @@
 
       closeModal('carModal');
       renderCars();
+      await autoSaveCars();
     });
 
     window.editCar = function(carId) {
@@ -1142,12 +1145,13 @@
       openModal('carModal');
     };
 
-    window.deleteCar = function(carId) {
+    window.deleteCar = async function(carId) {
       if (!isEditingUnlocked) return;
       if (confirm("Usunąć to auto z tabeli?")) {
         currentCollection.cars = currentCollection.cars.filter(c => c.id !== carId);
         showToast("Usunięto auto");
         renderCars();
+        await autoSaveCars();
       }
     };
 
