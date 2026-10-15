@@ -1,0 +1,3230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>INFERNAL SANDBOX</title>
+    <link rel="icon" type="image/webp" href="/media/8bit.webp">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 8-Bit Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pixel-font: 'Press Start 2P', monospace;
+            --retro-font: 'VT323', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #09060e;
+            font-family: var(--pixel-font);
+            color: #f8fafc;
+        }
+
+        .font-pixel {
+            font-family: var(--pixel-font);
+        }
+
+        .font-retro {
+            font-family: var(--retro-font);
+        }
+
+        /* 8-Bit Pixel Borders & Boxes */
+        .pixel-box {
+            background: #14101f;
+            border: 4px solid #f8fafc;
+            box-shadow: 
+                inset -4px -4px 0px 0px #09060e,
+                inset 4px 4px 0px 0px #2d2442,
+                0px 6px 0px 0px #000000;
+        }
+
+        .pixel-box-dark {
+            background: rgba(15, 11, 24, 0.92);
+            border: 3px solid #cbd5e1;
+            box-shadow: 
+                inset -3px -3px 0px 0px #06040a,
+                inset 3px 3px 0px 0px #271f3a,
+                0px 4px 0px 0px #000000;
+        }
+
+        .pixel-box-red {
+            background: #1f0d16;
+            border: 4px solid #ef4444;
+            box-shadow: 
+                inset -4px -4px 0px 0px #11050a,
+                inset 4px 4px 0px 0px #451628,
+                0px 6px 0px 0px #000000;
+        }
+
+        /* 8-Bit Buttons */
+        .pixel-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #2a213d;
+            border: 3px solid #f8fafc;
+            color: #ffffff;
+            box-shadow: 
+                inset -3px -3px 0px 0px #140f21,
+                inset 3px 3px 0px 0px #4c3d6e,
+                0px 4px 0px 0px #000000;
+            transition: transform 0.06s steps(2), background-color 0.1s;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .pixel-btn:hover {
+            background: #3b2e54;
+            border-color: #fde047;
+            color: #fde047;
+        }
+
+        .pixel-btn:active {
+            transform: translateY(3px);
+            box-shadow: 
+                inset -2px -2px 0px 0px #140f21,
+                inset 2px 2px 0px 0px #4c3d6e,
+                0px 1px 0px 0px #000000;
+        }
+
+        .pixel-btn-primary {
+            background: #dc2626;
+            border-color: #fef08a;
+            box-shadow: 
+                inset -4px -4px 0px 0px #7f1d1d,
+                inset 4px 4px 0px 0px #f87171,
+                0px 5px 0px 0px #000000;
+        }
+
+        .pixel-btn-primary:hover {
+            background: #ef4444;
+            color: #fef08a;
+            border-color: #ffffff;
+        }
+
+        /* Difficulty Button Active States */
+        .diff-btn.active-easy {
+            background: #15803d;
+            border-color: #86efac;
+            color: #ffffff;
+            box-shadow: inset -3px -3px 0px 0px #052e16, inset 3px 3px 0px 0px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5);
+        }
+        .diff-btn.active-medium {
+            background: #b45309;
+            border-color: #fde047;
+            color: #ffffff;
+            box-shadow: inset -3px -3px 0px 0px #451a03, inset 3px 3px 0px 0px #f59e0b, 0 0 12px rgba(245, 158, 11, 0.5);
+        }
+        .diff-btn.active-hard {
+            background: #b91c1c;
+            border-color: #fca5a5;
+            color: #ffffff;
+            box-shadow: inset -3px -3px 0px 0px #450a0a, inset 3px 3px 0px 0px #ef4444, 0 0 12px rgba(239, 68, 68, 0.5);
+        }
+        .diff-btn.active-infernal {
+            background: #6b21a8;
+            border-color: #f0abfc;
+            color: #fde047;
+            box-shadow: inset -3px -3px 0px 0px #2e1065, inset 3px 3px 0px 0px #a855f7, 0 0 16px rgba(192, 132, 252, 0.7);
+            animation: infernalPulse 1.2s infinite alternate;
+        }
+
+        @keyframes infernalPulse {
+            0% { filter: drop-shadow(0 0 4px #ef4444); }
+            100% { filter: drop-shadow(0 0 12px #c084fc); }
+        }
+
+        /* CRT Scanline Overlay */
+        .crt-overlay {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%),
+                radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.55) 100%);
+            background-size: 100% 4px, 100% 100%;
+        }
+
+        /* Title Glow Animation */
+        .title-shadow {
+            text-shadow: 
+                4px 4px 0px #7f1d1d,
+                8px 8px 0px #000000;
+        }
+
+        /* Upgrade Card Hover */
+        .upgrade-card {
+            transition: transform 0.1s steps(2), border-color 0.1s;
+        }
+        .upgrade-card:hover {
+            transform: translateY(-6px);
+            border-color: #fde047 !important;
+        }
+
+        /* Custom Scrollbar for Modals */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09060e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4c3d6e;
+            border: 2px solid #f8fafc;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+<body class="relative select-none overflow-hidden">
+
+    <!-- CRT Scanline Filter Overlay (Toggleable) -->
+    <div id="crtOverlay" class="crt-overlay"></div>
+
+    <!-- MAIN GAME CANVAS -->
+    <canvas id="gameCanvas" class="absolute inset-0 z-0"></canvas>
+
+    <!-- ==========================================
+         MAIN MENU OVERLAY
+    =========================================== -->
+    <div id="mainMenu" class="absolute inset-0 z-30 flex flex-col items-center justify-between p-4 sm:p-6 overflow-y-auto bg-black/55 backdrop-blur-[1px]">
+        
+        <!-- Top Status Bar -->
+        <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-300">
+            <div class="pixel-box-dark px-3 py-2 flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 bg-red-500 animate-pulse"></span>
+                <span>8-BIT ARENA SURVIVAL // VER 1.1</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="pixel-box-dark px-3 py-2 text-amber-300">
+                    BEST WAVE: <span id="menuBestWave">0</span> | GHOSTS SLAIN: <span id="menuTotalKills">0</span>
+                </div>
+                <button id="btnToggleCRT" class="pixel-btn px-2.5 py-2 text-[10px]" title="Toggle CRT Scanlines">
+                    CRT: ON
+                </button>
+            </div>
+        </div>
+
+        <!-- Center Hero & Menu Controls -->
+        <div class="my-auto w-full max-w-2xl flex flex-col items-center text-center py-4">
+            <!-- Animated Pixel Emblem Canvas -->
+            <div class="mb-2 relative">
+                <canvas id="menuLogoCanvas" width="96" height="96" class="w-20 h-20 sm:w-24 sm:h-24 mx-auto"></canvas>
+            </div>
+
+            <div class="text-[10px] sm:text-xs tracking-[0.25em] text-red-400 mb-1 uppercase">
+                25 Waves of Pure Bullet-Heaven Chaos
+            </div>
+            <h1 class="text-2xl sm:text-5xl font-pixel text-amber-400 title-shadow tracking-wider mb-6 leading-tight">
+                INFERNAL SANDBOX
+            </h1>
+
+            <!-- Difficulty Selector -->
+            <div class="w-full pixel-box p-4 sm:p-5 mb-5">
+                <div class="text-xs sm:text-sm text-slate-300 mb-3 flex items-center justify-center gap-2">
+                    <span>SELECT DIFFICULTY TIER</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-3">
+                    <button data-diff="easy" class="diff-btn pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
+                        <span>EASY</span>
+                        <span class="font-retro text-sm opacity-80">0.60x Threat</span>
+                    </button>
+                    <button data-diff="medium" class="diff-btn active-medium pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
+                        <span>MEDIUM</span>
+                        <span class="font-retro text-sm opacity-80">0.80x Standard</span>
+                    </button>
+                    <button data-diff="hard" class="diff-btn pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
+                        <span>HARD</span>
+                        <span class="font-retro text-sm opacity-80">1.15x Brutal</span>
+                    </button>
+                    <button data-diff="infernal" class="diff-btn pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
+                        <span>INFERNAL</span>
+                        <span class="font-retro text-sm opacity-90">1.55x Nightmare</span>
+                    </button>
+                </div>
+                <p id="diffDescription" class="font-retro text-base sm:text-lg text-amber-200 min-h-[1.5rem]">
+                    Balanced &amp; fair 8-bit challenge. Smooth progression and generous drops.
+                </p>
+            </div>
+
+            <!-- Main Action Buttons -->
+            <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <button id="btnPlay" class="sm:col-span-2 pixel-btn pixel-btn-primary py-4 text-base sm:text-xl tracking-wider">
+                    ▶ PLAY GAME
+                </button>
+                <button id="btnControls" class="pixel-btn py-3 text-xs sm:text-sm">
+                    ⌨ CONTROLS
+                </button>
+                <button id="btnVolume" class="pixel-btn py-3 text-xs sm:text-sm">
+                    🔊 VOLUME
+                </button>
+            </div>
+
+            <div class="w-full">
+                <button id="btnCredits" class="w-full pixel-btn py-3 text-xs sm:text-sm text-cyan-300">
+                    ★ CREDITS (NICO / NICO03.PL)
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Tip Footer -->
+        <div class="w-full max-w-4xl text-center font-retro text-base sm:text-lg text-slate-400">
+            AUTO-AIM WEAPON ENABLED • SURVIVE 25 WAVES TO UNLOCK ENDLESS FREEPLAY
+        </div>
+    </div>
+
+    <!-- ==========================================
+         IN-GAME HUD (BROTATO STYLE)
+    =========================================== -->
+    <div id="gameHud" class="hidden absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-3 sm:p-5">
+        
+        <!-- TOP HUD: Wave, Countdown, Level & XP Bar, Quick Pause -->
+        <div class="w-full flex flex-col items-center">
+            <div class="w-full flex items-start justify-between gap-2">
+                
+                <!-- Top-Left: Difficulty & Kill Counter -->
+                <div class="pixel-box-dark px-3 py-2 pointer-events-auto flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                        <span id="hudDifficultyBadge" class="text-[10px] px-1.5 py-0.5 bg-amber-600 text-white">MEDIUM</span>
+                        <span class="text-[10px] text-slate-300">SLAIN: <strong id="hudKills" class="text-white">0</strong></span>
+                    </div>
+                    <div class="w-full flex items-center gap-1.5">
+                        <span class="text-[10px] text-cyan-300">LVL <span id="hudLevel">1</span></span>
+                        <div class="w-28 sm:w-36 h-3 bg-slate-950 border-2 border-slate-500 relative overflow-hidden">
+                            <div id="hudXpBar" class="h-full bg-cyan-400 transition-all duration-150" style="width: 0%;"></div>
+                        </div>
+                        <span id="hudXpText" class="font-retro text-xs text-cyan-200">0/16</span>
+                    </div>
+                </div>
+
+                <!-- Top-Center: Wave & Timer -->
+                <div class="pixel-box-dark px-4 sm:px-6 py-2 text-center flex flex-col items-center">
+                    <div id="hudWaveTitle" class="text-xs sm:text-sm text-amber-400 tracking-wider">
+                        WAVE 1 / 25
+                    </div>
+                    <div id="hudWaveTimer" class="text-xl sm:text-3xl font-pixel text-white mt-1">
+                        25
+                    </div>
+                </div>
+
+                <!-- Top-Right: Quick Pause & Audio -->
+                <div class="flex items-center gap-2 pointer-events-auto">
+                    <button id="btnHudMute" class="pixel-btn px-2.5 py-2 text-xs" title="Mute / Unmute">
+                        🔊
+                    </button>
+                    <button id="btnHudPause" class="pixel-btn px-3 py-2 text-[10px] sm:text-xs">
+                        II PAUSE
+                    </button>
+                </div>
+            </div>
+
+            <!-- Wave Banner Notification -->
+            <div id="waveBanner" class="mt-6 transition-opacity duration-300 opacity-0 pointer-events-none">
+                <div class="pixel-box-red px-6 py-2.5 text-center">
+                    <div id="waveBannerTitle" class="text-sm sm:text-lg text-amber-300">WAVE 1 APPROACHING</div>
+                    <div id="waveBannerSub" class="font-retro text-base sm:text-lg text-red-200">PURGE THE WHITE SPIRITS!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM HUD ROW -->
+        <div class="w-full flex flex-col sm:flex-row items-center sm:items-end justify-between gap-3">
+            
+            <!-- BOTTOM-LEFT CORNER: HP Bar, Equipped Weapon, and Inventory Logo -->
+            <div class="w-full sm:w-auto flex flex-col gap-2 pointer-events-auto">
+                
+                <!-- Player HP Bar -->
+                <div class="pixel-box-dark p-2.5 w-full sm:w-72">
+                    <div class="flex items-center justify-between text-[10px] mb-1">
+                        <span class="text-red-400">♥ PLAYER HP</span>
+                        <span id="hudHpText" class="text-white">150 / 150</span>
+                    </div>
+                    <div class="w-full h-4 bg-black border-2 border-slate-400 relative overflow-hidden">
+                        <div id="hudHpBar" class="h-full bg-gradient-to-r from-red-700 via-red-500 to-rose-400 transition-all duration-100" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- Equipped Weapon & Inventory Button Row -->
+                <div class="flex items-stretch gap-2">
+                    <!-- Inventory Logo Button -->
+                    <button id="btnOpenInventory" class="pixel-btn px-3 py-2 flex flex-col items-center justify-center gap-1 min-w-[78px] group" title="Open Inventory & Upgrades">
+                        <canvas id="invIconCanvas" width="32" height="32" class="w-7 h-7"></canvas>
+                        <span class="text-[9px] text-amber-300 group-hover:text-white">BAG (<span id="hudItemCount">0</span>)</span>
+                    </button>
+
+                    <!-- Equipped Weapon Info Card -->
+                    <div class="pixel-box-dark px-3 py-2 flex items-center gap-2.5 flex-1">
+                        <div class="w-10 h-10 bg-slate-900 border-2 border-amber-400 flex items-center justify-center shrink-0">
+                            <canvas id="weaponIconCanvas" width="32" height="32" class="w-8 h-8"></canvas>
+                        </div>
+                        <div class="flex flex-col text-left">
+                            <div class="text-[10px] text-amber-300 leading-tight" id="hudWeaponName">HELLFIRE BLASTER MK 1</div>
+                            <div class="font-retro text-sm text-slate-200 leading-tight mt-0.5">
+                                DMG: <span id="hudWeaponDmg" class="text-red-400 font-bold">18</span> • 
+                                SPD: <span id="hudWeaponRate" class="text-cyan-300">3.0/s</span> • 
+                                SHOT: <span id="hudWeaponShots" class="text-amber-200">1</span>
+                            </div>
+                            <div id="hudWeaponTag" class="font-retro text-xs text-emerald-400 leading-none">
+                                AUTO-AIM: BALANCED
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM-CENTER: Power Timers & Dash Cooldown -->
+            <div class="pointer-events-auto flex items-center justify-center gap-2.5 sm:gap-3.5 mx-auto sm:mx-0">
+                
+                <!-- Main Power (Q - 45s base cooldown, 3 big bullets x3.5 DMG) -->
+                <button id="slotMainPower" class="pixel-box-dark p-2 w-24 sm:w-28 flex flex-col items-center relative overflow-hidden cursor-pointer hover:border-amber-400 transition-colors" title="Main Power: 3 Giant Bullets (x3.5 DMG)">
+                    <div id="cdOverlayMain" class="absolute inset-0 bg-black/80 z-10 flex items-center justify-center hidden">
+                        <span id="cdTextMain" class="text-xs sm:text-sm text-amber-300 font-pixel">45.0s</span>
+                    </div>
+                    <div class="w-full flex items-center justify-between text-[9px] mb-1">
+                        <span class="px-1.5 py-0.5 bg-red-700 text-white border border-white" id="keyBadgeMain">Q</span>
+                        <span id="statusBadgeMain" class="text-emerald-400">READY</span>
+                    </div>
+                    <canvas id="iconMainPower" width="32" height="32" class="w-7 h-7 my-0.5"></canvas>
+                    <div class="text-[8px] text-slate-300 truncate w-full text-center mt-0.5">MAIN POWER</div>
+                    <div id="descMainPower" class="font-retro text-xs text-amber-300 leading-none">3x BIG (x3.5)</div>
+                </button>
+
+                <!-- Secondary Power (E - 20s base cooldown, 5 radial orbs) -->
+                <button id="slotSecPower" class="pixel-box-dark p-2 w-24 sm:w-28 flex flex-col items-center relative overflow-hidden cursor-pointer hover:border-cyan-400 transition-colors" title="Secondary Power: 5 Radial Orbs">
+                    <div id="cdOverlaySec" class="absolute inset-0 bg-black/80 z-10 flex items-center justify-center hidden">
+                        <span id="cdTextSec" class="text-xs sm:text-sm text-cyan-300 font-pixel">20.0s</span>
+                    </div>
+                    <div class="w-full flex items-center justify-between text-[9px] mb-1">
+                        <span class="px-1.5 py-0.5 bg-cyan-700 text-white border border-white" id="keyBadgeSec">E</span>
+                        <span id="statusBadgeSec" class="text-emerald-400">READY</span>
+                    </div>
+                    <canvas id="iconSecPower" width="32" height="32" class="w-7 h-7 my-0.5"></canvas>
+                    <div class="text-[8px] text-slate-300 truncate w-full text-center mt-0.5">SEC. POWER</div>
+                    <div id="descSecPower" class="font-retro text-xs text-cyan-300 leading-none">5x ORB NOVA</div>
+                </button>
+
+                <!-- Dash / Dodge (C - 6s base cooldown) -->
+                <button id="slotDash" class="pixel-box-dark p-2 w-20 sm:w-24 flex flex-col items-center relative overflow-hidden cursor-pointer hover:border-emerald-400 transition-colors" title="Dash / Dodge forward with Invulnerability">
+                    <div id="cdOverlayDash" class="absolute inset-0 bg-black/80 z-10 flex items-center justify-center hidden">
+                        <span id="cdTextDash" class="text-xs sm:text-sm text-emerald-300 font-pixel">6.0s</span>
+                    </div>
+                    <div class="w-full flex items-center justify-between text-[9px] mb-1">
+                        <span class="px-1.5 py-0.5 bg-emerald-700 text-white border border-white" id="keyBadgeDash">C</span>
+                        <span id="statusBadgeDash" class="text-emerald-400">READY</span>
+                    </div>
+                    <canvas id="iconDash" width="32" height="32" class="w-7 h-7 my-0.5"></canvas>
+                    <div class="text-[8px] text-slate-300 truncate w-full text-center mt-0.5">DODGE DASH</div>
+                    <div id="descDash" class="font-retro text-xs text-emerald-300 leading-none">6.0s CD</div>
+                </button>
+            </div>
+
+            <!-- BOTTOM-RIGHT: Arena Minimap / Radar (1x1 Square Preview) -->
+            <div class="hidden lg:flex flex-col items-end pointer-events-auto">
+                <div class="pixel-box-dark p-2 flex flex-col items-center">
+                    <span class="text-[8px] text-slate-400 mb-1">1x1 ARENA RADAR</span>
+                    <canvas id="minimapCanvas" width="84" height="84" class="w-20 h-20 bg-black border border-slate-600"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: CONTROLS & KEYBINDS
+    =========================================== -->
+    <div id="modalControls" class="hidden absolute inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-lg p-5 sm:p-6 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b-2 border-slate-700 pb-3">
+                <h2 class="text-sm sm:text-lg text-amber-400">⌨ CONTROLS &amp; KEYBINDS</h2>
+                <button data-close-modal="modalControls" class="pixel-btn px-2.5 py-1 text-xs">X</button>
+            </div>
+
+            <p class="font-retro text-base sm:text-lg text-slate-300">
+                Click any button below and press a key on your keyboard to customize its keybind. Your weapon aims and shoots automatically!
+            </p>
+
+            <div id="keybindList" class="flex flex-col gap-2.5">
+                <!-- Populated dynamically by JS -->
+            </div>
+
+            <div class="flex items-center justify-between gap-3 pt-2 border-t-2 border-slate-700">
+                <button id="btnResetKeybinds" class="pixel-btn px-3 py-2.5 text-[10px] sm:text-xs text-rose-300">
+                    RESET DEFAULTS
+                </button>
+                <button data-close-modal="modalControls" class="pixel-btn pixel-btn-primary px-5 py-2.5 text-xs">
+                    SAVE &amp; CLOSE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: VOLUME & SOUND SETTINGS
+    =========================================== -->
+    <div id="modalVolume" class="hidden absolute inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-md p-5 sm:p-6 flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b-2 border-slate-700 pb-3">
+                <h2 class="text-sm sm:text-lg text-amber-400">🔊 8-BIT AUDIO SYNTH</h2>
+                <button data-close-modal="modalVolume" class="pixel-btn px-2.5 py-1 text-xs">X</button>
+            </div>
+
+            <!-- Mute Toggle -->
+            <div class="pixel-box-dark p-3.5 flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-white">MASTER AUDIO</div>
+                    <div id="audioStatusSub" class="font-retro text-base text-emerald-400">SOUND ENABLED</div>
+                </div>
+                <button id="btnToggleMuteModal" class="pixel-btn px-4 py-2 text-xs">
+                    MUTE / UNMUTE
+                </button>
+            </div>
+
+            <!-- Master Volume Controls (- / + / Bar) -->
+            <div class="pixel-box-dark p-3.5 flex flex-col gap-3">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-slate-300">VOLUME LEVEL</span>
+                    <span id="volumePercentText" class="text-amber-300">70%</span>
+                </div>
+
+                <!-- 10-segment 8-bit volume bar -->
+                <div id="volumeSegments" class="grid grid-cols-10 gap-1.5 h-6 bg-black p-1 border-2 border-slate-600">
+                    <!-- Rendered via JS -->
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <button id="btnVolDown" class="pixel-btn py-2.5 text-xs">
+                        - QUIETER
+                    </button>
+                    <button id="btnVolUp" class="pixel-btn py-2.5 text-xs">
+                        + LOUDER
+                    </button>
+                </div>
+            </div>
+
+            <!-- Retro BGM Toggle -->
+            <div class="pixel-box-dark p-3.5 flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-white">CHIPTUNE SYNTH BGM</div>
+                    <div class="font-retro text-base text-slate-400">8-bit battle bassline loop</div>
+                </div>
+                <button id="btnToggleBgm" class="pixel-btn px-4 py-2 text-xs text-cyan-300">
+                    ON
+                </button>
+            </div>
+
+            <button data-close-modal="modalVolume" class="pixel-btn pixel-btn-primary w-full py-3 text-xs">
+                DONE
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: CREDITS (NICO / NICO03.PL)
+    =========================================== -->
+    <div id="modalCredits" class="hidden absolute inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-md p-6 flex flex-col items-center text-center gap-4">
+            <div class="w-full flex items-center justify-between border-b-2 border-slate-700 pb-3">
+                <h2 class="text-sm sm:text-lg text-amber-400">★ GAME CREDITS</h2>
+                <button data-close-modal="modalCredits" class="pixel-btn px-2.5 py-1 text-xs">X</button>
+            </div>
+
+            <div class="pixel-box-red p-5 w-full flex flex-col items-center gap-2 my-1">
+                <div class="text-[10px] text-red-300 tracking-widest uppercase">Created For &amp; Directed By</div>
+                <div class="text-xl sm:text-2xl text-amber-300 font-pixel tracking-wide mt-1">
+                    NICO
+                </div>
+                <a href="https://nico03.pl" target="_blank" rel="noopener noreferrer" class="pixel-btn px-4 py-2 mt-2 text-xs text-cyan-300 hover:text-amber-300">
+                    🌐 NICO03.PL
+                </a>
+            </div>
+
+            <div class="pixel-box-dark p-4 w-full text-left font-retro text-base sm:text-lg text-slate-300 space-y-1.5">
+                <div><strong class="text-amber-300">GAME TITLE:</strong> INFERNAL SANDBOX</div>
+                <div><strong class="text-amber-300">INSPIRATION:</strong> Brotato (1x1 Arena Auto-Shooter)</div>
+                <div><strong class="text-cyan-300">ENGINE:</strong> Custom HTML5 8-Bit Pixel Canvas &amp; WebAudio Chiptune Synthesizer</div>
+            </div>
+
+            <button data-close-modal="modalCredits" class="pixel-btn pixel-btn-primary w-full py-3 text-xs">
+                BACK TO MENU
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: INVENTORY & PLAYER STATS
+    =========================================== -->
+    <div id="modalInventory" class="hidden absolute inset-0 z-40 bg-black/80 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-3xl p-5 sm:p-6 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b-2 border-slate-700 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <h2 class="text-sm sm:text-lg text-amber-400">🎒 INVENTORY &amp; ARSENAL</h2>
+                    <span class="text-[10px] px-2 py-0.5 bg-slate-800 text-cyan-300 border border-slate-600">GAME PAUSED</span>
+                </div>
+                <button id="btnCloseInventory" class="pixel-btn px-3 py-1.5 text-xs">RESUME [ESC]</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Left Column: Equipped Weapon & Combat Stats -->
+                <div class="pixel-box-dark p-4 flex flex-col gap-3">
+                    <div class="text-xs text-amber-300 border-b border-slate-700 pb-1.5">EQUIPPED WEAPON</div>
+                    <div class="flex items-center gap-3 bg-black/50 p-2.5 border border-slate-700">
+                        <canvas id="invModalWeaponCanvas" width="40" height="40" class="w-10 h-10 shrink-0"></canvas>
+                        <div>
+                            <div id="invWeaponTitle" class="text-xs text-white">HELLFIRE BLASTER</div>
+                            <div class="font-retro text-sm text-emerald-400">Auto-Targeting Soul Gun</div>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-cyan-300 border-b border-slate-700 pb-1.5 mt-1">ATTRIBUTES</div>
+                    <div id="invStatsList" class="font-retro text-base space-y-1 text-slate-200">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Right 2 Columns: Collected Upgrades Grid -->
+                <div class="md:col-span-2 pixel-box-dark p-4 flex flex-col">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-1.5 mb-3">
+                        <span class="text-xs text-amber-300">COLLECTED UPGRADES &amp; POWERS</span>
+                        <span id="invTotalUpgrades" class="font-retro text-base text-slate-400">0 Items</span>
+                    </div>
+                    <div id="invItemsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 overflow-y-auto max-h-72 pr-1">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t-2 border-slate-700">
+                <div class="flex gap-2">
+                    <button id="btnInvControls" class="pixel-btn px-3 py-2 text-[10px]">⌨ CONTROLS</button>
+                    <button id="btnInvVolume" class="pixel-btn px-3 py-2 text-[10px]">🔊 VOLUME</button>
+                    <button id="btnAbandonRun" class="pixel-btn px-3 py-2 text-[10px] text-rose-400">🏳 MAIN MENU</button>
+                </div>
+                <button id="btnResumeFromInv" class="pixel-btn pixel-btn-primary px-6 py-2.5 text-xs">
+                    ▶ RESUME BATTLE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: LEVEL UP! (CHOOSE 1 OF 3 UPGRADES)
+    =========================================== -->
+    <div id="modalLevelUp" class="hidden absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-3xl p-5 sm:p-6 flex flex-col items-center text-center gap-4 max-h-[92vh] overflow-y-auto">
+            <div class="text-xs text-cyan-300 tracking-widest uppercase animate-pulse">
+                ★ SOUL POWER ASCENSION ★
+            </div>
+            <h2 class="text-xl sm:text-3xl text-amber-400 title-shadow">
+                LEVEL UP! CHOOSE 1 UPGRADE
+            </h2>
+            <p class="font-retro text-base sm:text-lg text-slate-300 -mt-2">
+                Select a passive or active enhancement to empower your survivor:
+            </p>
+
+            <!-- 3 Upgrade Cards Container -->
+            <div id="upgradeChoicesContainer" class="w-full grid grid-cols-1 sm:grid-cols-3 gap-3.5 my-2">
+                <!-- Populated dynamically on Level Up -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: WAVE 25 VICTORY & FREEPLAY PROMPT
+    =========================================== -->
+    <div id="modalVictory" class="hidden absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-lg p-6 flex flex-col items-center text-center gap-4">
+            <div class="text-xs text-emerald-400 tracking-widest uppercase">
+                ★ ALL 25 WAVES CONQUERED ★
+            </div>
+            <h2 class="text-2xl sm:text-4xl text-amber-300 title-shadow">
+                VICTORY!
+            </h2>
+            <p class="font-retro text-lg text-slate-200">
+                You survived all 25 waves of the Infernal Sandbox! Do you want to enter <strong class="text-amber-300">FREEPLAY MODE</strong> and push as far as humanly possible?
+            </p>
+
+            <div id="victoryStatsBox" class="pixel-box-dark p-4 w-full font-retro text-lg text-left space-y-1 text-slate-300">
+                <!-- Populated via JS -->
+            </div>
+
+            <div class="w-full flex flex-col sm:flex-row gap-3 mt-2">
+                <button id="btnVictoryMenu" class="pixel-btn py-3.5 px-4 text-xs flex-1">
+                    MAIN MENU
+                </button>
+                <button id="btnEnterFreeplay" class="pixel-btn pixel-btn-primary py-3.5 px-4 text-xs flex-1">
+                    🔥 ENTER FREEPLAY (WAVE 26+)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: GAME OVER
+    =========================================== -->
+    <div id="modalGameOver" class="hidden absolute inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+        <div class="pixel-box-red w-full max-w-md p-6 flex flex-col items-center text-center gap-4">
+            <div class="text-xs text-red-400 tracking-widest uppercase">
+                SOUL OVERWHELMED
+            </div>
+            <h2 class="text-2xl sm:text-4xl text-red-500 title-shadow">
+                YOU DIED
+            </h2>
+            <div id="gameOverStatsBox" class="pixel-box-dark p-4 w-full font-retro text-lg text-left space-y-1 text-slate-300">
+                <!-- Populated via JS -->
+            </div>
+            <div class="w-full flex gap-3 mt-2">
+                <button id="btnGameOverMenu" class="pixel-btn py-3.5 px-4 text-xs flex-1">
+                    MAIN MENU
+                </button>
+                <button id="btnGameOverRetry" class="pixel-btn pixel-btn-primary py-3.5 px-4 text-xs flex-1">
+                    ↻ TRY AGAIN
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         GAME ENGINE SCRIPT
+    =========================================== -->
+    <script>
+        (function() {
+            'use strict';
+
+            /* ==========================================================================
+               1. STORAGE, KEYBINDS & PERSISTENT STATS
+            ========================================================================== */
+            const STORAGE_KEY = 'infernal_sandbox_nico03_v1';
+
+            const DEFAULT_KEYBINDS = {
+                up: 'KeyW',
+                down: 'KeyS',
+                left: 'KeyA',
+                right: 'KeyD',
+                mainPower: 'KeyQ',
+                secPower: 'KeyE',
+                dash: 'KeyC'
+            };
+
+            const KEYBIND_LABELS = {
+                up: 'MOVE UP',
+                down: 'MOVE DOWN',
+                left: 'MOVE LEFT',
+                right: 'MOVE RIGHT',
+                mainPower: 'MAIN POWER (3x GIANT)',
+                secPower: 'SECONDARY POWER (5x ORBS)',
+                dash: 'DODGE / DASH'
+            };
+
+            let keybinds = { ...DEFAULT_KEYBINDS };
+
+            let savedStats = {
+                bestWave: 0,
+                totalKills: 0,
+                crtEnabled: true,
+                volume: 0.7,
+                muted: false,
+                bgmEnabled: true
+            };
+
+            function formatKeyCode(code) {
+                if (!code) return '?';
+                if (code.startsWith('Key')) return code.slice(3);
+                if (code.startsWith('Digit')) return code.slice(5);
+                if (code === 'Space') return 'SPC';
+                if (code.startsWith('Arrow')) return code.replace('Arrow', 'ARR ');
+                if (code === 'ShiftLeft' || code === 'ShiftRight') return 'SHIFT';
+                return code.toUpperCase();
+            }
+
+            function loadStorage() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (parsed.keybinds) keybinds = { ...DEFAULT_KEYBINDS, ...parsed.keybinds };
+                        if (parsed.stats) savedStats = { ...savedStats, ...parsed.stats };
+                    }
+                } catch (e) {
+                    console.warn('Storage load skipped:', e);
+                }
+                AudioEngine.volume = savedStats.volume;
+                AudioEngine.muted = savedStats.muted;
+                AudioEngine.bgmEnabled = savedStats.bgmEnabled;
+            }
+
+            function saveStorage() {
+                try {
+                    savedStats.volume = AudioEngine.volume;
+                    savedStats.muted = AudioEngine.muted;
+                    savedStats.bgmEnabled = AudioEngine.bgmEnabled;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                        keybinds,
+                        stats: savedStats
+                    }));
+                } catch (e) {
+                    console.warn('Storage save skipped:', e);
+                }
+            }
+
+            /* ==========================================================================
+               2. 8-BIT WEBAUDIO CHIPTUNE SYNTHESIZER
+            ========================================================================== */
+            const AudioEngine = {
+                ctx: null,
+                volume: 0.7,
+                muted: false,
+                bgmEnabled: true,
+                bgmInterval: null,
+                bgmStep: 0,
+
+                init() {
+                    if (!this.ctx) {
+                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                        if (AudioCtx) this.ctx = new AudioCtx();
+                    }
+                    if (this.ctx && this.ctx.state === 'suspended') {
+                        this.ctx.resume();
+                    }
+                },
+
+                playTone(freq, type = 'square', duration = 0.08, volScale = 0.25, slideFreq = null) {
+                    if (this.muted || this.volume <= 0) return;
+                    this.init();
+                    if (!this.ctx) return;
+
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, now);
+                    if (slideFreq) {
+                        osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideFreq), now + duration);
+                    }
+
+                    const peak = Math.min(1, this.volume * volScale);
+                    gain.gain.setValueAtTime(peak, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + duration);
+                },
+
+                sfxClick() {
+                    this.playTone(620, 'square', 0.045, 0.2, 880);
+                },
+
+                sfxShoot() {
+                    this.playTone(460, 'square', 0.055, 0.14, 160);
+                },
+
+                sfxMainPower() {
+                    this.playTone(180, 'sawtooth', 0.28, 0.38, 55);
+                    setTimeout(() => this.playTone(320, 'square', 0.22, 0.32, 90), 50);
+                },
+
+                sfxSecPower() {
+                    this.playTone(520, 'triangle', 0.18, 0.32, 980);
+                    setTimeout(() => this.playTone(760, 'square', 0.16, 0.26, 360), 60);
+                },
+
+                sfxDash() {
+                    this.playTone(280, 'triangle', 0.12, 0.28, 660);
+                },
+
+                sfxGhostDeath() {
+                    this.playTone(240, 'sawtooth', 0.09, 0.16, 75);
+                },
+
+                sfxPlayerHit() {
+                    this.playTone(130, 'sawtooth', 0.24, 0.4, 45);
+                },
+
+                sfxXp() {
+                    this.playTone(740, 'sine', 0.05, 0.15, 1080);
+                },
+
+                sfxLevelUp() {
+                    const notes = [440, 554, 659, 880];
+                    notes.forEach((n, idx) => {
+                        setTimeout(() => this.playTone(n, 'square', 0.12, 0.28), idx * 75);
+                    });
+                },
+
+                startBGM() {
+                    if (this.bgmInterval) return;
+                    const bassline = [110, 110, 130.8, 110, 146.8, 130.8, 98, 110];
+                    this.bgmInterval = setInterval(() => {
+                        if (Game.state !== 'PLAYING' || this.muted || !this.bgmEnabled || this.volume <= 0) return;
+                        const note = bassline[this.bgmStep % bassline.length];
+                        this.playTone(note, 'triangle', 0.13, 0.09);
+                        this.bgmStep++;
+                    }, 220);
+                }
+            };
+
+            /* ==========================================================================
+               3. 8-BIT PIXEL ART SPRITE MATRICES & PALETTE
+            ========================================================================== */
+            const PALETTE = {
+                'K': '#09060e',
+                'W': '#ffffff',
+                'G': '#cbd5e1',
+                'S': '#64748b',
+                'R': '#ef4444',
+                'D': '#991b1b',
+                'O': '#f97316',
+                'Y': '#fde047',
+                'F': '#fdba74',
+                'C': '#22d3ee',
+                'P': '#c084fc',
+                'E': '#4ade80',
+                'T': '#a16207'
+            };
+
+            const SPRITES = {
+                playerIdle: [
+                    "...KKKKKK...",
+                    "..KRRRRRRK..",
+                    ".KRRYYYYRRK.",
+                    ".KFFFFFFFFK.",
+                    ".KFKFFFFKFK.",
+                    ".KFFFFFFFFK.",
+                    ".KDDDDDDDDK.",
+                    "..KDDDDDDK..",
+                    "..KTTTTTTK..",
+                    "..K.K..K.K..",
+                    "....K..K...."
+                ],
+                playerWalk: [
+                    "...KKKKKK...",
+                    "..KRRRRRRK..",
+                    ".KRRYYYYRRK.",
+                    ".KFFFFFFFFK.",
+                    ".KFKFFFFKFK.",
+                    ".KFFFFFFFFK.",
+                    ".KDDDDDDDDK.",
+                    "..KDDDDDDK..",
+                    "..KTTTTTTK..",
+                    ".K..K..K..K.",
+                    ".K........K."
+                ],
+                ghostMelee: [
+                    "....KKKK....",
+                    "..KKWWWWKK..",
+                    ".KWWWWWWWWK.",
+                    ".KWKKWWKKWK.",
+                    ".KWRKWWKRWK.",
+                    "KWWWWWWWWWWK",
+                    "KWWWWWWWWWWK",
+                    "KWWWWGGGGWWK",
+                    "KWWGGGGGGGGK",
+                    "KWK.KWWK.KWK",
+                    ".K...KK...K."
+                ],
+                ghostFast: [
+                    "...KKKKKK...",
+                    "..KWWWWWWK..",
+                    ".KWWRWWWRWWK",
+                    ".KWRRWWWRRWK",
+                    ".KWWWWWWWWK.",
+                    "KWWWWGGGGWWK",
+                    "KWWGGGGGGGGK",
+                    ".KWK.KK.KWK.",
+                    "..K......K.."
+                ],
+                ghostRanged: [
+                    "...PPPPPP...",
+                    "..PKKKKKKP..",
+                    ".PKWWWWWWKP.",
+                    ".KWWWWWWWWK.",
+                    ".KWCCWWCCWK.",
+                    ".KWWWWWWWWK.",
+                    "KWWPPPPPPWWK",
+                    "KWWWWGGGGWWK",
+                    "KWWGGGGGGGGK",
+                    "KWK.KWWK.KWK",
+                    ".K...KK...K."
+                ],
+                ghostTank: [
+                    ".KK......KK.",
+                    "KYYK.KK.KYYK",
+                    "KYYKWWWWKYYK",
+                    ".KKWWWWWWKK.",
+                    ".KWWWWWWWWK.",
+                    "KWRRKWWKRRWK",
+                    "KWRRKWWKRRWK",
+                    "KWWWWWWWWWWK",
+                    "KWWKKKKKKWWK",
+                    "KWWWWGGGGWWK",
+                    "KWWGGGGGGGGK",
+                    "KWK.KWWK.KWK"
+                ],
+                weaponGun: [
+                    "....KKKKKK",
+                    "..KKCCCCCCK",
+                    ".KSSSSSSSSK",
+                    "KYYYYYYYYK.",
+                    "KSSSKKKK...",
+                    "KKK........"
+                ],
+                weaponShotgun: [
+                    "...KKKKKKKK",
+                    ".KKDDDDDDDK",
+                    "KTTTTTTTTK.",
+                    "KTTTKKKK...",
+                    "KKKK......."
+                ],
+                weaponSmg: [
+                    "...KKKKKKK.",
+                    "..KCCCCCCC.",
+                    ".KSSSSSSSSK",
+                    "KSSK..KSSK.",
+                    "KKK...KKK.."
+                ],
+                weaponRailgun: [
+                    "..KKKKKKKKK",
+                    ".KCCCCCCCCK",
+                    "KPPPPPPPPPK",
+                    ".KSSSSSSSS.",
+                    ".KKK......."
+                ],
+                weaponLauncher: [
+                    "..KKKKKKKK.",
+                    ".KRRRRRRRRK",
+                    "KYYYYYYYYYK",
+                    "KRRRRRRRRK.",
+                    ".KKK..KKK.."
+                ],
+                weaponScythe: [
+                    "...KKKKKK..",
+                    ".KKCCCCCCK.",
+                    "KCCK....KK.",
+                    "KCK...KK...",
+                    "KK..KK.....",
+                    "..KK......."
+                ],
+                weaponMinigun: [
+                    "..KKKKKKKKK",
+                    ".KYYYYYYYYK",
+                    "KOOOOOOOOOK",
+                    "KSSSSSSSSSK",
+                    ".KKK..KKKK."
+                ],
+                backpack: [
+                    "...KKKK...",
+                    "..KTTTTK..",
+                    ".KTTTTTTK.",
+                    "KTTTTTTTTK",
+                    "KTTYYYYTTK",
+                    "KTTKYYKTTK",
+                    "KTTTTTTTTK",
+                    "KSSSSSSSSK",
+                    ".KKKKKKKK."
+                ],
+                iconMain: [
+                    "..KK....KK..",
+                    ".KYYK..KYYK.",
+                    ".KORK..KORK.",
+                    ".KRRK..KRRK.",
+                    "....KKKK....",
+                    "...KYYYYK...",
+                    "...KOORK...",
+                    "...KRRRRK..."
+                ],
+                iconSec: [
+                    "....KK....",
+                    "...KCCK...",
+                    "KK..KK..KK",
+                    "KCK.PP.KCK",
+                    "KK.KPPK.KK",
+                    "...KKKK...",
+                    ".KK....KK.",
+                    ".KCK..KCK."
+                ],
+                iconDash: [
+                    "....KKKK..",
+                    "...KEEEEK.",
+                    "...KEEEEK.",
+                    "...KEEEKK.",
+                    ".KKEEEEK..",
+                    "KEEEEEEEKK",
+                    "KYYYYYYYYK",
+                    "KKKKKKKKKK"
+                ]
+            };
+
+            const spriteCache = {};
+            function getSpriteCanvas(name, scale = 1, tint = null) {
+                const key = `${name}_${scale}_${tint || 'none'}`;
+                if (spriteCache[key]) return spriteCache[key];
+
+                const matrix = SPRITES[name];
+                if (!matrix) return null;
+
+                const rows = matrix.length;
+                const cols = matrix[0].length;
+                const off = document.createElement('canvas');
+                off.width = cols * scale;
+                off.height = rows * scale;
+                const octx = off.getContext('2d');
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const ch = matrix[r][c];
+                        const color = tint || PALETTE[ch];
+                        if (color && ch !== '.') {
+                            octx.fillStyle = color;
+                            octx.fillRect(c * scale, r * scale, scale, scale);
+                        }
+                    }
+                }
+                spriteCache[key] = off;
+                return off;
+            }
+
+            /* ==========================================================================
+               4. DIFFICULTY CONFIGURATIONS & WEAPON ARSENAL
+            ========================================================================== */
+            const DIFFICULTIES = {
+                easy: {
+                    name: 'EASY',
+                    hpMult: 0.60,
+                    dmgMult: 0.55,
+                    spawnMult: 0.68,
+                    xpMult: 1.30,
+                    badgeColor: 'bg-emerald-700',
+                    desc: '0.6x Ghost Health & Damage, slower spawns, and +30% bonus XP. Very chill!'
+                },
+                medium: {
+                    name: 'MEDIUM',
+                    hpMult: 0.80,
+                    dmgMult: 0.78,
+                    spawnMult: 0.85,
+                    xpMult: 1.15,
+                    badgeColor: 'bg-amber-600',
+                    desc: 'Balanced & fair 8-bit challenge. Smooth progression and generous drops.'
+                },
+                hard: {
+                    name: 'HARD',
+                    hpMult: 1.15,
+                    dmgMult: 1.05,
+                    spawnMult: 1.08,
+                    xpMult: 1.05,
+                    badgeColor: 'bg-red-700',
+                    desc: '1.15x Ghost Health & denser swarms. For seasoned arena survivors.'
+                },
+                infernal: {
+                    name: 'INFERNAL',
+                    hpMult: 1.55,
+                    dmgMult: 1.35,
+                    spawnMult: 1.28,
+                    xpMult: 1.20,
+                    badgeColor: 'bg-purple-700',
+                    desc: '1.55x Nightmare Ghost Health & relentless hordes in a blood-soaked arena!'
+                }
+            };
+
+            const WEAPONS = {
+                blaster: {
+                    id: 'blaster',
+                    name: 'HELLFIRE BLASTER',
+                    sprite: 'weaponGun',
+                    tag: 'AUTO-AIM: BALANCED',
+                    color: '#38bdf8',
+                    dmgFactor: 1.0,
+                    rateFactor: 1.0,
+                    bonusShots: 0,
+                    spread: 0.12,
+                    bulletSpeed: 500,
+                    bulletSize: 5,
+                    bonusPierce: 0,
+                    explosiveRadius: 0,
+                    knockback: 10,
+                    desc: 'Reliable soul-blaster with balanced fire rate and pinpoint accuracy.'
+                },
+                shotgun: {
+                    id: 'shotgun',
+                    name: 'INFERNAL SHOTGUN',
+                    sprite: 'weaponShotgun',
+                    tag: 'SPREAD: BUCKSHOT',
+                    color: '#f97316',
+                    dmgFactor: 0.78,
+                    rateFactor: 0.72,
+                    bonusShots: 4,
+                    spread: 0.14,
+                    bulletSpeed: 460,
+                    bulletSize: 5,
+                    bonusPierce: 0,
+                    explosiveRadius: 0,
+                    knockback: 28,
+                    desc: 'Fires +4 extra buckshot pellets in a wide cone that knock ghosts back!'
+                },
+                smg: {
+                    id: 'smg',
+                    name: 'PHANTOM SMG',
+                    sprite: 'weaponSmg',
+                    tag: 'RAPID-FIRE: 2.1x SPD',
+                    color: '#22d3ee',
+                    dmgFactor: 0.68,
+                    rateFactor: 2.1,
+                    bonusShots: 0,
+                    spread: 0.18,
+                    bulletSpeed: 540,
+                    bulletSize: 4,
+                    bonusPierce: 0,
+                    explosiveRadius: 0,
+                    knockback: 6,
+                    desc: 'Ultra-fast spectral submachine gun with +110% Attack Speed!'
+                },
+                railgun: {
+                    id: 'railgun',
+                    name: 'SOUL RAILGUN',
+                    sprite: 'weaponRailgun',
+                    tag: 'PIERCING LASER',
+                    color: '#c084fc',
+                    dmgFactor: 1.75,
+                    rateFactor: 0.68,
+                    bonusShots: 0,
+                    spread: 0.08,
+                    bulletSpeed: 720,
+                    bulletSize: 7,
+                    bonusPierce: 4,
+                    explosiveRadius: 0,
+                    knockback: 22,
+                    desc: 'High-velocity hyper beam dealing 1.75x DMG and piercing +4 Ghosts!'
+                },
+                launcher: {
+                    id: 'launcher',
+                    name: 'BRIMSTONE LAUNCHER',
+                    sprite: 'weaponLauncher',
+                    tag: 'AOE EXPLOSIVE BLAST',
+                    color: '#ef4444',
+                    dmgFactor: 1.65,
+                    rateFactor: 0.65,
+                    bonusShots: 0,
+                    spread: 0.14,
+                    bulletSpeed: 390,
+                    bulletSize: 9,
+                    bonusPierce: 0,
+                    explosiveRadius: 78,
+                    knockback: 32,
+                    desc: 'Launches heavy Brimstone shells that detonate in a fiery AoE explosion!'
+                },
+                scythe: {
+                    id: 'scythe',
+                    name: 'REAPER SCYTHES',
+                    sprite: 'weaponScythe',
+                    tag: 'CLEAVING BLADES',
+                    color: '#4ade80',
+                    dmgFactor: 1.25,
+                    rateFactor: 1.05,
+                    bonusShots: 1,
+                    spread: 0.22,
+                    bulletSpeed: 420,
+                    bulletSize: 8,
+                    bonusPierce: 3,
+                    explosiveRadius: 0,
+                    knockback: 18,
+                    isSpinning: true,
+                    desc: 'Hurls +1 spinning spectral scythes that cleave through +3 Ghosts!'
+                },
+                minigun: {
+                    id: 'minigun',
+                    name: 'ARCHON MINIGUN',
+                    sprite: 'weaponMinigun',
+                    tag: 'TWIN PLASMA STREAM',
+                    color: '#fde047',
+                    dmgFactor: 0.85,
+                    rateFactor: 1.85,
+                    bonusShots: 1,
+                    spread: 0.15,
+                    bulletSpeed: 560,
+                    bulletSize: 5,
+                    bonusPierce: 1,
+                    explosiveRadius: 0,
+                    knockback: 10,
+                    desc: 'Twin-barrel rotary plasma cannon with +85% Attack Speed, +1 Shot & +1 Pierce!'
+                }
+            };
+
+            /* ==========================================================================
+               5. UPGRADE POOL (PASSIVE & ACTIVE ENHANCEMENTS)
+            ========================================================================== */
+            const UPGRADE_POOL = [
+                {
+                    id: 'dmg_mult',
+                    name: 'HELLFIRE POWDER',
+                    type: 'PASSIVE',
+                    color: '#ef4444',
+                    desc: 'x1.2 DMG to all Auto-Attacks and Abilities.',
+                    apply(p) { p.dmg *= 1.2; }
+                },
+                {
+                    id: 'main_overcharge',
+                    name: 'OMEGA CALIBRE [Q]',
+                    type: 'ACTIVE UPGRADE',
+                    color: '#f97316',
+                    desc: 'Main Power [Q] deals +x1.25 extra DMG multiplier & fires +1 Giant Bullet!',
+                    apply(p) {
+                        p.mainPowerMult += 1.25;
+                        p.mainPowerCount += 1;
+                    }
+                },
+                {
+                    id: 'sec_expansion',
+                    name: 'SOUL NOVABURST [E]',
+                    type: 'ACTIVE UPGRADE',
+                    color: '#22d3ee',
+                    desc: 'Secondary Power [E] unleashes +2 extra Orbs and +35% Orb Damage.',
+                    apply(p) {
+                        p.secPowerCount += 2;
+                        p.secPowerMult *= 1.35;
+                    }
+                },
+                {
+                    id: 'cooldown_haste',
+                    name: 'CHRONO SIGIL',
+                    type: 'ACTIVE & PASSIVE',
+                    color: '#c084fc',
+                    desc: '-18% Cooldown on Main Power [Q], Secondary Power [E], and Dash [C]!',
+                    apply(p) {
+                        p.cdr *= 0.82;
+                    }
+                },
+                {
+                    id: 'fire_rate',
+                    name: 'HAIR TRIGGER',
+                    type: 'PASSIVE',
+                    color: '#fde047',
+                    desc: '+25% Auto-Weapon Attack Speed.',
+                    apply(p) {
+                        p.fireRate *= 1.25;
+                    }
+                },
+                {
+                    id: 'multishot',
+                    name: 'TWIN CHAMBER',
+                    type: 'WEAPON UPGRADE',
+                    color: '#38bdf8',
+                    desc: '+1 Projectile per Auto-Attack shot.',
+                    apply(p) {
+                        p.projectiles += 1;
+                    }
+                },
+                {
+                    id: 'phantom_boots',
+                    name: 'PHANTOM GREAVES',
+                    type: 'MOBILITY',
+                    color: '#4ade80',
+                    desc: '+15% Movement Speed & reduces Dash [C] base cooldown by 0.8s.',
+                    apply(p) {
+                        p.speed *= 1.15;
+                        p.dashBaseCd = Math.max(2.0, p.dashBaseCd - 0.8);
+                    }
+                },
+                {
+                    id: 'vitality_heart',
+                    name: 'DEMON HEART',
+                    type: 'SURVIVAL',
+                    color: '#f43f5e',
+                    desc: '+30 Max HP and immediately restores 40 HP.',
+                    apply(p) {
+                        p.maxHp += 30;
+                        p.hp = Math.min(p.maxHp, p.hp + 40);
+                    }
+                },
+                {
+                    id: 'vampiric_fangs',
+                    name: 'VAMPIRIC SOUL',
+                    type: 'SURVIVAL',
+                    color: '#ec4899',
+                    desc: 'Heal +2 HP for every 5 Ghosts slain & +15% Crit Chance (2x DMG).',
+                    apply(p) {
+                        p.lifeStealOnKill += 0.4;
+                        p.critChance = Math.min(0.85, p.critChance + 0.15);
+                    }
+                },
+                {
+                    id: 'piercing_rounds',
+                    name: 'SPECTRAL PIERCE',
+                    type: 'WEAPON UPGRADE',
+                    color: '#a855f7',
+                    desc: 'Auto-Bullets pierce +1 additional Ghost and deal +15% DMG.',
+                    apply(p) {
+                        p.pierce += 1;
+                        p.dmg *= 1.15;
+                    }
+                },
+                {
+                    id: 'soul_magnet',
+                    name: 'ASTRAL MAGNET',
+                    type: 'UTILITY',
+                    color: '#2dd4bf',
+                    desc: '+65% XP Pickup Radius & +20% XP gained from all Ghosts.',
+                    apply(p) {
+                        p.pickupRadius *= 1.65;
+                        p.xpGainMult *= 1.2;
+                    }
+                }
+            ];
+
+            /* ==========================================================================
+               6. CORE GAME STATE & ARENA SETUP
+            ========================================================================== */
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const minimapCanvas = document.getElementById('minimapCanvas');
+            const mctx = minimapCanvas.getContext('2d');
+
+            const TILE_SIZE = 48;
+            const ARENA_SIZE = 1152; // 24 * 48 = 1152
+
+            const Game = {
+                state: 'MENU', // MENU, PLAYING, PAUSED, LEVEL_UP, VICTORY, GAME_OVER
+                difficulty: 'medium',
+                wave: 1,
+                maxTargetWave: 25,
+                freeplay: false,
+                waveTimer: 25,
+                waveDuration: 25,
+                spawnAccumulator: 0,
+                shakeTime: 0,
+                shakeMagnitude: 0,
+                killsThisRun: 0,
+                keysPressed: {},
+                rebindTarget: null,
+
+                player: null,
+                enemies: [],
+                spawnMarkers: [],
+                bullets: [],
+                enemyBullets: [],
+                xpGems: [],
+                heartDrops: [],
+                particles: [],
+                floatingTexts: [],
+                dashTrails: [],
+                floorDetails: [],
+                menuGhosts: []
+            };
+
+            function initFloorDetails() {
+                Game.floorDetails = [];
+                for (let i = 0; i < 85; i++) {
+                    Game.floorDetails.push({
+                        x: 40 + Math.random() * (ARENA_SIZE - 80),
+                        y: 40 + Math.random() * (ARENA_SIZE - 80),
+                        type: Math.floor(Math.random() * 3),
+                        size: 4 + Math.floor(Math.random() * 3) * 2
+                    });
+                }
+            }
+
+            function initMenuGhosts() {
+                Game.menuGhosts = [];
+                for (let i = 0; i < 16; i++) {
+                    Game.menuGhosts.push({
+                        x: Math.random() * window.innerWidth,
+                        y: Math.random() * window.innerHeight,
+                        vx: (Math.random() - 0.5) * 45,
+                        vy: -15 - Math.random() * 30,
+                        sprite: i % 3 === 0 ? 'ghostRanged' : 'ghostMelee',
+                        scale: 2 + Math.floor(Math.random() * 2)
+                    });
+                }
+            }
+
+            function createPlayer() {
+                return {
+                    x: ARENA_SIZE / 2,
+                    y: ARENA_SIZE / 2,
+                    radius: 15,
+                    hp: 150,
+                    maxHp: 150,
+                    hpRegen: 1.5,
+                    regenCarry: 0,
+                    speed: 230,
+                    dmg: 18,
+                    fireRate: 3.0,
+                    fireCooldown: 0,
+                    projectiles: 1,
+                    pierce: 0,
+                    range: 420,
+                    critChance: 0.12,
+                    lifeStealOnKill: 0.15,
+                    killHealProgress: 0,
+
+                    weaponId: 'blaster',
+                    weaponTier: 1,
+
+                    level: 1,
+                    xp: 0,
+                    xpNext: 16,
+                    pickupRadius: 150,
+                    xpGainMult: 1.15,
+
+                    facingX: 1,
+                    facingY: 0,
+                    aimAngle: 0,
+                    walkAnimTimer: 0,
+                    walkFrame: 0,
+                    invulnTimer: 0,
+
+                    cdr: 1.0,
+                    mainBaseCd: 45.0,
+                    mainCd: 0,
+                    mainPowerCount: 3,
+                    mainPowerMult: 3.5,
+
+                    secBaseCd: 20.0,
+                    secCd: 0,
+                    secPowerCount: 5,
+                    secPowerMult: 2.0,
+
+                    dashBaseCd: 6.0,
+                    dashCd: 0,
+                    dashActiveTimer: 0,
+                    dashVx: 0,
+                    dashVy: 0,
+
+                    inventory: {}
+                };
+            }
+
+            /* ==========================================================================
+               7. STARTING RUN, WAVES, & SPAWNING LOGIC
+            ========================================================================== */
+            function startNewRun() {
+                AudioEngine.init();
+                AudioEngine.sfxClick();
+                AudioEngine.startBGM();
+
+                Game.player = createPlayer();
+                Game.enemies = [];
+                Game.spawnMarkers = [];
+                Game.bullets = [];
+                Game.enemyBullets = [];
+                Game.xpGems = [];
+                Game.heartDrops = [];
+                Game.particles = [];
+                Game.floatingTexts = [];
+                Game.dashTrails = [];
+                Game.wave = 1;
+                Game.freeplay = false;
+                Game.killsThisRun = 0;
+
+                initFloorDetails();
+                refreshWeaponCanvasIcons();
+                startWave(1);
+
+                document.getElementById('mainMenu').classList.add('hidden');
+                document.getElementById('modalGameOver').classList.add('hidden');
+                document.getElementById('modalVictory').classList.add('hidden');
+                document.getElementById('gameHud').classList.remove('hidden');
+
+                const diffCfg = DIFFICULTIES[Game.difficulty];
+                const badge = document.getElementById('hudDifficultyBadge');
+                badge.textContent = diffCfg.name;
+                badge.className = `text-[10px] px-1.5 py-0.5 text-white ${diffCfg.badgeColor}`;
+
+                Game.state = 'PLAYING';
+                updateHud();
+            }
+
+            function startWave(waveNum) {
+                Game.wave = waveNum;
+                Game.waveDuration = Math.min(40, 23 + Math.floor(waveNum * 0.7));
+                Game.waveTimer = Game.waveDuration;
+                Game.spawnAccumulator = 0;
+
+                Game.enemyBullets = [];
+                Game.spawnMarkers = [];
+
+                if (waveNum > 1 && Game.player) {
+                    const heal = Math.ceil((Game.player.maxHp - Game.player.hp) * 0.2);
+                    if (heal > 0) {
+                        Game.player.hp = Math.min(Game.player.maxHp, Game.player.hp + heal);
+                        spawnFloatingText(Game.player.x, Game.player.y - 24, `+${heal} HP`, '#4ade80');
+                    }
+                }
+
+                const banner = document.getElementById('waveBanner');
+                const title = document.getElementById('waveBannerTitle');
+                const sub = document.getElementById('waveBannerSub');
+
+                title.textContent = Game.freeplay
+                    ? `FREEPLAY - WAVE ${waveNum}`
+                    : `WAVE ${waveNum} / ${Game.maxTargetWave}`;
+
+                if (waveNum % 5 === 0) {
+                    sub.textContent = '⚠ DREAD WRAITH BOSS APPROACHING! ⚠';
+                    queueEnemySpawn('tank');
+                } else {
+                    sub.textContent = 'PURGE THE WHITE SPIRITS!';
+                }
+
+                banner.classList.remove('opacity-0');
+                setTimeout(() => {
+                    banner.classList.add('opacity-0');
+                }, 2200);
+
+                const initialCount = 3 + Math.min(8, Math.floor(waveNum * 0.6));
+                for (let i = 0; i < initialCount; i++) {
+                    queueEnemySpawn();
+                }
+            }
+
+            function queueEnemySpawn(forcedType = null) {
+                const margin = 70;
+                let x, y;
+                let attempts = 0;
+                do {
+                    x = margin + Math.random() * (ARENA_SIZE - margin * 2);
+                    y = margin + Math.random() * (ARENA_SIZE - margin * 2);
+                    attempts++;
+                } while (
+                    Game.player &&
+                    Math.hypot(x - Game.player.x, y - Game.player.y) < 190 &&
+                    attempts < 10
+                );
+
+                let type = forcedType;
+                if (!type) {
+                    const r = Math.random();
+                    if (Game.wave >= 6 && r < 0.08) {
+                        type = 'tank';
+                    } else if (Game.wave >= 2 && r < 0.36) {
+                        type = 'ranged';
+                    } else if (Game.wave >= 3 && r < 0.60) {
+                        type = 'fast';
+                    } else {
+                        type = 'melee';
+                    }
+                }
+
+                Game.spawnMarkers.push({
+                    x,
+                    y,
+                    timer: 0.95,
+                    type
+                });
+            }
+
+            function spawnGhostFromMarker(marker) {
+                const diff = DIFFICULTIES[Game.difficulty];
+                const wScale = 1 + (Game.wave - 1) * 0.125 * (Game.freeplay ? 1.3 : 1.0);
+
+                let baseHp = 18;
+                let speed = 78;
+                let dmg = 8;
+                let radius = 15;
+                let xpVal = 6;
+                let sprite = 'ghostMelee';
+                let spriteScale = 3;
+
+                if (marker.type === 'fast') {
+                    baseHp = 13;
+                    speed = 118;
+                    dmg = 7;
+                    radius = 13;
+                    xpVal = 7;
+                    sprite = 'ghostFast';
+                    spriteScale = 3;
+                } else if (marker.type === 'ranged') {
+                    baseHp = 16;
+                    speed = 64;
+                    dmg = 9;
+                    radius = 15;
+                    xpVal = 9;
+                    sprite = 'ghostRanged';
+                    spriteScale = 3;
+                } else if (marker.type === 'tank') {
+                    baseHp = 78;
+                    speed = 54;
+                    dmg = 14;
+                    radius = 24;
+                    xpVal = 30;
+                    sprite = 'ghostTank';
+                    spriteScale = 4;
+                }
+
+                const maxHp = Math.max(8, Math.round(baseHp * wScale * diff.hpMult));
+
+                Game.enemies.push({
+                    x: marker.x,
+                    y: marker.y,
+                    type: marker.type,
+                    hp: maxHp,
+                    maxHp: maxHp,
+                    speed: speed * (0.94 + Math.random() * 0.12),
+                    dmg: Math.max(1, Math.round(dmg * (1 + (Game.wave - 1) * 0.06) * diff.dmgMult)),
+                    radius,
+                    xpVal,
+                    sprite,
+                    spriteScale,
+                    shootCd: 1.5 + Math.random() * 1.4,
+                    hitFlash: 0,
+                    bobPhase: Math.random() * Math.PI * 2
+                });
+            }
+
+            /* ==========================================================================
+               8. PLAYER ABILITIES (MAIN POWER [Q], SECONDARY [E], DASH [C])
+            ========================================================================== */
+            function triggerMainPower() {
+                const p = Game.player;
+                if (!p || Game.state !== 'PLAYING' || p.mainCd > 0) return;
+
+                p.mainCd = p.mainBaseCd * p.cdr;
+                AudioEngine.sfxMainPower();
+                addScreenShake(0.28, 7);
+
+                const nearest = findNearestGhost(p.x, p.y, 9999);
+                const baseAngle = nearest
+                    ? Math.atan2(nearest.y - p.y, nearest.x - p.x)
+                    : Math.atan2(p.facingY, p.facingX);
+
+                const count = p.mainPowerCount;
+                const spread = 0.18;
+                const bulletDmg = Math.round(p.dmg * p.mainPowerMult);
+
+                for (let i = 0; i < count; i++) {
+                    const offset = (i - (count - 1) / 2) * spread;
+                    const angle = baseAngle + offset;
+
+                    Game.bullets.push({
+                        x: p.x + Math.cos(angle) * 20,
+                        y: p.y + Math.sin(angle) * 20,
+                        vx: Math.cos(angle) * 520,
+                        vy: Math.sin(angle) * 520,
+                        radius: 13,
+                        dmg: bulletDmg,
+                        pierce: 4,
+                        hitSet: new Set(),
+                        color: '#f97316',
+                        coreColor: '#fef08a',
+                        isGiant: true,
+                        life: 1.8
+                    });
+                }
+
+                spawnFloatingText(p.x, p.y - 30, `MAIN POWER! (x${p.mainPowerMult.toFixed(1)} DMG)`, '#fde047');
+            }
+
+            function triggerSecPower() {
+                const p = Game.player;
+                if (!p || Game.state !== 'PLAYING' || p.secCd > 0) return;
+
+                p.secCd = p.secBaseCd * p.cdr;
+                AudioEngine.sfxSecPower();
+                addScreenShake(0.18, 4);
+
+                const count = p.secPowerCount;
+                const orbDmg = Math.round(p.dmg * p.secPowerMult);
+                const startAngle = p.aimAngle;
+
+                for (let i = 0; i < count; i++) {
+                    const angle = startAngle + (Math.PI * 2 * i) / count;
+                    Game.bullets.push({
+                        x: p.x + Math.cos(angle) * 16,
+                        y: p.y + Math.sin(angle) * 16,
+                        vx: Math.cos(angle) * 340,
+                        vy: Math.sin(angle) * 340,
+                        radius: 9,
+                        dmg: orbDmg,
+                        pierce: 2,
+                        hitSet: new Set(),
+                        color: '#22d3ee',
+                        coreColor: '#ffffff',
+                        isOrb: true,
+                        life: 2.2
+                    });
+                }
+
+                spawnFloatingText(p.x, p.y - 26, `SOUL NOVA! (${count} ORBS)`, '#22d3ee');
+            }
+
+            function triggerDash() {
+                const p = Game.player;
+                if (!p || Game.state !== 'PLAYING' || p.dashCd > 0) return;
+
+                p.dashCd = p.dashBaseCd * p.cdr;
+                p.dashActiveTimer = 0.20;
+                p.invulnTimer = 0.32;
+
+                const mag = Math.hypot(p.facingX, p.facingY) || 1;
+                p.dashVx = (p.facingX / mag) * 680;
+                p.dashVy = (p.facingY / mag) * 680;
+
+                AudioEngine.sfxDash();
+                spawnParticles(p.x, p.y, '#4ade80', 12);
+                spawnFloatingText(p.x, p.y - 22, 'DASH!', '#4ade80');
+            }
+
+            /* ==========================================================================
+               9. MAIN UPDATE LOOP
+            ========================================================================== */
+            function findNearestGhost(x, y, maxRange) {
+                let best = null;
+                let bestDist = maxRange;
+                for (let i = 0; i < Game.enemies.length; i++) {
+                    const e = Game.enemies[i];
+                    const d = Math.hypot(e.x - x, e.y - y);
+                    if (d < bestDist) {
+                        bestDist = d;
+                        best = e;
+                    }
+                }
+                return best;
+            }
+
+            function addScreenShake(duration, magnitude) {
+                Game.shakeTime = Math.max(Game.shakeTime, duration);
+                Game.shakeMagnitude = Math.max(Game.shakeMagnitude, magnitude);
+            }
+
+            function spawnParticles(x, y, color, count = 8) {
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 40 + Math.random() * 140;
+                    Game.particles.push({
+                        x,
+                        y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        size: 3 + Math.floor(Math.random() * 4),
+                        color,
+                        life: 0.25 + Math.random() * 0.25,
+                        maxLife: 0.5
+                    });
+                }
+            }
+
+            function spawnFloatingText(x, y, text, color = '#ffffff') {
+                Game.floatingTexts.push({
+                    x: x + (Math.random() - 0.5) * 16,
+                    y,
+                    text,
+                    color,
+                    life: 0.75
+                });
+            }
+
+            function updateGame(dt) {
+                if (Game.state === 'MENU') {
+                    for (const mg of Game.menuGhosts) {
+                        mg.x += mg.vx * dt;
+                        mg.y += mg.vy * dt;
+                        if (mg.y < -60) mg.y = window.innerHeight + 60;
+                        if (mg.x < -60) mg.x = window.innerWidth + 60;
+                        if (mg.x > window.innerWidth + 60) mg.x = -60;
+                    }
+                    return;
+                }
+
+                if (Game.state !== 'PLAYING') return;
+
+                const p = Game.player;
+                const diff = DIFFICULTIES[Game.difficulty];
+
+                if (Game.shakeTime > 0) {
+                    Game.shakeTime = Math.max(0, Game.shakeTime - dt);
+                }
+
+                if (p.mainCd > 0) p.mainCd = Math.max(0, p.mainCd - dt);
+                if (p.secCd > 0) p.secCd = Math.max(0, p.secCd - dt);
+                if (p.dashCd > 0) p.dashCd = Math.max(0, p.dashCd - dt);
+                if (p.invulnTimer > 0) p.invulnTimer = Math.max(0, p.invulnTimer - dt);
+
+                if (p.dashActiveTimer > 0) {
+                    p.dashActiveTimer -= dt;
+                    p.x += p.dashVx * dt;
+                    p.y += p.dashVy * dt;
+
+                    Game.dashTrails.push({
+                        x: p.x,
+                        y: p.y,
+                        facingX: p.facingX,
+                        life: 0.22
+                    });
+                } else {
+                    let mx = 0;
+                    let my = 0;
+                    if (Game.keysPressed[keybinds.up] || Game.keysPressed['ArrowUp']) my -= 1;
+                    if (Game.keysPressed[keybinds.down] || Game.keysPressed['ArrowDown']) my += 1;
+                    if (Game.keysPressed[keybinds.left] || Game.keysPressed['ArrowLeft']) mx -= 1;
+                    if (Game.keysPressed[keybinds.right] || Game.keysPressed['ArrowRight']) mx += 1;
+
+                    if (mx !== 0 || my !== 0) {
+                        const len = Math.hypot(mx, my);
+                        mx /= len;
+                        my /= len;
+                        p.facingX = mx;
+                        p.facingY = my;
+                        p.x += mx * p.speed * dt;
+                        p.y += my * p.speed * dt;
+
+                        p.walkAnimTimer += dt;
+                        if (p.walkAnimTimer > 0.14) {
+                            p.walkAnimTimer = 0;
+                            p.walkFrame = 1 - p.walkFrame;
+                        }
+                    } else {
+                        p.walkFrame = 0;
+                    }
+                }
+
+                const wallPad = 24;
+                p.x = Math.max(wallPad, Math.min(ARENA_SIZE - wallPad, p.x));
+                p.y = Math.max(wallPad, Math.min(ARENA_SIZE - wallPad, p.y));
+
+                if (p.hp < p.maxHp && p.hpRegen > 0) {
+                    p.regenCarry += p.hpRegen * dt;
+                    if (p.regenCarry >= 1) {
+                        const healPts = Math.floor(p.regenCarry);
+                        p.regenCarry -= healPts;
+                        p.hp = Math.min(p.maxHp, p.hp + healPts);
+                    }
+                }
+
+                const wep = WEAPONS[p.weaponId] || WEAPONS.blaster;
+                const tierDmgBonus = 1 + (p.weaponTier - 1) * 0.22;
+                const tierExtraShots = Math.floor((p.weaponTier - 1) / 2);
+                const effDmgBase = p.dmg * wep.dmgFactor * tierDmgBonus;
+                const effFireRate = p.fireRate * wep.rateFactor;
+                const effShots = p.projectiles + wep.bonusShots + tierExtraShots;
+                const effPierce = p.pierce + wep.bonusPierce;
+
+                const targetGhost = findNearestGhost(p.x, p.y, p.range);
+                if (targetGhost) {
+                    p.aimAngle = Math.atan2(targetGhost.y - p.y, targetGhost.x - p.x);
+                } else {
+                    p.aimAngle = Math.atan2(p.facingY, p.facingX);
+                }
+
+                p.fireCooldown -= dt;
+                if (targetGhost && p.fireCooldown <= 0) {
+                    p.fireCooldown = 1 / effFireRate;
+                    AudioEngine.sfxShoot();
+
+                    const spread = wep.spread;
+                    for (let s = 0; s < effShots; s++) {
+                        const offset = (s - (effShots - 1) / 2) * spread;
+                        const angle = p.aimAngle + offset;
+                        const isCrit = Math.random() < p.critChance;
+                        const finalDmg = Math.max(1, Math.round(effDmgBase * (isCrit ? 2.0 : 1.0)));
+
+                        Game.bullets.push({
+                            x: p.x + Math.cos(angle) * 20,
+                            y: p.y + Math.sin(angle) * 20,
+                            vx: Math.cos(angle) * wep.bulletSpeed,
+                            vy: Math.sin(angle) * wep.bulletSpeed,
+                            radius: isCrit ? wep.bulletSize + 2 : wep.bulletSize,
+                            dmg: finalDmg,
+                            isCrit,
+                            pierce: effPierce,
+                            explosiveRadius: wep.explosiveRadius || 0,
+                            knockback: wep.knockback || 10,
+                            isSpinning: !!wep.isSpinning,
+                            spinAngle: 0,
+                            hitSet: new Set(),
+                            color: isCrit ? '#fde047' : wep.color,
+                            coreColor: '#ffffff',
+                            life: 1.25
+                        });
+                    }
+                }
+
+                for (let i = Game.spawnMarkers.length - 1; i >= 0; i--) {
+                    const m = Game.spawnMarkers[i];
+                    m.timer -= dt;
+                    if (m.timer <= 0) {
+                        spawnGhostFromMarker(m);
+                        Game.spawnMarkers.splice(i, 1);
+                    }
+                }
+
+                const spawnRatePerSec = (0.72 + Game.wave * 0.18) * diff.spawnMult;
+                Game.spawnAccumulator += spawnRatePerSec * dt;
+                while (Game.spawnAccumulator >= 1) {
+                    Game.spawnAccumulator -= 1;
+                    if (Game.enemies.length + Game.spawnMarkers.length < 65) {
+                        queueEnemySpawn();
+                    }
+                }
+
+                for (let i = Game.bullets.length - 1; i >= 0; i--) {
+                    const b = Game.bullets[i];
+                    b.x += b.vx * dt;
+                    b.y += b.vy * dt;
+                    if (b.isSpinning) b.spinAngle += dt * 18;
+                    b.life -= dt;
+
+                    if (
+                        b.life <= 0 ||
+                        b.x < 0 || b.x > ARENA_SIZE ||
+                        b.y < 0 || b.y > ARENA_SIZE
+                    ) {
+                        Game.bullets.splice(i, 1);
+                        continue;
+                    }
+
+                    for (let j = Game.enemies.length - 1; j >= 0; j--) {
+                        const e = Game.enemies[j];
+                        if (b.hitSet.has(e)) continue;
+
+                        const dist = Math.hypot(b.x - e.x, b.y - e.y);
+                        if (dist < b.radius + e.radius) {
+                            b.hitSet.add(e);
+                            e.hp -= b.dmg;
+                            e.hitFlash = 0.1;
+
+                            const bSpeed = Math.hypot(b.vx, b.vy) || 1;
+                            const kb = b.knockback || 10;
+                            e.x += (b.vx / bSpeed) * kb;
+                            e.y += (b.vy / bSpeed) * kb;
+
+                            if (b.explosiveRadius > 0) {
+                                spawnParticles(b.x, b.y, '#f97316', 14);
+                                spawnParticles(b.x, b.y, '#fde047', 8);
+                                addScreenShake(0.12, 4);
+                                const aoeDmg = Math.max(1, Math.round(b.dmg * 0.65));
+                                for (let k = Game.enemies.length - 1; k >= 0; k--) {
+                                    const other = Game.enemies[k];
+                                    if (other !== e && Math.hypot(other.x - b.x, other.y - b.y) <= b.explosiveRadius) {
+                                        other.hp -= aoeDmg;
+                                        other.hitFlash = 0.1;
+                                        spawnFloatingText(other.x, other.y - 14, `${aoeDmg}`, '#f97316');
+                                        if (other.hp <= 0) {
+                                            killGhost(k);
+                                            if (k < j) j--;
+                                        }
+                                    }
+                                }
+                            } else {
+                                spawnParticles(e.x, e.y, b.color, b.isGiant ? 10 : 4);
+                            }
+
+                            spawnFloatingText(
+                                e.x,
+                                e.y - 16,
+                                b.isCrit ? `${b.dmg}!` : `${b.dmg}`,
+                                b.isGiant ? '#f97316' : (b.isCrit ? '#fde047' : '#ffffff')
+                            );
+
+                            if (e.hp <= 0) {
+                                killGhost(j);
+                            }
+
+                            if (b.pierce > 0) {
+                                b.pierce--;
+                            } else {
+                                Game.bullets.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                for (let i = Game.enemies.length - 1; i >= 0; i--) {
+                    const e = Game.enemies[i];
+                    e.bobPhase += dt * 6;
+                    if (e.hitFlash > 0) e.hitFlash -= dt;
+
+                    const dx = p.x - e.x;
+                    const dy = p.y - e.y;
+                    const dist = Math.hypot(dx, dy) || 1;
+
+                    if (e.type === 'ranged') {
+                        const desiredDist = 250;
+                        if (dist > desiredDist + 30) {
+                            e.x += (dx / dist) * e.speed * dt;
+                            e.y += (dy / dist) * e.speed * dt;
+                        } else if (dist < desiredDist - 40) {
+                            e.x -= (dx / dist) * (e.speed * 0.65) * dt;
+                            e.y -= (dy / dist) * (e.speed * 0.65) * dt;
+                        }
+
+                        e.shootCd -= dt;
+                        if (e.shootCd <= 0 && dist < 460) {
+                            e.shootCd = Math.max(1.5, 2.8 - Game.wave * 0.035);
+                            const angle = Math.atan2(dy, dx);
+                            Game.enemyBullets.push({
+                                x: e.x,
+                                y: e.y,
+                                vx: Math.cos(angle) * 165,
+                                vy: Math.sin(angle) * 165,
+                                radius: 7,
+                                dmg: e.dmg,
+                                trail: [],
+                                trailTimer: 0,
+                                pulsePhase: Math.random() * Math.PI * 2
+                            });
+                        }
+                    } else {
+                        e.x += (dx / dist) * e.speed * dt;
+                        e.y += (dy / dist) * e.speed * dt;
+
+                        if (e.type === 'tank') {
+                            e.shootCd -= dt;
+                            if (e.shootCd <= 0) {
+                                e.shootCd = 3.6;
+                                for (let k = 0; k < 6; k++) {
+                                    const ang = (Math.PI * 2 * k) / 6;
+                                    Game.enemyBullets.push({
+                                        x: e.x,
+                                        y: e.y,
+                                        vx: Math.cos(ang) * 150,
+                                        vy: Math.sin(ang) * 150,
+                                        radius: 8,
+                                        dmg: e.dmg,
+                                        trail: [],
+                                        trailTimer: 0,
+                                        pulsePhase: k
+                                    });
+                                }
+                            }
+                        }
+                    }
+
+                    e.x = Math.max(20, Math.min(ARENA_SIZE - 20, e.x));
+                    e.y = Math.max(20, Math.min(ARENA_SIZE - 20, e.y));
+
+                    if (dist < p.radius + e.radius - 2 && p.invulnTimer <= 0) {
+                        damagePlayer(e.dmg);
+                    }
+                }
+
+                for (let i = Game.enemyBullets.length - 1; i >= 0; i--) {
+                    const eb = Game.enemyBullets[i];
+                    eb.pulsePhase = (eb.pulsePhase || 0) + dt * 10;
+                    eb.trailTimer = (eb.trailTimer || 0) + dt;
+                    if (eb.trailTimer >= 0.022) {
+                        eb.trailTimer = 0;
+                        if (!eb.trail) eb.trail = [];
+                        eb.trail.unshift({ x: eb.x, y: eb.y });
+                        if (eb.trail.length > 7) eb.trail.pop();
+                    }
+
+                    eb.x += eb.vx * dt;
+                    eb.y += eb.vy * dt;
+
+                    if (eb.x < 0 || eb.x > ARENA_SIZE || eb.y < 0 || eb.y > ARENA_SIZE) {
+                        Game.enemyBullets.splice(i, 1);
+                        continue;
+                    }
+
+                    const d = Math.hypot(eb.x - p.x, eb.y - p.y);
+                    if (d < eb.radius + p.radius - 2 && p.invulnTimer <= 0) {
+                        damagePlayer(eb.dmg);
+                        Game.enemyBullets.splice(i, 1);
+                    }
+                }
+
+                for (let i = Game.heartDrops.length - 1; i >= 0; i--) {
+                    const hd = Game.heartDrops[i];
+                    const d = Math.hypot(p.x - hd.x, p.y - hd.y);
+                    if (d < p.pickupRadius * 0.85) {
+                        hd.x += ((p.x - hd.x) / (d || 1)) * 280 * dt;
+                        hd.y += ((p.y - hd.y) / (d || 1)) * 280 * dt;
+                    }
+                    if (d < p.radius + 12) {
+                        AudioEngine.sfxXp();
+                        const heal = hd.heal;
+                        p.hp = Math.min(p.maxHp, p.hp + heal);
+                        spawnFloatingText(p.x, p.y - 22, `+${heal} HP`, '#4ade80');
+                        Game.heartDrops.splice(i, 1);
+                    }
+                }
+
+                for (let i = Game.xpGems.length - 1; i >= 0; i--) {
+                    const g = Game.xpGems[i];
+                    const d = Math.hypot(p.x - g.x, p.y - g.y);
+                    if (d < p.pickupRadius) {
+                        const pullSpeed = 380;
+                        g.x += ((p.x - g.x) / (d || 1)) * pullSpeed * dt;
+                        g.y += ((p.y - g.y) / (d || 1)) * pullSpeed * dt;
+                    }
+                    if (d < p.radius + 10) {
+                        AudioEngine.sfxXp();
+                        const gained = g.val * p.xpGainMult * diff.xpMult;
+                        p.xp += gained;
+                        Game.xpGems.splice(i, 1);
+
+                        if (p.xp >= p.xpNext) {
+                            p.xp -= p.xpNext;
+                            p.level += 1;
+                            p.xpNext = Math.round(p.xpNext * 1.20 + 8);
+                            openLevelUpModal();
+                            return;
+                        }
+                    }
+                }
+
+                for (let i = Game.particles.length - 1; i >= 0; i--) {
+                    const pt = Game.particles[i];
+                    pt.x += pt.vx * dt;
+                    pt.y += pt.vy * dt;
+                    pt.life -= dt;
+                    if (pt.life <= 0) Game.particles.splice(i, 1);
+                }
+
+                for (let i = Game.floatingTexts.length - 1; i >= 0; i--) {
+                    const ft = Game.floatingTexts[i];
+                    ft.y -= 32 * dt;
+                    ft.life -= dt;
+                    if (ft.life <= 0) Game.floatingTexts.splice(i, 1);
+                }
+
+                for (let i = Game.dashTrails.length - 1; i >= 0; i--) {
+                    Game.dashTrails[i].life -= dt;
+                    if (Game.dashTrails[i].life <= 0) Game.dashTrails.splice(i, 1);
+                }
+
+                Game.waveTimer -= dt;
+                if (Game.waveTimer <= 0) {
+                    completeCurrentWave();
+                }
+
+                updateHud();
+            }
+
+            function killGhost(index) {
+                const e = Game.enemies[index];
+                if (!e) return;
+
+                AudioEngine.sfxGhostDeath();
+                spawnParticles(e.x, e.y, '#ffffff', 9);
+
+                Game.xpGems.push({
+                    x: e.x,
+                    y: e.y,
+                    val: e.xpVal
+                });
+
+                if (e.type === 'tank' || Math.random() < 0.09) {
+                    Game.heartDrops.push({
+                        x: e.x + (Math.random() - 0.5) * 12,
+                        y: e.y + (Math.random() - 0.5) * 12,
+                        heal: e.type === 'tank' ? 35 : 18
+                    });
+                }
+
+                Game.enemies.splice(index, 1);
+                Game.killsThisRun++;
+                savedStats.totalKills++;
+                if (Game.wave > savedStats.bestWave) {
+                    savedStats.bestWave = Game.wave;
+                }
+                saveStorage();
+
+                const p = Game.player;
+                if (p.lifeStealOnKill > 0) {
+                    p.killHealProgress += p.lifeStealOnKill;
+                    if (p.killHealProgress >= 1) {
+                        const healAmt = Math.floor(p.killHealProgress);
+                        p.killHealProgress -= healAmt;
+                        p.hp = Math.min(p.maxHp, p.hp + healAmt);
+                    }
+                }
+            }
+
+            function damagePlayer(amount) {
+                const p = Game.player;
+                p.hp = Math.max(0, p.hp - amount);
+                p.invulnTimer = 0.65;
+                AudioEngine.sfxPlayerHit();
+                addScreenShake(0.25, 8);
+                spawnParticles(p.x, p.y, '#ef4444', 12);
+                spawnFloatingText(p.x, p.y - 20, `-${amount} HP`, '#ef4444');
+
+                if (p.hp <= 0) {
+                    triggerGameOver();
+                }
+            }
+
+            function completeCurrentWave() {
+                for (const e of Game.enemies) {
+                    spawnParticles(e.x, e.y, '#cbd5e1', 5);
+                }
+                Game.enemies = [];
+                Game.enemyBullets = [];
+                Game.spawnMarkers = [];
+
+                if (Game.wave >= savedStats.bestWave) {
+                    savedStats.bestWave = Game.wave;
+                    saveStorage();
+                }
+
+                if (Game.wave === Game.maxTargetWave && !Game.freeplay) {
+                    openVictoryModal();
+                    return;
+                }
+
+                startWave(Game.wave + 1);
+            }
+
+            /* ==========================================================================
+               10. LEVEL UP, VICTORY, INVENTORY & GAME OVER MODALS
+            ========================================================================== */
+            function refreshWeaponCanvasIcons() {
+                if (!Game.player) return;
+                const wep = WEAPONS[Game.player.weaponId] || WEAPONS.blaster;
+                ['weaponIconCanvas', 'invModalWeaponCanvas'].forEach((id) => {
+                    const wc = document.getElementById(id);
+                    if (!wc) return;
+                    const wctx = wc.getContext('2d');
+                    wctx.imageSmoothingEnabled = false;
+                    wctx.clearRect(0, 0, wc.width, wc.height);
+                    const gunSp = getSpriteCanvas(wep.sprite, 3);
+                    if (gunSp) {
+                        const ox = Math.floor((wc.width - gunSp.width) / 2);
+                        const oy = Math.floor((wc.height - gunSp.height) / 2);
+                        wctx.drawImage(gunSp, ox, oy);
+                    }
+                });
+            }
+
+            function openLevelUpModal() {
+                Game.state = 'LEVEL_UP';
+                AudioEngine.sfxLevelUp();
+                updateHud();
+
+                const p = Game.player;
+                const shuffled = [...UPGRADE_POOL].sort(() => Math.random() - 0.5);
+                const choices = shuffled.slice(0, 3).map(u => ({ ...u, isWeaponCard: false }));
+
+                if (p.level % 2 === 0 || Math.random() < 0.55) {
+                    const weaponKeys = Object.keys(WEAPONS);
+                    const pickedKey = weaponKeys[Math.floor(Math.random() * weaponKeys.length)];
+                    const wep = WEAPONS[pickedKey];
+                    const isSameWeapon = p.weaponId === wep.id;
+                    const nextTier = isSameWeapon ? p.weaponTier + 1 : p.weaponTier;
+
+                    choices[0] = {
+                        id: `weapon_${wep.id}`,
+                        isWeaponCard: true,
+                        weaponObj: wep,
+                        name: isSameWeapon
+                            ? `${wep.name} MK ${nextTier}`
+                            : `EQUIP: ${wep.name}`,
+                        type: isSameWeapon ? '★ WEAPON TIER UP' : '⚔ NEW WEAPON',
+                        color: wep.color,
+                        desc: isSameWeapon
+                            ? `Upgrades your ${wep.name} to MK ${nextTier}! (+22% Weapon DMG & +1 Bonus Shot every 2 Tiers).`
+                            : `${wep.desc} (Replaces current weapon while keeping your MK ${p.weaponTier} tier & stats!)`,
+                        apply(player) {
+                            if (player.weaponId === wep.id) {
+                                player.weaponTier += 1;
+                            } else {
+                                player.weaponId = wep.id;
+                            }
+                            const invKey = `wep_${wep.id}`;
+                            player.inventory[invKey] = (player.inventory[invKey] || 0) + 1;
+                            refreshWeaponCanvasIcons();
+                            spawnFloatingText(player.x, player.y - 28, `${wep.name} MK ${player.weaponTier}!`, wep.color);
+                        }
+                    };
+                }
+
+                const container = document.getElementById('upgradeChoicesContainer');
+                container.innerHTML = '';
+
+                choices.forEach((upg) => {
+                    const currentStacks = upg.isWeaponCard
+                        ? `MK ${p.weaponTier}`
+                        : (p.inventory[upg.id] || 0);
+                    const card = document.createElement('div');
+                    card.className = `upgrade-card pixel-box-dark p-4 flex flex-col justify-between text-left cursor-pointer ${upg.isWeaponCard ? 'border-amber-400' : ''}`;
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex items-center justify-between text-[9px] mb-2">
+                                <span class="upg-type-badge px-1.5 py-0.5 bg-slate-900 border border-slate-500">${upg.type}</span>
+                                <span class="text-slate-400">${upg.isWeaponCard ? currentStacks : 'OWNED: ' + currentStacks}</span>
+                            </div>
+                            <div class="text-xs sm:text-sm text-amber-300 mb-2">${upg.name}</div>
+                            <p class="font-retro text-base sm:text-lg text-slate-200 leading-snug">${upg.desc}</p>
+                        </div>
+                        <button class="pixel-btn pixel-btn-primary w-full py-2.5 text-[10px] mt-4">
+                            ${upg.isWeaponCard ? '⚔ EQUIP / UPGRADE WEAPON' : 'SELECT UPGRADE'}
+                        </button>
+                    `;
+                    const typeBadge = card.querySelector('.upg-type-badge');
+                    if (typeBadge) typeBadge.style.color = upg.color;
+
+                    card.addEventListener('click', () => {
+                        AudioEngine.sfxClick();
+                        upg.apply(Game.player);
+                        if (!upg.isWeaponCard) {
+                            Game.player.inventory[upg.id] = (Game.player.inventory[upg.id] || 0) + 1;
+                        }
+                        document.getElementById('modalLevelUp').classList.add('hidden');
+                        Game.state = 'PLAYING';
+                        updateHud();
+                    });
+                    container.appendChild(card);
+                });
+
+                document.getElementById('modalLevelUp').classList.remove('hidden');
+            }
+
+            function openInventoryModal() {
+                if (Game.state !== 'PLAYING' && Game.state !== 'PAUSED') return;
+                Game.state = 'PAUSED';
+                AudioEngine.sfxClick();
+
+                const p = Game.player;
+                const wep = WEAPONS[p.weaponId] || WEAPONS.blaster;
+                refreshWeaponCanvasIcons();
+                document.getElementById('invWeaponTitle').textContent = `${wep.name} MK ${p.weaponTier}`;
+
+                const tierDmgBonus = 1 + (p.weaponTier - 1) * 0.22;
+                const effDmg = Math.round(p.dmg * wep.dmgFactor * tierDmgBonus);
+                const effRate = (p.fireRate * wep.rateFactor).toFixed(2);
+                const effShots = p.projectiles + wep.bonusShots + Math.floor((p.weaponTier - 1) / 2);
+
+                const statsList = document.getElementById('invStatsList');
+                statsList.innerHTML = `
+                    <div class="flex justify-between"><span>Max HP:</span><strong class="text-red-400">${Math.ceil(p.hp)} / ${p.maxHp}</strong></div>
+                    <div class="flex justify-between"><span>HP Regen:</span><strong class="text-emerald-400">+${p.hpRegen.toFixed(1)}/s</strong></div>
+                    <div class="flex justify-between"><span>Weapon DMG:</span><strong class="text-amber-300">${effDmg}</strong></div>
+                    <div class="flex justify-between"><span>Attack Speed:</span><strong class="text-cyan-300">${effRate}/s</strong></div>
+                    <div class="flex justify-between"><span>Projectiles:</span><strong class="text-white">${effShots}</strong></div>
+                    <div class="flex justify-between"><span>Crit Chance:</span><strong class="text-yellow-300">${Math.round(p.critChance * 100)}%</strong></div>
+                    <div class="flex justify-between"><span>Main Power [Q]:</span><strong class="text-orange-400">${p.mainPowerCount}x (x${p.mainPowerMult.toFixed(1)} DMG)</strong></div>
+                    <div class="flex justify-between"><span>Sec. Power [E]:</span><strong class="text-cyan-300">${p.secPowerCount} Orbs</strong></div>
+                    <div class="flex justify-between"><span>Ability Cooldown:</span><strong class="text-purple-300">${Math.round(p.cdr * 100)}%</strong></div>
+                    <div class="flex justify-between"><span>Move Speed:</span><strong class="text-emerald-300">${Math.round(p.speed)}</strong></div>
+                `;
+
+                const grid = document.getElementById('invItemsGrid');
+                grid.innerHTML = '';
+                const entries = Object.entries(p.inventory);
+                let totalItems = 0;
+
+                if (entries.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full font-retro text-lg text-slate-400 py-8 text-center">No upgrades collected yet. Slay white ghosts and level up!</div>`;
+                } else {
+                    entries.forEach(([id, count]) => {
+                        totalItems += count;
+                        let upg = UPGRADE_POOL.find(u => u.id === id);
+                        if (!upg && id.startsWith('wep_')) {
+                            const wKey = id.replace('wep_', '');
+                            const wObj = WEAPONS[wKey];
+                            if (wObj) {
+                                upg = {
+                                    name: wObj.name,
+                                    type: 'WEAPON ARSENAL',
+                                    color: wObj.color,
+                                    desc: wObj.desc
+                                };
+                            }
+                        }
+                        if (!upg) return;
+                        const itemEl = document.createElement('div');
+                        itemEl.className = 'bg-black/60 border-2 border-slate-600 p-2.5 flex flex-col justify-between';
+                        itemEl.innerHTML = `
+                            <div>
+                                <div class="flex items-center justify-between text-[9px] mb-1">
+                                    <span class="inv-type-badge">${upg.type}</span>
+                                    <span class="px-1.5 py-0.5 bg-amber-600 text-white">x${count}</span>
+                                </div>
+                                <div class="text-[10px] text-white mb-1">${upg.name}</div>
+                                <div class="font-retro text-sm text-slate-300 leading-tight">${upg.desc}</div>
+                            </div>
+                        `;
+                        const badgeEl = itemEl.querySelector('.inv-type-badge');
+                        if (badgeEl) badgeEl.style.color = upg.color;
+                        grid.appendChild(itemEl);
+                    });
+                }
+
+                document.getElementById('invTotalUpgrades').textContent = `${totalItems} Upgrades`;
+                document.getElementById('modalInventory').classList.remove('hidden');
+            }
+
+            function closeInventoryModal() {
+                document.getElementById('modalInventory').classList.add('hidden');
+                if (Game.state === 'PAUSED') {
+                    Game.state = 'PLAYING';
+                }
+            }
+
+            function openVictoryModal() {
+                Game.state = 'VICTORY';
+                AudioEngine.sfxLevelUp();
+
+                const box = document.getElementById('victoryStatsBox');
+                box.innerHTML = `
+                    <div>DIFFICULTY: <strong class="text-amber-300">${DIFFICULTIES[Game.difficulty].name}</strong></div>
+                    <div>WAVES COMPLETED: <strong class="text-emerald-400">25 / 25</strong></div>
+                    <div>PLAYER LEVEL: <strong class="text-cyan-300">${Game.player.level}</strong></div>
+                    <div>WHITE GHOSTS SLAIN: <strong class="text-white">${Game.killsThisRun}</strong></div>
+                `;
+                document.getElementById('modalVictory').classList.remove('hidden');
+            }
+
+            function triggerGameOver() {
+                Game.state = 'GAME_OVER';
+                const box = document.getElementById('gameOverStatsBox');
+                box.innerHTML = `
+                    <div>DIFFICULTY: <strong class="text-amber-300">${DIFFICULTIES[Game.difficulty].name}</strong></div>
+                    <div>WAVE REACHED: <strong class="text-red-400">WAVE ${Game.wave} ${Game.freeplay ? '(FREEPLAY)' : '/ 25'}</strong></div>
+                    <div>PLAYER LEVEL: <strong class="text-cyan-300">${Game.player.level}</strong></div>
+                    <div>GHOSTS SLAIN: <strong class="text-white">${Game.killsThisRun}</strong></div>
+                `;
+                document.getElementById('modalGameOver').classList.remove('hidden');
+                refreshMenuStats();
+            }
+
+            /* ==========================================================================
+               11. HUD UPDATER
+            ========================================================================== */
+            function updateHud() {
+                const p = Game.player;
+                if (!p) return;
+
+                document.getElementById('hudKills').textContent = Game.killsThisRun;
+                document.getElementById('hudLevel').textContent = p.level;
+                const xpPct = Math.min(100, Math.round((p.xp / p.xpNext) * 100));
+                document.getElementById('hudXpBar').style.width = `${xpPct}%`;
+                document.getElementById('hudXpText').textContent = `${Math.floor(p.xp)}/${p.xpNext}`;
+
+                document.getElementById('hudWaveTitle').textContent = Game.freeplay
+                    ? `FREEPLAY - WAVE ${Game.wave}`
+                    : `WAVE ${Game.wave} / ${Game.maxTargetWave}`;
+                document.getElementById('hudWaveTimer').textContent = Math.ceil(Math.max(0, Game.waveTimer));
+
+                document.getElementById('hudHpText').textContent = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+                const hpPct = Math.max(0, Math.min(100, (p.hp / p.maxHp) * 100));
+                document.getElementById('hudHpBar').style.width = `${hpPct}%`;
+
+                const wep = WEAPONS[p.weaponId] || WEAPONS.blaster;
+                const tierDmgBonus = 1 + (p.weaponTier - 1) * 0.22;
+                const effDmg = Math.round(p.dmg * wep.dmgFactor * tierDmgBonus);
+                const effRate = (p.fireRate * wep.rateFactor).toFixed(1);
+                const effShots = p.projectiles + wep.bonusShots + Math.floor((p.weaponTier - 1) / 2);
+
+                document.getElementById('hudWeaponName').textContent = `${wep.name} MK ${p.weaponTier}`;
+                document.getElementById('hudWeaponDmg').textContent = effDmg;
+                document.getElementById('hudWeaponRate').textContent = `${effRate}/s`;
+                document.getElementById('hudWeaponShots').textContent = effShots;
+                document.getElementById('hudWeaponTag').textContent = wep.tag;
+
+                const totalUpgrades = Object.values(p.inventory).reduce((a, b) => a + b, 0);
+                document.getElementById('hudItemCount').textContent = totalUpgrades;
+
+                document.getElementById('keyBadgeMain').textContent = formatKeyCode(keybinds.mainPower);
+                document.getElementById('keyBadgeSec').textContent = formatKeyCode(keybinds.secPower);
+                document.getElementById('keyBadgeDash').textContent = formatKeyCode(keybinds.dash);
+
+                document.getElementById('descMainPower').textContent = `${p.mainPowerCount}x BIG (x${p.mainPowerMult.toFixed(1)})`;
+                document.getElementById('descSecPower').textContent = `${p.secPowerCount}x ORB NOVA`;
+                document.getElementById('descDash').textContent = `${(p.dashBaseCd * p.cdr).toFixed(1)}s CD`;
+
+                const cdOverlayMain = document.getElementById('cdOverlayMain');
+                if (p.mainCd > 0) {
+                    cdOverlayMain.classList.remove('hidden');
+                    document.getElementById('cdTextMain').textContent = `${p.mainCd.toFixed(1)}s`;
+                    document.getElementById('statusBadgeMain').textContent = 'WAIT';
+                    document.getElementById('statusBadgeMain').className = 'text-amber-400';
+                } else {
+                    cdOverlayMain.classList.add('hidden');
+                    document.getElementById('statusBadgeMain').textContent = 'READY';
+                    document.getElementById('statusBadgeMain').className = 'text-emerald-400';
+                }
+
+                const cdOverlaySec = document.getElementById('cdOverlaySec');
+                if (p.secCd > 0) {
+                    cdOverlaySec.classList.remove('hidden');
+                    document.getElementById('cdTextSec').textContent = `${p.secCd.toFixed(1)}s`;
+                    document.getElementById('statusBadgeSec').textContent = 'WAIT';
+                    document.getElementById('statusBadgeSec').className = 'text-cyan-400';
+                } else {
+                    cdOverlaySec.classList.add('hidden');
+                    document.getElementById('statusBadgeSec').textContent = 'READY';
+                    document.getElementById('statusBadgeSec').className = 'text-emerald-400';
+                }
+
+                const cdOverlayDash = document.getElementById('cdOverlayDash');
+                if (p.dashCd > 0) {
+                    cdOverlayDash.classList.remove('hidden');
+                    document.getElementById('cdTextDash').textContent = `${p.dashCd.toFixed(1)}s`;
+                    document.getElementById('statusBadgeDash').textContent = 'WAIT';
+                    document.getElementById('statusBadgeDash').className = 'text-emerald-300';
+                } else {
+                    cdOverlayDash.classList.add('hidden');
+                    document.getElementById('statusBadgeDash').textContent = 'READY';
+                    document.getElementById('statusBadgeDash').className = 'text-emerald-400';
+                }
+            }
+
+            /* ==========================================================================
+               12. 8-BIT PIXEL CANVAS RENDERER
+            ========================================================================== */
+            function renderGame() {
+                if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+
+                ctx.imageSmoothingEnabled = false;
+                ctx.fillStyle = '#09060e';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                if (Game.state === 'MENU') {
+                    ctx.strokeStyle = '#191229';
+                    ctx.lineWidth = 2;
+                    const step = 48;
+                    for (let x = 0; x < canvas.width; x += step) {
+                        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                    }
+                    for (let y = 0; y < canvas.height; y += step) {
+                        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                    }
+
+                    for (const mg of Game.menuGhosts) {
+                        const sp = getSpriteCanvas(mg.sprite, mg.scale);
+                        if (sp) {
+                            ctx.globalAlpha = 0.25;
+                            ctx.drawImage(sp, Math.floor(mg.x), Math.floor(mg.y));
+                            ctx.globalAlpha = 1.0;
+                        }
+                    }
+                    return;
+                }
+
+                const p = Game.player;
+                if (!p) return;
+
+                let shakeX = 0;
+                let shakeY = 0;
+                if (Game.shakeTime > 0) {
+                    shakeX = (Math.random() - 0.5) * Game.shakeMagnitude * 2;
+                    shakeY = (Math.random() - 0.5) * Game.shakeMagnitude * 2;
+                }
+
+                const camX = Math.floor(canvas.width / 2 - p.x + shakeX);
+                const camY = Math.floor(canvas.height / 2 - p.y + shakeY);
+
+                ctx.save();
+                ctx.translate(camX, camY);
+
+                // 1. Draw 1x1 Square Arena Floor (Strictly clipped inside [0, 0, ARENA_SIZE, ARENA_SIZE])
+                const isInfernal = Game.difficulty === 'infernal';
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(0, 0, ARENA_SIZE, ARENA_SIZE);
+                ctx.clip();
+
+                ctx.fillStyle = isInfernal ? '#1c0d18' : '#181424';
+                ctx.fillRect(0, 0, ARENA_SIZE, ARENA_SIZE);
+
+                ctx.fillStyle = isInfernal ? '#24111f' : '#1e192d';
+                for (let tx = 0; tx < ARENA_SIZE; tx += TILE_SIZE) {
+                    for (let ty = 0; ty < ARENA_SIZE; ty += TILE_SIZE) {
+                        if (((tx / TILE_SIZE) + (ty / TILE_SIZE)) % 2 === 0) {
+                            const w = Math.min(TILE_SIZE, ARENA_SIZE - tx);
+                            const h = Math.min(TILE_SIZE, ARENA_SIZE - ty);
+                            ctx.fillRect(tx, ty, w, h);
+                        }
+                    }
+                }
+
+                ctx.fillStyle = isInfernal ? '#3b1c32' : '#2b2440';
+                for (const fd of Game.floorDetails) {
+                    ctx.fillRect(fd.x, fd.y, fd.size, fd.size);
+                    if (fd.type === 1) {
+                        ctx.fillRect(fd.x + fd.size, fd.y + fd.size, fd.size, fd.size);
+                    }
+                }
+                ctx.restore();
+
+                // 1x1 Arena Hazard / Lava Border
+                ctx.strokeStyle = isInfernal ? '#a855f7' : '#ef4444';
+                ctx.lineWidth = 8;
+                ctx.strokeRect(-4, -4, ARENA_SIZE + 8, ARENA_SIZE + 8);
+
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(4, 4, ARENA_SIZE - 8, ARENA_SIZE - 8);
+
+                // 2. Draw Spawn Warning Markers (Blinking Red 'X' before White Ghosts spawn)
+                for (const m of Game.spawnMarkers) {
+                    if (Math.floor(m.timer * 14) % 2 === 0) {
+                        ctx.fillStyle = m.type === 'tank' ? '#fde047' : '#ef4444';
+                        const sz = m.type === 'tank' ? 16 : 10;
+                        ctx.fillRect(Math.floor(m.x - sz), Math.floor(m.y - 2), sz * 2, 4);
+                        ctx.fillRect(Math.floor(m.x - 2), Math.floor(m.y - sz), 4, sz * 2);
+                    }
+                }
+
+                // 3. Draw XP Gems & Soul Heart Pickups
+                for (const g of Game.xpGems) {
+                    ctx.fillStyle = g.val >= 20 ? '#fde047' : '#22d3ee';
+                    ctx.fillRect(Math.floor(g.x - 5), Math.floor(g.y - 5), 10, 10);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(Math.floor(g.x - 2), Math.floor(g.y - 2), 4, 4);
+                }
+
+                for (const hd of Game.heartDrops) {
+                    ctx.fillStyle = '#f43f5e';
+                    ctx.fillRect(Math.floor(hd.x - 6), Math.floor(hd.y - 6), 12, 12);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(Math.floor(hd.x - 3), Math.floor(hd.y - 3), 4, 4);
+                }
+
+                // 4. Draw Dash Afterimages
+                for (const dt of Game.dashTrails) {
+                    const sp = getSpriteCanvas('playerIdle', 3, '#4ade80');
+                    if (sp) {
+                        ctx.globalAlpha = dt.life * 2;
+                        ctx.drawImage(sp, Math.floor(dt.x - sp.width / 2), Math.floor(dt.y - sp.height / 2));
+                        ctx.globalAlpha = 1.0;
+                    }
+                }
+
+                // 5. Draw White Ghosts (Melee, Fast, Ranged, Tank)
+                for (const e of Game.enemies) {
+                    const bobOffset = Math.sin(e.bobPhase) * 3;
+                    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+                    ctx.fillRect(Math.floor(e.x - e.radius * 0.7), Math.floor(e.y + e.radius - 3), Math.floor(e.radius * 1.4), 6);
+
+                    const sp = getSpriteCanvas(
+                        e.sprite,
+                        e.spriteScale,
+                        e.hitFlash > 0 ? '#ef4444' : null
+                    );
+
+                    if (sp) {
+                        ctx.save();
+                        ctx.translate(Math.floor(e.x), Math.floor(e.y + bobOffset));
+                        if (p.x < e.x) {
+                            ctx.scale(-1, 1);
+                        }
+                        ctx.drawImage(sp, -Math.floor(sp.width / 2), -Math.floor(sp.height / 2));
+                        ctx.restore();
+                    }
+
+                    if (e.hp < e.maxHp || e.type === 'tank') {
+                        const bw = e.type === 'tank' ? 42 : 26;
+                        const bh = 5;
+                        const bx = Math.floor(e.x - bw / 2);
+                        const by = Math.floor(e.y - e.radius - 12);
+                        ctx.fillStyle = '#000000';
+                        ctx.fillRect(bx - 1, by - 1, bw + 2, bh + 2);
+                        ctx.fillStyle = '#ef4444';
+                        ctx.fillRect(bx, by, Math.max(0, Math.floor((e.hp / e.maxHp) * bw)), bh);
+                    }
+                }
+
+                // 6. Draw Player Character & Orbiting Auto-Weapon
+                ctx.fillStyle = 'rgba(0,0,0,0.55)';
+                ctx.fillRect(Math.floor(p.x - 12), Math.floor(p.y + 13), 24, 6);
+
+                const pSpriteName = p.walkFrame === 1 ? 'playerWalk' : 'playerIdle';
+                const pTint = p.invulnTimer > 0 && Math.floor(p.invulnTimer * 20) % 2 === 0 ? '#ffffff' : null;
+                const pSprite = getSpriteCanvas(pSpriteName, 3, pTint);
+
+                if (pSprite) {
+                    ctx.save();
+                    ctx.translate(Math.floor(p.x), Math.floor(p.y));
+                    if (p.facingX < 0) {
+                        ctx.scale(-1, 1);
+                    }
+                    ctx.drawImage(pSprite, -Math.floor(pSprite.width / 2), -Math.floor(pSprite.height / 2));
+                    ctx.restore();
+                }
+
+                const activeWep = WEAPONS[p.weaponId] || WEAPONS.blaster;
+                const gunSprite = getSpriteCanvas(activeWep.sprite, 2);
+                if (gunSprite) {
+                    const orbitDist = 22;
+                    const gx = p.x + Math.cos(p.aimAngle) * orbitDist;
+                    const gy = p.y + Math.sin(p.aimAngle) * orbitDist;
+                    ctx.save();
+                    ctx.translate(Math.floor(gx), Math.floor(gy));
+                    ctx.rotate(p.aimAngle);
+                    if (Math.cos(p.aimAngle) < 0) {
+                        ctx.scale(1, -1);
+                    }
+                    ctx.drawImage(gunSprite, -Math.floor(gunSprite.width / 2), -Math.floor(gunSprite.height / 2));
+                    ctx.restore();
+                }
+
+                // 7. Draw Player Projectiles
+                for (const b of Game.bullets) {
+                    const r = b.radius;
+                    if (b.isSpinning) {
+                        ctx.save();
+                        ctx.translate(Math.floor(b.x), Math.floor(b.y));
+                        ctx.rotate(b.spinAngle || 0);
+                        ctx.fillStyle = b.color;
+                        ctx.fillRect(-r, -3, r * 2, 6);
+                        ctx.fillRect(-3, -r, 6, r * 2);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(-3, -3, 6, 6);
+                        ctx.restore();
+                    } else {
+                        ctx.fillStyle = b.color;
+                        ctx.fillRect(Math.floor(b.x - r), Math.floor(b.y - r), r * 2, r * 2);
+                        ctx.fillStyle = b.coreColor;
+                        const cr = Math.max(2, Math.floor(r * 0.55));
+                        ctx.fillRect(Math.floor(b.x - cr), Math.floor(b.y - cr), cr * 2, cr * 2);
+                    }
+                }
+
+                // 8. Draw Enemy Ectoplasm Projectiles (with Ghosting Trail & Pulsing Mini-Glow)
+                for (const eb of Game.enemyBullets) {
+                    if (eb.trail && eb.trail.length > 0) {
+                        for (let t = eb.trail.length - 1; t >= 0; t--) {
+                            const pt = eb.trail[t];
+                            const ratio = 1 - (t + 1) / (eb.trail.length + 1);
+                            const ts = Math.max(3, Math.floor(eb.radius * 1.9 * ratio));
+                            ctx.globalAlpha = ratio * 0.55;
+                            ctx.fillStyle = t % 2 === 0 ? '#ff2a85' : '#c084fc';
+                            ctx.fillRect(Math.floor(pt.x - ts / 2), Math.floor(pt.y - ts / 2), ts, ts);
+                        }
+                        ctx.globalAlpha = 1.0;
+                    }
+
+                    const pulse = 1 + Math.sin(eb.pulsePhase || 0) * 0.22;
+                    const glowSize = Math.floor(eb.radius * 3.1 * pulse);
+
+                    ctx.save();
+                    ctx.shadowColor = '#ff2a85';
+                    ctx.shadowBlur = 14;
+
+                    ctx.globalAlpha = 0.35;
+                    ctx.fillStyle = '#ff2a85';
+                    ctx.fillRect(Math.floor(eb.x - glowSize / 2), Math.floor(eb.y - glowSize / 2), glowSize, glowSize);
+
+                    ctx.globalAlpha = 1.0;
+                    const midSize = eb.radius * 2 + 2;
+                    ctx.fillStyle = '#f43f5e';
+                    ctx.fillRect(Math.floor(eb.x - midSize / 2), Math.floor(eb.y - midSize / 2), midSize, midSize);
+
+                    ctx.fillStyle = '#fef08a';
+                    ctx.fillRect(Math.floor(eb.x - 4), Math.floor(eb.y - 4), 8, 8);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(Math.floor(eb.x - 2), Math.floor(eb.y - 2), 4, 4);
+
+                    ctx.restore();
+                }
+
+                // 9. Draw Pixel Particles
+                for (const pt of Game.particles) {
+                    ctx.fillStyle = pt.color;
+                    ctx.fillRect(Math.floor(pt.x), Math.floor(pt.y), pt.size, pt.size);
+                }
+
+                // 10. Draw Floating Combat Numbers
+                ctx.font = '10px "Press Start 2P", monospace';
+                ctx.textAlign = 'center';
+                for (const ft of Game.floatingTexts) {
+                    ctx.fillStyle = '#000000';
+                    ctx.fillText(ft.text, Math.floor(ft.x + 2), Math.floor(ft.y + 2));
+                    ctx.fillStyle = ft.color;
+                    ctx.fillText(ft.text, Math.floor(ft.x), Math.floor(ft.y));
+                }
+
+                ctx.restore();
+
+                // 11. Render 1x1 Minimap Radar
+                renderMinimap();
+            }
+
+            function renderMinimap() {
+                if (!Game.player) return;
+                const w = minimapCanvas.width;
+                const h = minimapCanvas.height;
+                const scale = w / ARENA_SIZE;
+
+                mctx.fillStyle = '#09060e';
+                mctx.fillRect(0, 0, w, h);
+
+                mctx.strokeStyle = '#ef4444';
+                mctx.lineWidth = 2;
+                mctx.strokeRect(1, 1, w - 2, h - 2);
+
+                mctx.fillStyle = '#22d3ee';
+                for (const g of Game.xpGems) {
+                    mctx.fillRect(Math.floor(g.x * scale), Math.floor(g.y * scale), 2, 2);
+                }
+
+                mctx.fillStyle = '#ffffff';
+                for (const e of Game.enemies) {
+                    const s = e.type === 'tank' ? 4 : 2;
+                    mctx.fillRect(Math.floor(e.x * scale - s / 2), Math.floor(e.y * scale - s / 2), s, s);
+                }
+
+                mctx.fillStyle = '#4ade80';
+                mctx.fillRect(Math.floor(Game.player.x * scale - 2), Math.floor(Game.player.y * scale - 2), 5, 5);
+            }
+
+            /* ==========================================================================
+               13. STATIC HUD & MENU PIXEL ICONS INITIALIZATION
+            ========================================================================== */
+            function drawStaticHudIcons() {
+                const logoCanvas = document.getElementById('menuLogoCanvas');
+                const lctx = logoCanvas.getContext('2d');
+                lctx.imageSmoothingEnabled = false;
+                lctx.clearRect(0, 0, 96, 96);
+                const heroSp = getSpriteCanvas('playerIdle', 6);
+                const ghostSp = getSpriteCanvas('ghostMelee', 4);
+                if (ghostSp) lctx.drawImage(ghostSp, 44, 8);
+                if (heroSp) lctx.drawImage(heroSp, 8, 22);
+
+                const invC = document.getElementById('invIconCanvas');
+                const ictx = invC.getContext('2d');
+                ictx.imageSmoothingEnabled = false;
+                const bagSp = getSpriteCanvas('backpack', 3);
+                if (bagSp) ictx.drawImage(bagSp, 1, 2);
+
+                ['weaponIconCanvas', 'invModalWeaponCanvas'].forEach(id => {
+                    const wc = document.getElementById(id);
+                    const wctx = wc.getContext('2d');
+                    wctx.imageSmoothingEnabled = false;
+                    const gunSp = getSpriteCanvas('weaponGun', 3);
+                    if (gunSp) wctx.drawImage(gunSp, 1, 6);
+                });
+
+                const mainC = document.getElementById('iconMainPower').getContext('2d');
+                mainC.imageSmoothingEnabled = false;
+                mainC.drawImage(getSpriteCanvas('iconMain', 2), 4, 4);
+
+                const secC = document.getElementById('iconSecPower').getContext('2d');
+                secC.imageSmoothingEnabled = false;
+                secC.drawImage(getSpriteCanvas('iconSec', 2), 6, 4);
+
+                const dashC = document.getElementById('iconDash').getContext('2d');
+                dashC.imageSmoothingEnabled = false;
+                dashC.drawImage(getSpriteCanvas('iconDash', 2), 6, 4);
+            }
+
+            /* ==========================================================================
+               14. UI BINDINGS (CONTROLS, VOLUME, DIFFICULTY, MODALS)
+            ========================================================================== */
+            function refreshMenuStats() {
+                document.getElementById('menuBestWave').textContent = savedStats.bestWave;
+                document.getElementById('menuTotalKills').textContent = savedStats.totalKills;
+
+                const crtBtn = document.getElementById('btnToggleCRT');
+                const crtOverlay = document.getElementById('crtOverlay');
+                if (savedStats.crtEnabled) {
+                    crtBtn.textContent = 'CRT: ON';
+                    crtOverlay.classList.remove('hidden');
+                } else {
+                    crtBtn.textContent = 'CRT: OFF';
+                    crtOverlay.classList.add('hidden');
+                }
+            }
+
+            function renderKeybindModalList() {
+                const list = document.getElementById('keybindList');
+                list.innerHTML = '';
+
+                Object.keys(DEFAULT_KEYBINDS).forEach(action => {
+                    const row = document.createElement('div');
+                    row.className = 'pixel-box-dark px-3.5 py-2.5 flex items-center justify-between';
+                    const isListening = Game.rebindTarget === action;
+
+                    row.innerHTML = `
+                        <span class="text-[10px] sm:text-xs text-slate-200">${KEYBIND_LABELS[action]}</span>
+                        <button class="pixel-btn px-3 py-1.5 text-xs min-w-[90px] ${isListening ? 'border-amber-400 text-amber-300 animate-pulse' : ''}">
+                            ${isListening ? 'PRESS KEY...' : formatKeyCode(keybinds[action])}
+                        </button>
+                    `;
+
+                    row.querySelector('button').addEventListener('click', () => {
+                        AudioEngine.sfxClick();
+                        Game.rebindTarget = action;
+                        renderKeybindModalList();
+                    });
+
+                    list.appendChild(row);
+                });
+            }
+
+            function renderVolumeModalUI() {
+                const pct = Math.round(AudioEngine.volume * 100);
+                document.getElementById('volumePercentText').textContent = AudioEngine.muted ? 'MUTED' : `${pct}%`;
+
+                const statusSub = document.getElementById('audioStatusSub');
+                statusSub.textContent = AudioEngine.muted ? 'SOUND MUTED' : 'SOUND ENABLED';
+                statusSub.className = `font-retro text-base ${AudioEngine.muted ? 'text-rose-400' : 'text-emerald-400'}`;
+
+                document.getElementById('btnHudMute').textContent = AudioEngine.muted ? '🔇' : '🔊';
+
+                const bgmBtn = document.getElementById('btnToggleBgm');
+                bgmBtn.textContent = AudioEngine.bgmEnabled ? 'ON' : 'OFF';
+
+                const segContainer = document.getElementById('volumeSegments');
+                segContainer.innerHTML = '';
+                const activeBars = AudioEngine.muted ? 0 : Math.round(AudioEngine.volume * 10);
+                for (let i = 1; i <= 10; i++) {
+                    const seg = document.createElement('div');
+                    seg.className = i <= activeBars
+                        ? (i > 8 ? 'bg-red-500' : i > 5 ? 'bg-amber-400' : 'bg-emerald-400')
+                        : 'bg-slate-900';
+                    segContainer.appendChild(seg);
+                }
+            }
+
+            function setupEventListeners() {
+                const diffBtns = document.querySelectorAll('.diff-btn');
+                diffBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        AudioEngine.sfxClick();
+                        const d = btn.getAttribute('data-diff');
+                        Game.difficulty = d;
+
+                        diffBtns.forEach(b => {
+                            b.classList.remove('active-easy', 'active-medium', 'active-hard', 'active-infernal');
+                        });
+                        btn.classList.add(`active-${d}`);
+                        document.getElementById('diffDescription').textContent = DIFFICULTIES[d].desc;
+                    });
+                });
+
+                document.getElementById('btnPlay').addEventListener('click', startNewRun);
+
+                document.getElementById('btnControls').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    Game.rebindTarget = null;
+                    renderKeybindModalList();
+                    document.getElementById('modalControls').classList.remove('hidden');
+                });
+
+                document.getElementById('btnVolume').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    renderVolumeModalUI();
+                    document.getElementById('modalVolume').classList.remove('hidden');
+                });
+
+                document.getElementById('btnCredits').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    document.getElementById('modalCredits').classList.remove('hidden');
+                });
+
+                document.getElementById('btnToggleCRT').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    savedStats.crtEnabled = !savedStats.crtEnabled;
+                    saveStorage();
+                    refreshMenuStats();
+                });
+
+                document.querySelectorAll('[data-close-modal]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        AudioEngine.sfxClick();
+                        Game.rebindTarget = null;
+                        const target = btn.getAttribute('data-close-modal');
+                        document.getElementById(target).classList.add('hidden');
+                        updateHud();
+                    });
+                });
+
+                document.getElementById('btnResetKeybinds').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    keybinds = { ...DEFAULT_KEYBINDS };
+                    Game.rebindTarget = null;
+                    saveStorage();
+                    renderKeybindModalList();
+                    updateHud();
+                });
+
+                document.getElementById('btnToggleMuteModal').addEventListener('click', () => {
+                    AudioEngine.muted = !AudioEngine.muted;
+                    AudioEngine.sfxClick();
+                    saveStorage();
+                    renderVolumeModalUI();
+                });
+
+                document.getElementById('btnVolDown').addEventListener('click', () => {
+                    AudioEngine.muted = false;
+                    AudioEngine.volume = Math.max(0, Math.round((AudioEngine.volume - 0.1) * 10) / 10);
+                    AudioEngine.sfxClick();
+                    saveStorage();
+                    renderVolumeModalUI();
+                });
+
+                document.getElementById('btnVolUp').addEventListener('click', () => {
+                    AudioEngine.muted = false;
+                    AudioEngine.volume = Math.min(1, Math.round((AudioEngine.volume + 0.1) * 10) / 10);
+                    AudioEngine.sfxClick();
+                    saveStorage();
+                    renderVolumeModalUI();
+                });
+
+                document.getElementById('btnToggleBgm').addEventListener('click', () => {
+                    AudioEngine.bgmEnabled = !AudioEngine.bgmEnabled;
+                    AudioEngine.sfxClick();
+                    saveStorage();
+                    renderVolumeModalUI();
+                });
+
+                document.getElementById('btnHudMute').addEventListener('click', () => {
+                    AudioEngine.muted = !AudioEngine.muted;
+                    AudioEngine.sfxClick();
+                    saveStorage();
+                    renderVolumeModalUI();
+                });
+
+                document.getElementById('btnHudPause').addEventListener('click', openInventoryModal);
+                document.getElementById('btnOpenInventory').addEventListener('click', openInventoryModal);
+                document.getElementById('btnCloseInventory').addEventListener('click', closeInventoryModal);
+                document.getElementById('btnResumeFromInv').addEventListener('click', closeInventoryModal);
+
+                document.getElementById('btnInvControls').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    renderKeybindModalList();
+                    document.getElementById('modalControls').classList.remove('hidden');
+                });
+
+                document.getElementById('btnInvVolume').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    renderVolumeModalUI();
+                    document.getElementById('modalVolume').classList.remove('hidden');
+                });
+
+                document.getElementById('btnAbandonRun').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    document.getElementById('modalInventory').classList.add('hidden');
+                    document.getElementById('gameHud').classList.add('hidden');
+                    document.getElementById('mainMenu').classList.remove('hidden');
+                    Game.state = 'MENU';
+                    refreshMenuStats();
+                });
+
+                document.getElementById('slotMainPower').addEventListener('click', triggerMainPower);
+                document.getElementById('slotSecPower').addEventListener('click', triggerSecPower);
+                document.getElementById('slotDash').addEventListener('click', triggerDash);
+
+                document.getElementById('btnEnterFreeplay').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    document.getElementById('modalVictory').classList.add('hidden');
+                    Game.freeplay = true;
+                    Game.state = 'PLAYING';
+                    startWave(26);
+                });
+
+                document.getElementById('btnVictoryMenu').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    document.getElementById('modalVictory').classList.add('hidden');
+                    document.getElementById('gameHud').classList.add('hidden');
+                    document.getElementById('mainMenu').classList.remove('hidden');
+                    Game.state = 'MENU';
+                    refreshMenuStats();
+                });
+
+                document.getElementById('btnGameOverRetry').addEventListener('click', startNewRun);
+                document.getElementById('btnGameOverMenu').addEventListener('click', () => {
+                    AudioEngine.sfxClick();
+                    document.getElementById('modalGameOver').classList.add('hidden');
+                    document.getElementById('gameHud').classList.add('hidden');
+                    document.getElementById('mainMenu').classList.remove('hidden');
+                    Game.state = 'MENU';
+                    refreshMenuStats();
+                });
+
+                window.addEventListener('keydown', (e) => {
+                    if (Game.rebindTarget) {
+                        e.preventDefault();
+                        if (e.code !== 'Escape') {
+                            keybinds[Game.rebindTarget] = e.code;
+                            saveStorage();
+                        }
+                        Game.rebindTarget = null;
+                        renderKeybindModalList();
+                        updateHud();
+                        return;
+                    }
+
+                    Game.keysPressed[e.code] = true;
+
+                    if (e.code === 'Escape' || e.code === 'KeyI' || e.code === 'Tab') {
+                        if (Game.state === 'PLAYING') {
+                            e.preventDefault();
+                            openInventoryModal();
+                        } else if (Game.state === 'PAUSED') {
+                            e.preventDefault();
+                            closeInventoryModal();
+                        }
+                        return;
+                    }
+
+                    if (Game.state === 'PLAYING') {
+                        if (e.code === keybinds.mainPower) {
+                            triggerMainPower();
+                        } else if (e.code === keybinds.secPower) {
+                            triggerSecPower();
+                        } else if (e.code === keybinds.dash) {
+                            triggerDash();
+                        }
+                    }
+                });
+
+                window.addEventListener('keyup', (e) => {
+                    Game.keysPressed[e.code] = false;
+                });
+
+                window.addEventListener('blur', () => {
+                    Game.keysPressed = {};
+                });
+            }
+
+            /* ==========================================================================
+               15. BOOTSTRAP & ANIMATION LOOP
+            ========================================================================== */
+            let lastTime = performance.now();
+            function gameLoop(now) {
+                const dt = Math.min(0.05, (now - lastTime) / 1000);
+                lastTime = now;
+
+                updateGame(dt);
+                renderGame();
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            window.onload = function() {
+                loadStorage();
+                initMenuGhosts();
+                drawStaticHudIcons();
+                refreshMenuStats();
+                renderVolumeModalUI();
+                setupEventListeners();
+                requestAnimationFrame(gameLoop);
+            };
+        })();
+    </script>
+</body>
+</html>
