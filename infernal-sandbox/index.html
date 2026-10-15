@@ -217,7 +217,7 @@
         <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-300">
             <div class="pixel-box-dark px-3 py-2 flex items-center gap-2">
                 <span class="inline-block w-2.5 h-2.5 bg-red-500 animate-pulse"></span>
-                <span>8-BIT ARENA SURVIVAL // VER 1.1</span>
+                <span>8-BIT ARENA SURVIVAL // VER 1.2</span>
             </div>
             <div class="flex items-center gap-2">
                 <div class="pixel-box-dark px-3 py-2 text-amber-300">
@@ -251,23 +251,23 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-3">
                     <button data-diff="easy" class="diff-btn pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
                         <span>EASY</span>
-                        <span class="font-retro text-sm opacity-80">0.60x Threat</span>
+                        <span class="font-retro text-sm opacity-80">0.75x Threat</span>
                     </button>
                     <button data-diff="medium" class="diff-btn active-medium pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
                         <span>MEDIUM</span>
-                        <span class="font-retro text-sm opacity-80">0.80x Standard</span>
+                        <span class="font-retro text-sm opacity-80">1.00x Standard</span>
                     </button>
                     <button data-diff="hard" class="diff-btn pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
                         <span>HARD</span>
-                        <span class="font-retro text-sm opacity-80">1.15x Brutal</span>
+                        <span class="font-retro text-sm opacity-80">1.35x Brutal</span>
                     </button>
                     <button data-diff="infernal" class="diff-btn pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
                         <span>INFERNAL</span>
-                        <span class="font-retro text-sm opacity-90">1.55x Nightmare</span>
+                        <span class="font-retro text-sm opacity-90">1.80x Nightmare</span>
                     </button>
                 </div>
                 <p id="diffDescription" class="font-retro text-base sm:text-lg text-amber-200 min-h-[1.5rem]">
-                    Balanced &amp; fair 8-bit challenge. Smooth progression and generous drops.
+                    True 1.0x arena challenge. Aggressive ghost variety and ruthless swarms.
                 </p>
             </div>
 
@@ -280,7 +280,7 @@
                     ⌨ CONTROLS
                 </button>
                 <button id="btnVolume" class="pixel-btn py-3 text-xs sm:text-sm">
-                    🔊 VOLUME
+                    🔊 AUDIO MIXER
                 </button>
             </div>
 
@@ -293,7 +293,7 @@
 
         <!-- Bottom Tip Footer -->
         <div class="w-full max-w-4xl text-center font-retro text-base sm:text-lg text-slate-400">
-            AUTO-AIM WEAPON ENABLED • SURVIVE 25 WAVES TO UNLOCK ENDLESS FREEPLAY
+            9 SPIRIT ARCHETYPES • AUTO-AIM WEAPON ENABLED • SURVIVE 25 WAVES FOR FREEPLAY
         </div>
     </div>
 
@@ -317,7 +317,7 @@
                         <div class="w-28 sm:w-36 h-3 bg-slate-950 border-2 border-slate-500 relative overflow-hidden">
                             <div id="hudXpBar" class="h-full bg-cyan-400 transition-all duration-150" style="width: 0%;"></div>
                         </div>
-                        <span id="hudXpText" class="font-retro text-xs text-cyan-200">0/16</span>
+                        <span id="hudXpText" class="font-retro text-xs text-cyan-200">0/18</span>
                     </div>
                 </div>
 
@@ -333,7 +333,7 @@
 
                 <!-- Top-Right: Quick Pause & Audio -->
                 <div class="flex items-center gap-2 pointer-events-auto">
-                    <button id="btnHudMute" class="pixel-btn px-2.5 py-2 text-xs" title="Mute / Unmute">
+                    <button id="btnHudMute" class="pixel-btn px-2.5 py-2 text-xs" title="Mute / Unmute All">
                         🔊
                     </button>
                     <button id="btnHudPause" class="pixel-btn px-3 py-2 text-[10px] sm:text-xs">
@@ -361,7 +361,7 @@
                 <div class="pixel-box-dark p-2.5 w-full sm:w-72">
                     <div class="flex items-center justify-between text-[10px] mb-1">
                         <span class="text-red-400">♥ PLAYER HP</span>
-                        <span id="hudHpText" class="text-white">150 / 150</span>
+                        <span id="hudHpText" class="text-white">140 / 140</span>
                     </div>
                     <div class="w-full h-4 bg-black border-2 border-slate-400 relative overflow-hidden">
                         <div id="hudHpBar" class="h-full bg-gradient-to-r from-red-700 via-red-500 to-rose-400 transition-all duration-100" style="width: 100%;"></div>
@@ -483,57 +483,66 @@
     </div>
 
     <!-- ==========================================
-         MODAL: VOLUME & SOUND SETTINGS
+         MODAL: SEPARATE SFX & MUSIC (BGM) VOLUME
     =========================================== -->
     <div id="modalVolume" class="hidden absolute inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-        <div class="pixel-box w-full max-w-md p-5 sm:p-6 flex flex-col gap-4">
+        <div class="pixel-box w-full max-w-md p-5 sm:p-6 flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b-2 border-slate-700 pb-3">
-                <h2 class="text-sm sm:text-lg text-amber-400">🔊 8-BIT AUDIO SYNTH</h2>
+                <h2 class="text-sm sm:text-lg text-amber-400">🔊 8-BIT AUDIO MIXER</h2>
                 <button data-close-modal="modalVolume" class="pixel-btn px-2.5 py-1 text-xs">X</button>
             </div>
 
-            <!-- Mute Toggle -->
-            <div class="pixel-box-dark p-3.5 flex items-center justify-between">
+            <!-- Master Mute Toggle -->
+            <div class="pixel-box-dark p-3 flex items-center justify-between">
                 <div>
-                    <div class="text-xs text-white">MASTER AUDIO</div>
-                    <div id="audioStatusSub" class="font-retro text-base text-emerald-400">SOUND ENABLED</div>
+                    <div class="text-xs text-white">MASTER OUTPUT</div>
+                    <div id="audioStatusSub" class="font-retro text-base text-emerald-400">ALL AUDIO ACTIVE</div>
                 </div>
                 <button id="btnToggleMuteModal" class="pixel-btn px-4 py-2 text-xs">
-                    MUTE / UNMUTE
+                    MUTE ALL
                 </button>
             </div>
 
-            <!-- Master Volume Controls (- / + / Bar) -->
-            <div class="pixel-box-dark p-3.5 flex flex-col gap-3">
+            <!-- SFX Volume Controls -->
+            <div class="pixel-box-dark p-3.5 flex flex-col gap-2.5">
                 <div class="flex items-center justify-between text-xs">
-                    <span class="text-slate-300">VOLUME LEVEL</span>
-                    <span id="volumePercentText" class="text-amber-300">70%</span>
+                    <span class="text-amber-300">💥 SFX VOLUME (SHOTS &amp; HITS)</span>
+                    <span id="sfxPercentText" class="text-white">70%</span>
                 </div>
 
-                <!-- 10-segment 8-bit volume bar -->
-                <div id="volumeSegments" class="grid grid-cols-10 gap-1.5 h-6 bg-black p-1 border-2 border-slate-600">
+                <div id="sfxSegments" class="grid grid-cols-10 gap-1.5 h-6 bg-black p-1 border-2 border-slate-600">
                     <!-- Rendered via JS -->
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 pt-1">
-                    <button id="btnVolDown" class="pixel-btn py-2.5 text-xs">
-                        - QUIETER
+                    <button id="btnSfxDown" class="pixel-btn py-2 text-xs">
+                        - SFX QUIETER
                     </button>
-                    <button id="btnVolUp" class="pixel-btn py-2.5 text-xs">
-                        + LOUDER
+                    <button id="btnSfxUp" class="pixel-btn py-2 text-xs">
+                        + SFX LOUDER
                     </button>
                 </div>
             </div>
 
-            <!-- Retro BGM Toggle -->
-            <div class="pixel-box-dark p-3.5 flex items-center justify-between">
-                <div>
-                    <div class="text-xs text-white">CHIPTUNE SYNTH BGM</div>
-                    <div class="font-retro text-base text-slate-400">8-bit battle bassline loop</div>
+            <!-- Music (BGM) Volume Controls -->
+            <div class="pixel-box-dark p-3.5 flex flex-col gap-2.5">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-cyan-300">🎵 MUSIC VOLUME (CHIPTUNE BGM)</span>
+                    <span id="bgmPercentText" class="text-white">60%</span>
                 </div>
-                <button id="btnToggleBgm" class="pixel-btn px-4 py-2 text-xs text-cyan-300">
-                    ON
-                </button>
+
+                <div id="bgmSegments" class="grid grid-cols-10 gap-1.5 h-6 bg-black p-1 border-2 border-slate-600">
+                    <!-- Rendered via JS -->
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <button id="btnBgmDown" class="pixel-btn py-2 text-xs">
+                        - MUSIC QUIETER
+                    </button>
+                    <button id="btnBgmUp" class="pixel-btn py-2 text-xs">
+                        + MUSIC LOUDER
+                    </button>
+                </div>
             </div>
 
             <button data-close-modal="modalVolume" class="pixel-btn pixel-btn-primary w-full py-3 text-xs">
@@ -565,7 +574,7 @@
             <div class="pixel-box-dark p-4 w-full text-left font-retro text-base sm:text-lg text-slate-300 space-y-1.5">
                 <div><strong class="text-amber-300">GAME TITLE:</strong> INFERNAL SANDBOX</div>
                 <div><strong class="text-amber-300">INSPIRATION:</strong> Brotato (1x1 Arena Auto-Shooter)</div>
-                <div><strong class="text-cyan-300">ENGINE:</strong> Custom HTML5 8-Bit Pixel Canvas &amp; WebAudio Chiptune Synthesizer</div>
+                <div><strong class="text-cyan-300">ENGINE:</strong> Custom HTML5 8-Bit Pixel Canvas &amp; Dual-Channel WebAudio Synth</div>
             </div>
 
             <button data-close-modal="modalCredits" class="pixel-btn pixel-btn-primary w-full py-3 text-xs">
@@ -620,7 +629,7 @@
             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t-2 border-slate-700">
                 <div class="flex gap-2">
                     <button id="btnInvControls" class="pixel-btn px-3 py-2 text-[10px]">⌨ CONTROLS</button>
-                    <button id="btnInvVolume" class="pixel-btn px-3 py-2 text-[10px]">🔊 VOLUME</button>
+                    <button id="btnInvVolume" class="pixel-btn px-3 py-2 text-[10px]">🔊 AUDIO MIXER</button>
                     <button id="btnAbandonRun" class="pixel-btn px-3 py-2 text-[10px] text-rose-400">🏳 MAIN MENU</button>
                 </div>
                 <button id="btnResumeFromInv" class="pixel-btn pixel-btn-primary px-6 py-2.5 text-xs">
@@ -717,7 +726,7 @@
             /* ==========================================================================
                1. STORAGE, KEYBINDS & PERSISTENT STATS
             ========================================================================== */
-            const STORAGE_KEY = 'infernal_sandbox_nico03_v1';
+            const STORAGE_KEY = 'infernal_sandbox_nico03_v2';
 
             const DEFAULT_KEYBINDS = {
                 up: 'KeyW',
@@ -745,9 +754,9 @@
                 bestWave: 0,
                 totalKills: 0,
                 crtEnabled: true,
-                volume: 0.7,
-                muted: false,
-                bgmEnabled: true
+                sfxVolume: 0.7,
+                bgmVolume: 0.6,
+                muted: false
             };
 
             function formatKeyCode(code) {
@@ -766,21 +775,26 @@
                     if (raw) {
                         const parsed = JSON.parse(raw);
                         if (parsed.keybinds) keybinds = { ...DEFAULT_KEYBINDS, ...parsed.keybinds };
-                        if (parsed.stats) savedStats = { ...savedStats, ...parsed.stats };
+                        if (parsed.stats) {
+                            savedStats = { ...savedStats, ...parsed.stats };
+                            if (typeof parsed.stats.volume === 'number' && parsed.stats.sfxVolume === undefined) {
+                                savedStats.sfxVolume = parsed.stats.volume;
+                            }
+                        }
                     }
                 } catch (e) {
                     console.warn('Storage load skipped:', e);
                 }
-                AudioEngine.volume = savedStats.volume;
+                AudioEngine.sfxVolume = savedStats.sfxVolume;
+                AudioEngine.bgmVolume = savedStats.bgmVolume;
                 AudioEngine.muted = savedStats.muted;
-                AudioEngine.bgmEnabled = savedStats.bgmEnabled;
             }
 
             function saveStorage() {
                 try {
-                    savedStats.volume = AudioEngine.volume;
+                    savedStats.sfxVolume = AudioEngine.sfxVolume;
+                    savedStats.bgmVolume = AudioEngine.bgmVolume;
                     savedStats.muted = AudioEngine.muted;
-                    savedStats.bgmEnabled = AudioEngine.bgmEnabled;
                     localStorage.setItem(STORAGE_KEY, JSON.stringify({
                         keybinds,
                         stats: savedStats
@@ -791,13 +805,13 @@
             }
 
             /* ==========================================================================
-               2. 8-BIT WEBAUDIO CHIPTUNE SYNTHESIZER
+               2. 8-BIT WEBAUDIO CHIPTUNE SYNTHESIZER (SEPARATE SFX & BGM CHANNELS)
             ========================================================================== */
             const AudioEngine = {
                 ctx: null,
-                volume: 0.7,
+                sfxVolume: 0.7,
+                bgmVolume: 0.6,
                 muted: false,
-                bgmEnabled: true,
                 bgmInterval: null,
                 bgmStep: 0,
 
@@ -811,8 +825,9 @@
                     }
                 },
 
-                playTone(freq, type = 'square', duration = 0.08, volScale = 0.25, slideFreq = null) {
-                    if (this.muted || this.volume <= 0) return;
+                playTone(freq, type = 'square', duration = 0.08, volScale = 0.25, slideFreq = null, channel = 'sfx') {
+                    const channelVol = channel === 'bgm' ? this.bgmVolume : this.sfxVolume;
+                    if (this.muted || channelVol <= 0) return;
                     this.init();
                     if (!this.ctx) return;
 
@@ -826,7 +841,7 @@
                         osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideFreq), now + duration);
                     }
 
-                    const peak = Math.min(1, this.volume * volScale);
+                    const peak = Math.min(1, channelVol * volScale);
                     gain.gain.setValueAtTime(peak, now);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
 
@@ -838,60 +853,72 @@
                 },
 
                 sfxClick() {
-                    this.playTone(620, 'square', 0.045, 0.2, 880);
+                    this.playTone(620, 'square', 0.045, 0.2, 880, 'sfx');
                 },
 
                 sfxShoot() {
-                    this.playTone(460, 'square', 0.055, 0.14, 160);
+                    this.playTone(460, 'square', 0.055, 0.14, 160, 'sfx');
                 },
 
                 sfxMainPower() {
-                    this.playTone(180, 'sawtooth', 0.28, 0.38, 55);
-                    setTimeout(() => this.playTone(320, 'square', 0.22, 0.32, 90), 50);
+                    this.playTone(180, 'sawtooth', 0.28, 0.38, 55, 'sfx');
+                    setTimeout(() => this.playTone(320, 'square', 0.22, 0.32, 90, 'sfx'), 50);
                 },
 
                 sfxSecPower() {
-                    this.playTone(520, 'triangle', 0.18, 0.32, 980);
-                    setTimeout(() => this.playTone(760, 'square', 0.16, 0.26, 360), 60);
+                    this.playTone(520, 'triangle', 0.18, 0.32, 980, 'sfx');
+                    setTimeout(() => this.playTone(760, 'square', 0.16, 0.26, 360, 'sfx'), 60);
                 },
 
                 sfxDash() {
-                    this.playTone(280, 'triangle', 0.12, 0.28, 660);
+                    this.playTone(280, 'triangle', 0.12, 0.28, 660, 'sfx');
                 },
 
                 sfxGhostDeath() {
-                    this.playTone(240, 'sawtooth', 0.09, 0.16, 75);
+                    this.playTone(240, 'sawtooth', 0.09, 0.16, 75, 'sfx');
                 },
 
                 sfxPlayerHit() {
-                    this.playTone(130, 'sawtooth', 0.24, 0.4, 45);
+                    this.playTone(130, 'sawtooth', 0.24, 0.4, 45, 'sfx');
                 },
 
                 sfxXp() {
-                    this.playTone(740, 'sine', 0.05, 0.15, 1080);
+                    this.playTone(740, 'sine', 0.05, 0.15, 1080, 'sfx');
                 },
 
                 sfxLevelUp() {
                     const notes = [440, 554, 659, 880];
                     notes.forEach((n, idx) => {
-                        setTimeout(() => this.playTone(n, 'square', 0.12, 0.28), idx * 75);
+                        setTimeout(() => this.playTone(n, 'square', 0.12, 0.28, null, 'sfx'), idx * 75);
                     });
                 },
 
                 startBGM() {
                     if (this.bgmInterval) return;
-                    const bassline = [110, 110, 130.8, 110, 146.8, 130.8, 98, 110];
+                    const bassline = [
+                        110, 110, 130.8, 110, 146.8, 130.8, 98, 110,
+                        110, 110, 164.8, 146.8, 130.8, 123.5, 98, 103.8
+                    ];
+                    const leadline = [
+                        220, 0, 261.6, 0, 293.7, 261.6, 196, 0,
+                        220, 0, 329.6, 293.7, 261.6, 246.9, 196, 207.6
+                    ];
                     this.bgmInterval = setInterval(() => {
-                        if (Game.state !== 'PLAYING' || this.muted || !this.bgmEnabled || this.volume <= 0) return;
-                        const note = bassline[this.bgmStep % bassline.length];
-                        this.playTone(note, 'triangle', 0.13, 0.09);
+                        if (Game.state !== 'PLAYING' || this.muted || this.bgmVolume <= 0) return;
+                        const idx = this.bgmStep % bassline.length;
+                        const bassNote = bassline[idx];
+                        const leadNote = leadline[idx];
+                        this.playTone(bassNote, 'triangle', 0.15, 0.14, null, 'bgm');
+                        if (leadNote > 0 && idx % 2 === 0) {
+                            this.playTone(leadNote, 'square', 0.09, 0.06, null, 'bgm');
+                        }
                         this.bgmStep++;
-                    }, 220);
+                    }, 205);
                 }
             };
 
             /* ==========================================================================
-               3. 8-BIT PIXEL ART SPRITE MATRICES & PALETTE
+               3. 8-BIT PIXEL ART SPRITE MATRICES & PALETTE (9 GHOST ARCHETYPES!)
             ========================================================================== */
             const PALETTE = {
                 'K': '#09060e',
@@ -986,6 +1013,61 @@
                     "KWWWWGGGGWWK",
                     "KWWGGGGGGGGK",
                     "KWK.KWWK.KWK"
+                ],
+                ghostDasher: [
+                    ".KK......KK.",
+                    "KRRKKKKKKRRK",
+                    ".KRRRRRRRRK.",
+                    ".KRWWKKWWRK.",
+                    "KRRYYKKYYRRK",
+                    "KRRRRRRRRRRK",
+                    "KRRDDDDDDRRK",
+                    ".KDDDDDDDDK.",
+                    ".KDK.KK.KDK.",
+                    "..K......K.."
+                ],
+                ghostBomber: [
+                    "....KKKK....",
+                    "..KKYYYYKK..",
+                    ".KYYOOOOYYK.",
+                    "KYYOKWWKOYYK",
+                    "KYYORWWROYYK",
+                    "KYYOOOOOOYYK",
+                    "KOOOORRROOOK",
+                    ".KOOOOOOOO..",
+                    ".KOK.KK.KOK.",
+                    "..K......K.."
+                ],
+                ghostNecro: [
+                    "...KKKKKK...",
+                    "..KPPPPPPK..",
+                    ".KPPWWWWPPK.",
+                    "KPPWEEEEWPPK",
+                    "KPPWWWWWWPPK",
+                    "KPPPPPPPPPPK",
+                    "KPPSWWWWSPPK",
+                    "KPPSSSSSSPPK",
+                    ".KPK.KK.KPK.",
+                    "..K......K.."
+                ],
+                ghostSwarm: [
+                    "..KKKK..",
+                    ".KWWWWK.",
+                    "KWCCWWCK",
+                    "KWWWWWWK",
+                    "KWGGGGWK",
+                    ".K.KK.K."
+                ],
+                ghostSniper: [
+                    "...KKKKKK...",
+                    "..KSSSSSSK..",
+                    ".KSSWWWWSSK.",
+                    ".KSWEEEEWSK.",
+                    ".KSSWWWWSSK.",
+                    "KSSSSSSSSSSK",
+                    "KSSGGGGGGSSK",
+                    ".KSK.KK.KSK.",
+                    "..K......K.."
                 ],
                 weaponGun: [
                     "....KKKKKK",
@@ -1111,44 +1193,44 @@
             }
 
             /* ==========================================================================
-               4. DIFFICULTY CONFIGURATIONS & WEAPON ARSENAL
+               4. DIFFICULTY CONFIGURATIONS & WEAPON ARSENAL (TOUGHER SCALING)
             ========================================================================== */
             const DIFFICULTIES = {
                 easy: {
                     name: 'EASY',
-                    hpMult: 0.60,
-                    dmgMult: 0.55,
-                    spawnMult: 0.68,
-                    xpMult: 1.30,
+                    hpMult: 0.75,
+                    dmgMult: 0.70,
+                    spawnMult: 0.82,
+                    xpMult: 1.15,
                     badgeColor: 'bg-emerald-700',
-                    desc: '0.6x Ghost Health & Damage, slower spawns, and +30% bonus XP. Very chill!'
+                    desc: '0.75x Ghost Health & Damage with +15% XP. Forgiving but still keeps you moving!'
                 },
                 medium: {
                     name: 'MEDIUM',
-                    hpMult: 0.80,
-                    dmgMult: 0.78,
-                    spawnMult: 0.85,
-                    xpMult: 1.15,
+                    hpMult: 1.00,
+                    dmgMult: 0.95,
+                    spawnMult: 1.02,
+                    xpMult: 1.00,
                     badgeColor: 'bg-amber-600',
-                    desc: 'Balanced & fair 8-bit challenge. Smooth progression and generous drops.'
+                    desc: 'True 1.0x arena challenge. Aggressive ghost variety and ruthless swarms.'
                 },
                 hard: {
                     name: 'HARD',
-                    hpMult: 1.15,
-                    dmgMult: 1.05,
-                    spawnMult: 1.08,
-                    xpMult: 1.05,
+                    hpMult: 1.35,
+                    dmgMult: 1.25,
+                    spawnMult: 1.22,
+                    xpMult: 0.95,
                     badgeColor: 'bg-red-700',
-                    desc: '1.15x Ghost Health & denser swarms. For seasoned arena survivors.'
+                    desc: '1.35x Ghost Health, 1.25x Damage & faster spawns. Punishes every mistake!'
                 },
                 infernal: {
                     name: 'INFERNAL',
-                    hpMult: 1.55,
-                    dmgMult: 1.35,
-                    spawnMult: 1.28,
-                    xpMult: 1.20,
+                    hpMult: 1.80,
+                    dmgMult: 1.60,
+                    spawnMult: 1.45,
+                    xpMult: 1.05,
                     badgeColor: 'bg-purple-700',
-                    desc: '1.55x Nightmare Ghost Health & relentless hordes in a blood-soaked arena!'
+                    desc: '1.80x Nightmare Ghost Health & relentless chaos in a blood-soaked arena!'
                 }
             };
 
@@ -1276,21 +1358,23 @@
             };
 
             /* ==========================================================================
-               5. UPGRADE POOL (PASSIVE & ACTIVE ENHANCEMENTS)
+               5. UPGRADE POOL (LOWER WEIGHT FOR WEAPON UPGRADES)
             ========================================================================== */
             const UPGRADE_POOL = [
                 {
                     id: 'dmg_mult',
                     name: 'HELLFIRE POWDER',
                     type: 'PASSIVE',
+                    weight: 1.15,
                     color: '#ef4444',
-                    desc: 'x1.2 DMG to all Auto-Attacks and Abilities.',
-                    apply(p) { p.dmg *= 1.2; }
+                    desc: 'x1.18 DMG to all Auto-Attacks and Abilities.',
+                    apply(p) { p.dmg *= 1.18; }
                 },
                 {
                     id: 'main_overcharge',
                     name: 'OMEGA CALIBRE [Q]',
                     type: 'ACTIVE UPGRADE',
+                    weight: 1.0,
                     color: '#f97316',
                     desc: 'Main Power [Q] deals +x1.25 extra DMG multiplier & fires +1 Giant Bullet!',
                     apply(p) {
@@ -1302,6 +1386,7 @@
                     id: 'sec_expansion',
                     name: 'SOUL NOVABURST [E]',
                     type: 'ACTIVE UPGRADE',
+                    weight: 1.0,
                     color: '#22d3ee',
                     desc: 'Secondary Power [E] unleashes +2 extra Orbs and +35% Orb Damage.',
                     apply(p) {
@@ -1313,26 +1398,29 @@
                     id: 'cooldown_haste',
                     name: 'CHRONO SIGIL',
                     type: 'ACTIVE & PASSIVE',
+                    weight: 1.0,
                     color: '#c084fc',
-                    desc: '-18% Cooldown on Main Power [Q], Secondary Power [E], and Dash [C]!',
+                    desc: '-16% Cooldown on Main Power [Q], Secondary Power [E], and Dash [C]!',
                     apply(p) {
-                        p.cdr *= 0.82;
+                        p.cdr *= 0.84;
                     }
                 },
                 {
                     id: 'fire_rate',
                     name: 'HAIR TRIGGER',
                     type: 'PASSIVE',
+                    weight: 0.9,
                     color: '#fde047',
-                    desc: '+25% Auto-Weapon Attack Speed.',
+                    desc: '+20% Auto-Weapon Attack Speed.',
                     apply(p) {
-                        p.fireRate *= 1.25;
+                        p.fireRate *= 1.20;
                     }
                 },
                 {
                     id: 'multishot',
                     name: 'TWIN CHAMBER',
                     type: 'WEAPON UPGRADE',
+                    weight: 0.42, // Appears less frequently
                     color: '#38bdf8',
                     desc: '+1 Projectile per Auto-Attack shot.',
                     apply(p) {
@@ -1343,58 +1431,96 @@
                     id: 'phantom_boots',
                     name: 'PHANTOM GREAVES',
                     type: 'MOBILITY',
+                    weight: 1.1,
                     color: '#4ade80',
-                    desc: '+15% Movement Speed & reduces Dash [C] base cooldown by 0.8s.',
+                    desc: '+14% Movement Speed & reduces Dash [C] base cooldown by 0.7s.',
                     apply(p) {
-                        p.speed *= 1.15;
-                        p.dashBaseCd = Math.max(2.0, p.dashBaseCd - 0.8);
+                        p.speed *= 1.14;
+                        p.dashBaseCd = Math.max(2.2, p.dashBaseCd - 0.7);
                     }
                 },
                 {
                     id: 'vitality_heart',
                     name: 'DEMON HEART',
                     type: 'SURVIVAL',
+                    weight: 1.15,
                     color: '#f43f5e',
-                    desc: '+30 Max HP and immediately restores 40 HP.',
+                    desc: '+30 Max HP and immediately restores 35 HP.',
                     apply(p) {
                         p.maxHp += 30;
-                        p.hp = Math.min(p.maxHp, p.hp + 40);
+                        p.hp = Math.min(p.maxHp, p.hp + 35);
                     }
                 },
                 {
                     id: 'vampiric_fangs',
                     name: 'VAMPIRIC SOUL',
                     type: 'SURVIVAL',
+                    weight: 1.0,
                     color: '#ec4899',
-                    desc: 'Heal +2 HP for every 5 Ghosts slain & +15% Crit Chance (2x DMG).',
+                    desc: 'Heal +2 HP for every 6 Ghosts slain & +12% Crit Chance (2x DMG).',
                     apply(p) {
-                        p.lifeStealOnKill += 0.4;
-                        p.critChance = Math.min(0.85, p.critChance + 0.15);
+                        p.lifeStealOnKill += 0.34;
+                        p.critChance = Math.min(0.85, p.critChance + 0.12);
                     }
                 },
                 {
                     id: 'piercing_rounds',
                     name: 'SPECTRAL PIERCE',
                     type: 'WEAPON UPGRADE',
+                    weight: 0.45, // Appears less frequently
                     color: '#a855f7',
-                    desc: 'Auto-Bullets pierce +1 additional Ghost and deal +15% DMG.',
+                    desc: 'Auto-Bullets pierce +1 additional Ghost and deal +12% DMG.',
                     apply(p) {
                         p.pierce += 1;
-                        p.dmg *= 1.15;
+                        p.dmg *= 1.12;
                     }
                 },
                 {
                     id: 'soul_magnet',
                     name: 'ASTRAL MAGNET',
                     type: 'UTILITY',
+                    weight: 1.0,
                     color: '#2dd4bf',
-                    desc: '+65% XP Pickup Radius & +20% XP gained from all Ghosts.',
+                    desc: '+55% XP Pickup Radius & +18% XP gained from all Ghosts.',
                     apply(p) {
-                        p.pickupRadius *= 1.65;
-                        p.xpGainMult *= 1.2;
+                        p.pickupRadius *= 1.55;
+                        p.xpGainMult *= 1.18;
+                    }
+                },
+                {
+                    id: 'infernal_regen',
+                    name: 'BLOOD CHALICE',
+                    type: 'SURVIVAL',
+                    weight: 1.05,
+                    color: '#fb7185',
+                    desc: '+1.6 HP/s passive Regeneration & +15 Max HP.',
+                    apply(p) {
+                        p.hpRegen += 1.6;
+                        p.maxHp += 15;
+                        p.hp = Math.min(p.maxHp, p.hp + 15);
                     }
                 }
             ];
+
+            function pickWeightedUpgrades(count) {
+                const pool = [...UPGRADE_POOL];
+                const chosen = [];
+                while (chosen.length < count && pool.length > 0) {
+                    const totalWeight = pool.reduce((sum, item) => sum + (item.weight || 1), 0);
+                    let r = Math.random() * totalWeight;
+                    let idx = 0;
+                    for (let i = 0; i < pool.length; i++) {
+                        r -= (pool[i].weight || 1);
+                        if (r <= 0) {
+                            idx = i;
+                            break;
+                        }
+                    }
+                    chosen.push({ ...pool[idx], isWeaponCard: false });
+                    pool.splice(idx, 1);
+                }
+                return chosen;
+            }
 
             /* ==========================================================================
                6. CORE GAME STATE & ARENA SETUP
@@ -1449,14 +1575,18 @@
             }
 
             function initMenuGhosts() {
+                const menuSprites = [
+                    'ghostMelee', 'ghostFast', 'ghostRanged', 'ghostDasher',
+                    'ghostBomber', 'ghostNecro', 'ghostSwarm', 'ghostSniper'
+                ];
                 Game.menuGhosts = [];
-                for (let i = 0; i < 16; i++) {
+                for (let i = 0; i < 18; i++) {
                     Game.menuGhosts.push({
                         x: Math.random() * window.innerWidth,
                         y: Math.random() * window.innerHeight,
-                        vx: (Math.random() - 0.5) * 45,
-                        vy: -15 - Math.random() * 30,
-                        sprite: i % 3 === 0 ? 'ghostRanged' : 'ghostMelee',
+                        vx: (Math.random() - 0.5) * 50,
+                        vy: -15 - Math.random() * 35,
+                        sprite: menuSprites[i % menuSprites.length],
                         scale: 2 + Math.floor(Math.random() * 2)
                     });
                 }
@@ -1467,19 +1597,19 @@
                     x: ARENA_SIZE / 2,
                     y: ARENA_SIZE / 2,
                     radius: 15,
-                    hp: 150,
-                    maxHp: 150,
-                    hpRegen: 1.5,
+                    hp: 140,
+                    maxHp: 140,
+                    hpRegen: 0.9,
                     regenCarry: 0,
-                    speed: 230,
-                    dmg: 18,
-                    fireRate: 3.0,
+                    speed: 225,
+                    dmg: 17,
+                    fireRate: 2.9,
                     fireCooldown: 0,
                     projectiles: 1,
                     pierce: 0,
                     range: 420,
-                    critChance: 0.12,
-                    lifeStealOnKill: 0.15,
+                    critChance: 0.10,
+                    lifeStealOnKill: 0.12,
                     killHealProgress: 0,
 
                     weaponId: 'blaster',
@@ -1487,9 +1617,9 @@
 
                     level: 1,
                     xp: 0,
-                    xpNext: 16,
-                    pickupRadius: 150,
-                    xpGainMult: 1.15,
+                    xpNext: 18,
+                    pickupRadius: 145,
+                    xpGainMult: 1.05,
 
                     facingX: 1,
                     facingY: 0,
@@ -1520,7 +1650,7 @@
             }
 
             /* ==========================================================================
-               7. STARTING RUN, WAVES, & SPAWNING LOGIC
+               7. STARTING RUN, WAVES, & 9-ARCHETYPE SPAWNING LOGIC
             ========================================================================== */
             function startNewRun() {
                 AudioEngine.init();
@@ -1561,7 +1691,7 @@
 
             function startWave(waveNum) {
                 Game.wave = waveNum;
-                Game.waveDuration = Math.min(40, 23 + Math.floor(waveNum * 0.7));
+                Game.waveDuration = Math.min(42, 24 + Math.floor(waveNum * 0.75));
                 Game.waveTimer = Game.waveDuration;
                 Game.spawnAccumulator = 0;
 
@@ -1569,7 +1699,7 @@
                 Game.spawnMarkers = [];
 
                 if (waveNum > 1 && Game.player) {
-                    const heal = Math.ceil((Game.player.maxHp - Game.player.hp) * 0.2);
+                    const heal = Math.ceil((Game.player.maxHp - Game.player.hp) * 0.14);
                     if (heal > 0) {
                         Game.player.hp = Math.min(Game.player.maxHp, Game.player.hp + heal);
                         spawnFloatingText(Game.player.x, Game.player.y - 24, `+${heal} HP`, '#4ade80');
@@ -1585,10 +1715,11 @@
                     : `WAVE ${waveNum} / ${Game.maxTargetWave}`;
 
                 if (waveNum % 5 === 0) {
-                    sub.textContent = '⚠ DREAD WRAITH BOSS APPROACHING! ⚠';
+                    sub.textContent = '⚠ DREAD WRAITH BOSS & ELITES APPROACHING! ⚠';
                     queueEnemySpawn('tank');
+                    if (waveNum >= 10) queueEnemySpawn('necromancer');
                 } else {
-                    sub.textContent = 'PURGE THE WHITE SPIRITS!';
+                    sub.textContent = 'PURGE THE NIGHTMARE SPIRITS!';
                 }
 
                 banner.classList.remove('opacity-0');
@@ -1596,82 +1727,147 @@
                     banner.classList.add('opacity-0');
                 }, 2200);
 
-                const initialCount = 3 + Math.min(8, Math.floor(waveNum * 0.6));
+                const initialCount = 4 + Math.min(10, Math.floor(waveNum * 0.75));
                 for (let i = 0; i < initialCount; i++) {
                     queueEnemySpawn();
                 }
             }
 
-            function queueEnemySpawn(forcedType = null) {
-                const margin = 70;
-                let x, y;
-                let attempts = 0;
-                do {
-                    x = margin + Math.random() * (ARENA_SIZE - margin * 2);
-                    y = margin + Math.random() * (ARENA_SIZE - margin * 2);
-                    attempts++;
-                } while (
-                    Game.player &&
-                    Math.hypot(x - Game.player.x, y - Game.player.y) < 190 &&
-                    attempts < 10
-                );
+            function pickGhostArchetype() {
+                const w = Game.wave;
+                const pool = [
+                    { type: 'melee', weight: 32 },
+                    { type: 'swarm', weight: w >= 1 ? 18 : 0 },
+                    { type: 'fast', weight: w >= 2 ? 20 : 8 },
+                    { type: 'ranged', weight: w >= 2 ? 18 : 0 },
+                    { type: 'dasher', weight: w >= 3 ? 15 : 0 },
+                    { type: 'bomber', weight: w >= 4 ? 14 : 0 },
+                    { type: 'sniper', weight: w >= 5 ? 12 : 0 },
+                    { type: 'necromancer', weight: w >= 6 ? 9 : 0 },
+                    { type: 'tank', weight: w >= 6 ? 6 : 0 }
+                ];
 
-                let type = forcedType;
-                if (!type) {
-                    const r = Math.random();
-                    if (Game.wave >= 6 && r < 0.08) {
-                        type = 'tank';
-                    } else if (Game.wave >= 2 && r < 0.36) {
-                        type = 'ranged';
-                    } else if (Game.wave >= 3 && r < 0.60) {
-                        type = 'fast';
-                    } else {
-                        type = 'melee';
+                const total = pool.reduce((acc, item) => acc + item.weight, 0);
+                let r = Math.random() * total;
+                for (const item of pool) {
+                    r -= item.weight;
+                    if (r <= 0) return item.type;
+                }
+                return 'melee';
+            }
+
+            function queueEnemySpawn(forcedType = null, customX = null, customY = null) {
+                const margin = 70;
+                let x = customX;
+                let y = customY;
+
+                if (x === null || y === null) {
+                    let attempts = 0;
+                    do {
+                        x = margin + Math.random() * (ARENA_SIZE - margin * 2);
+                        y = margin + Math.random() * (ARENA_SIZE - margin * 2);
+                        attempts++;
+                    } while (
+                        Game.player &&
+                        Math.hypot(x - Game.player.x, y - Game.player.y) < 195 &&
+                        attempts < 10
+                    );
+                }
+
+                const type = forcedType || pickGhostArchetype();
+
+                if (type === 'swarm' && customX === null) {
+                    // Swarm spawns in a mini pack of 3!
+                    for (let s = 0; s < 3; s++) {
+                        const sx = Math.max(40, Math.min(ARENA_SIZE - 40, x + (Math.random() - 0.5) * 70));
+                        const sy = Math.max(40, Math.min(ARENA_SIZE - 40, y + (Math.random() - 0.5) * 70));
+                        Game.spawnMarkers.push({ x: sx, y: sy, timer: 0.85, type: 'swarm' });
                     }
+                    return;
                 }
 
                 Game.spawnMarkers.push({
                     x,
                     y,
-                    timer: 0.95,
+                    timer: 0.90,
                     type
                 });
             }
 
             function spawnGhostFromMarker(marker) {
                 const diff = DIFFICULTIES[Game.difficulty];
-                const wScale = 1 + (Game.wave - 1) * 0.125 * (Game.freeplay ? 1.3 : 1.0);
+                const wScale = 1 + (Game.wave - 1) * 0.16 * (Game.freeplay ? 1.42 : 1.0);
 
-                let baseHp = 18;
-                let speed = 78;
-                let dmg = 8;
+                let baseHp = 21;
+                let speed = 84;
+                let dmg = 9;
                 let radius = 15;
                 let xpVal = 6;
                 let sprite = 'ghostMelee';
                 let spriteScale = 3;
 
                 if (marker.type === 'fast') {
-                    baseHp = 13;
-                    speed = 118;
-                    dmg = 7;
+                    baseHp = 15;
+                    speed = 128;
+                    dmg = 8;
                     radius = 13;
                     xpVal = 7;
                     sprite = 'ghostFast';
                     spriteScale = 3;
+                } else if (marker.type === 'swarm') {
+                    baseHp = 9;
+                    speed = 142;
+                    dmg = 6;
+                    radius = 10;
+                    xpVal = 3;
+                    sprite = 'ghostSwarm';
+                    spriteScale = 3;
                 } else if (marker.type === 'ranged') {
-                    baseHp = 16;
-                    speed = 64;
-                    dmg = 9;
+                    baseHp = 19;
+                    speed = 68;
+                    dmg = 10;
                     radius = 15;
                     xpVal = 9;
                     sprite = 'ghostRanged';
                     spriteScale = 3;
-                } else if (marker.type === 'tank') {
-                    baseHp = 78;
-                    speed = 54;
+                } else if (marker.type === 'dasher') {
+                    baseHp = 28;
+                    speed = 76;
+                    dmg = 13;
+                    radius = 15;
+                    xpVal = 11;
+                    sprite = 'ghostDasher';
+                    spriteScale = 3;
+                } else if (marker.type === 'bomber') {
+                    baseHp = 20;
+                    speed = 112;
                     dmg = 14;
+                    radius = 14;
+                    xpVal = 10;
+                    sprite = 'ghostBomber';
+                    spriteScale = 3;
+                } else if (marker.type === 'sniper') {
+                    baseHp = 18;
+                    speed = 62;
+                    dmg = 13;
+                    radius = 14;
+                    xpVal = 11;
+                    sprite = 'ghostSniper';
+                    spriteScale = 3;
+                } else if (marker.type === 'necromancer') {
+                    baseHp = 42;
+                    speed = 55;
+                    dmg = 11;
+                    radius = 16;
+                    xpVal = 18;
+                    sprite = 'ghostNecro';
+                    spriteScale = 3;
+                } else if (marker.type === 'tank') {
+                    baseHp = 95;
+                    speed = 58;
+                    dmg = 17;
                     radius = 24;
-                    xpVal = 30;
+                    xpVal = 32;
                     sprite = 'ghostTank';
                     spriteScale = 4;
                 }
@@ -1685,12 +1881,16 @@
                     hp: maxHp,
                     maxHp: maxHp,
                     speed: speed * (0.94 + Math.random() * 0.12),
-                    dmg: Math.max(1, Math.round(dmg * (1 + (Game.wave - 1) * 0.06) * diff.dmgMult)),
+                    dmg: Math.max(2, Math.round(dmg * (1 + (Game.wave - 1) * 0.075) * diff.dmgMult)),
                     radius,
                     xpVal,
                     sprite,
                     spriteScale,
-                    shootCd: 1.5 + Math.random() * 1.4,
+                    shootCd: 1.3 + Math.random() * 1.2,
+                    specialCd: 2.2 + Math.random() * 1.2,
+                    dashBurstTimer: 0,
+                    dashVx: 0,
+                    dashVy: 0,
                     hitFlash: 0,
                     bobPhase: Math.random() * Math.PI * 2
                 });
@@ -1778,7 +1978,7 @@
 
                 p.dashCd = p.dashBaseCd * p.cdr;
                 p.dashActiveTimer = 0.20;
-                p.invulnTimer = 0.32;
+                p.invulnTimer = 0.30;
 
                 const mag = Math.hypot(p.facingX, p.facingY) || 1;
                 p.dashVx = (p.facingX / mag) * 680;
@@ -1972,11 +2172,11 @@
                     }
                 }
 
-                const spawnRatePerSec = (0.72 + Game.wave * 0.18) * diff.spawnMult;
+                const spawnRatePerSec = (0.88 + Game.wave * 0.22) * diff.spawnMult;
                 Game.spawnAccumulator += spawnRatePerSec * dt;
                 while (Game.spawnAccumulator >= 1) {
                     Game.spawnAccumulator -= 1;
-                    if (Game.enemies.length + Game.spawnMarkers.length < 65) {
+                    if (Game.enemies.length + Game.spawnMarkers.length < 85) {
                         queueEnemySpawn();
                     }
                 }
@@ -2074,14 +2274,14 @@
                         }
 
                         e.shootCd -= dt;
-                        if (e.shootCd <= 0 && dist < 460) {
-                            e.shootCd = Math.max(1.5, 2.8 - Game.wave * 0.035);
+                        if (e.shootCd <= 0 && dist < 480) {
+                            e.shootCd = Math.max(1.35, 2.6 - Game.wave * 0.04);
                             const angle = Math.atan2(dy, dx);
                             Game.enemyBullets.push({
                                 x: e.x,
                                 y: e.y,
-                                vx: Math.cos(angle) * 165,
-                                vy: Math.sin(angle) * 165,
+                                vx: Math.cos(angle) * 175,
+                                vy: Math.sin(angle) * 175,
                                 radius: 7,
                                 dmg: e.dmg,
                                 trail: [],
@@ -2089,21 +2289,84 @@
                                 pulsePhase: Math.random() * Math.PI * 2
                             });
                         }
+                    } else if (e.type === 'sniper') {
+                        const desiredDist = 350;
+                        if (dist > desiredDist + 30) {
+                            e.x += (dx / dist) * e.speed * dt;
+                            e.y += (dy / dist) * e.speed * dt;
+                        } else if (dist < desiredDist - 50) {
+                            e.x -= (dx / dist) * (e.speed * 0.8) * dt;
+                            e.y -= (dy / dist) * (e.speed * 0.8) * dt;
+                        }
+
+                        e.shootCd -= dt;
+                        if (e.shootCd <= 0 && dist < 620) {
+                            e.shootCd = Math.max(1.8, 3.1 - Game.wave * 0.04);
+                            const angle = Math.atan2(dy, dx);
+                            Game.enemyBullets.push({
+                                x: e.x,
+                                y: e.y,
+                                vx: Math.cos(angle) * 290,
+                                vy: Math.sin(angle) * 290,
+                                radius: 6,
+                                dmg: Math.round(e.dmg * 1.25),
+                                trail: [],
+                                trailTimer: 0,
+                                pulsePhase: Math.random() * Math.PI * 2
+                            });
+                        }
+                    } else if (e.type === 'dasher') {
+                        if (e.dashBurstTimer > 0) {
+                            e.dashBurstTimer -= dt;
+                            e.x += e.dashVx * dt;
+                            e.y += e.dashVy * dt;
+                        } else {
+                            e.x += (dx / dist) * e.speed * dt;
+                            e.y += (dy / dist) * e.speed * dt;
+                            e.specialCd -= dt;
+                            if (e.specialCd <= 0 && dist < 320) {
+                                e.specialCd = 2.6 + Math.random() * 0.8;
+                                e.dashBurstTimer = 0.34;
+                                e.dashVx = (dx / dist) * (e.speed * 3.3);
+                                e.dashVy = (dy / dist) * (e.speed * 3.3);
+                                spawnParticles(e.x, e.y, '#ef4444', 5);
+                            }
+                        }
+                    } else if (e.type === 'necromancer') {
+                        const desiredDist = 280;
+                        if (dist > desiredDist) {
+                            e.x += (dx / dist) * e.speed * dt;
+                            e.y += (dy / dist) * e.speed * dt;
+                        } else if (dist < 180) {
+                            e.x -= (dx / dist) * (e.speed * 0.6) * dt;
+                            e.y -= (dy / dist) * (e.speed * 0.6) * dt;
+                        }
+
+                        e.specialCd -= dt;
+                        if (e.specialCd <= 0) {
+                            e.specialCd = 4.6;
+                            if (Game.enemies.length < 85) {
+                                spawnParticles(e.x, e.y, '#c084fc', 10);
+                                queueEnemySpawn('swarm', Math.max(40, Math.min(ARENA_SIZE - 40, e.x - 28)), e.y);
+                                queueEnemySpawn('swarm', Math.max(40, Math.min(ARENA_SIZE - 40, e.x + 28)), e.y);
+                            }
+                        }
                     } else {
+                        // melee, fast, swarm, bomber, tank
                         e.x += (dx / dist) * e.speed * dt;
                         e.y += (dy / dist) * e.speed * dt;
 
                         if (e.type === 'tank') {
                             e.shootCd -= dt;
                             if (e.shootCd <= 0) {
-                                e.shootCd = 3.6;
-                                for (let k = 0; k < 6; k++) {
-                                    const ang = (Math.PI * 2 * k) / 6;
+                                e.shootCd = 3.2;
+                                for (let k = 0; k < 8; k++) {
+                                    const ang = (Math.PI * 2 * k) / 8;
                                     Game.enemyBullets.push({
                                         x: e.x,
                                         y: e.y,
-                                        vx: Math.cos(ang) * 150,
-                                        vy: Math.sin(ang) * 150,
+                                        vx: Math.cos(ang) * 165,
+                                        vy: Math.sin(ang) * 165,
                                         radius: 8,
                                         dmg: e.dmg,
                                         trail: [],
@@ -2120,6 +2383,9 @@
 
                     if (dist < p.radius + e.radius - 2 && p.invulnTimer <= 0) {
                         damagePlayer(e.dmg);
+                        if (e.type === 'bomber') {
+                            killGhost(i);
+                        }
                     }
                 }
 
@@ -2182,7 +2448,7 @@
                         if (p.xp >= p.xpNext) {
                             p.xp -= p.xpNext;
                             p.level += 1;
-                            p.xpNext = Math.round(p.xpNext * 1.20 + 8);
+                            p.xpNext = Math.round(p.xpNext * 1.22 + 9);
                             openLevelUpModal();
                             return;
                         }
@@ -2222,7 +2488,25 @@
                 if (!e) return;
 
                 AudioEngine.sfxGhostDeath();
-                spawnParticles(e.x, e.y, '#ffffff', 9);
+                spawnParticles(e.x, e.y, e.type === 'bomber' ? '#f97316' : '#ffffff', e.type === 'bomber' ? 14 : 9);
+
+                // Bomber explodes into 6 ectoplasm projectiles on death!
+                if (e.type === 'bomber') {
+                    for (let k = 0; k < 6; k++) {
+                        const ang = (Math.PI * 2 * k) / 6;
+                        Game.enemyBullets.push({
+                            x: e.x,
+                            y: e.y,
+                            vx: Math.cos(ang) * 155,
+                            vy: Math.sin(ang) * 155,
+                            radius: 6,
+                            dmg: Math.max(4, Math.round(e.dmg * 0.75)),
+                            trail: [],
+                            trailTimer: 0,
+                            pulsePhase: k
+                        });
+                    }
+                }
 
                 Game.xpGems.push({
                     x: e.x,
@@ -2230,11 +2514,11 @@
                     val: e.xpVal
                 });
 
-                if (e.type === 'tank' || Math.random() < 0.09) {
+                if (e.type === 'tank' || Math.random() < 0.065) {
                     Game.heartDrops.push({
                         x: e.x + (Math.random() - 0.5) * 12,
                         y: e.y + (Math.random() - 0.5) * 12,
-                        heal: e.type === 'tank' ? 35 : 18
+                        heal: e.type === 'tank' ? 32 : 15
                     });
                 }
 
@@ -2260,7 +2544,7 @@
             function damagePlayer(amount) {
                 const p = Game.player;
                 p.hp = Math.max(0, p.hp - amount);
-                p.invulnTimer = 0.65;
+                p.invulnTimer = 0.52;
                 AudioEngine.sfxPlayerHit();
                 addScreenShake(0.25, 8);
                 spawnParticles(p.x, p.y, '#ef4444', 12);
@@ -2293,7 +2577,7 @@
             }
 
             /* ==========================================================================
-               10. LEVEL UP, VICTORY, INVENTORY & GAME OVER MODALS
+               10. LEVEL UP (RARER WEAPON UPGRADES), VICTORY, INVENTORY & GAME OVER
             ========================================================================== */
             function refreshWeaponCanvasIcons() {
                 if (!Game.player) return;
@@ -2319,10 +2603,10 @@
                 updateHud();
 
                 const p = Game.player;
-                const shuffled = [...UPGRADE_POOL].sort(() => Math.random() - 0.5);
-                const choices = shuffled.slice(0, 3).map(u => ({ ...u, isWeaponCard: false }));
+                const choices = pickWeightedUpgrades(3);
 
-                if (p.level % 2 === 0 || Math.random() < 0.55) {
+                // Weapon cards appear much less often now (every 4th level or 18% chance, instead of every 2nd + 55%!)
+                if (p.level % 4 === 0 || Math.random() < 0.18) {
                     const weaponKeys = Object.keys(WEAPONS);
                     const pickedKey = weaponKeys[Math.floor(Math.random() * weaponKeys.length)];
                     const wep = WEAPONS[pickedKey];
@@ -2431,7 +2715,7 @@
                 let totalItems = 0;
 
                 if (entries.length === 0) {
-                    grid.innerHTML = `<div class="col-span-full font-retro text-lg text-slate-400 py-8 text-center">No upgrades collected yet. Slay white ghosts and level up!</div>`;
+                    grid.innerHTML = `<div class="col-span-full font-retro text-lg text-slate-400 py-8 text-center">No upgrades collected yet. Slay spirits and level up!</div>`;
                 } else {
                     entries.forEach(([id, count]) => {
                         totalItems += count;
@@ -2487,7 +2771,7 @@
                     <div>DIFFICULTY: <strong class="text-amber-300">${DIFFICULTIES[Game.difficulty].name}</strong></div>
                     <div>WAVES COMPLETED: <strong class="text-emerald-400">25 / 25</strong></div>
                     <div>PLAYER LEVEL: <strong class="text-cyan-300">${Game.player.level}</strong></div>
-                    <div>WHITE GHOSTS SLAIN: <strong class="text-white">${Game.killsThisRun}</strong></div>
+                    <div>SPIRITS SLAIN: <strong class="text-white">${Game.killsThisRun}</strong></div>
                 `;
                 document.getElementById('modalVictory').classList.remove('hidden');
             }
@@ -2614,7 +2898,7 @@
                     for (const mg of Game.menuGhosts) {
                         const sp = getSpriteCanvas(mg.sprite, mg.scale);
                         if (sp) {
-                            ctx.globalAlpha = 0.25;
+                            ctx.globalAlpha = 0.28;
                             ctx.drawImage(sp, Math.floor(mg.x), Math.floor(mg.y));
                             ctx.globalAlpha = 1.0;
                         }
@@ -2638,7 +2922,7 @@
                 ctx.save();
                 ctx.translate(camX, camY);
 
-                // 1. Draw 1x1 Square Arena Floor (Strictly clipped inside [0, 0, ARENA_SIZE, ARENA_SIZE])
+                // 1. Draw 1x1 Square Arena Floor
                 const isInfernal = Game.difficulty === 'infernal';
                 ctx.save();
                 ctx.beginPath();
@@ -2677,10 +2961,10 @@
                 ctx.lineWidth = 2;
                 ctx.strokeRect(4, 4, ARENA_SIZE - 8, ARENA_SIZE - 8);
 
-                // 2. Draw Spawn Warning Markers (Blinking Red 'X' before White Ghosts spawn)
+                // 2. Draw Spawn Warning Markers
                 for (const m of Game.spawnMarkers) {
                     if (Math.floor(m.timer * 14) % 2 === 0) {
-                        ctx.fillStyle = m.type === 'tank' ? '#fde047' : '#ef4444';
+                        ctx.fillStyle = m.type === 'tank' ? '#fde047' : (m.type === 'necromancer' ? '#c084fc' : '#ef4444');
                         const sz = m.type === 'tank' ? 16 : 10;
                         ctx.fillRect(Math.floor(m.x - sz), Math.floor(m.y - 2), sz * 2, 4);
                         ctx.fillRect(Math.floor(m.x - 2), Math.floor(m.y - sz), 4, sz * 2);
@@ -2689,7 +2973,7 @@
 
                 // 3. Draw XP Gems & Soul Heart Pickups
                 for (const g of Game.xpGems) {
-                    ctx.fillStyle = g.val >= 20 ? '#fde047' : '#22d3ee';
+                    ctx.fillStyle = g.val >= 18 ? '#fde047' : '#22d3ee';
                     ctx.fillRect(Math.floor(g.x - 5), Math.floor(g.y - 5), 10, 10);
                     ctx.fillStyle = '#ffffff';
                     ctx.fillRect(Math.floor(g.x - 2), Math.floor(g.y - 2), 4, 4);
@@ -2712,7 +2996,7 @@
                     }
                 }
 
-                // 5. Draw White Ghosts (Melee, Fast, Ranged, Tank)
+                // 5. Draw Ghosts (All 9 Archetypes)
                 for (const e of Game.enemies) {
                     const bobOffset = Math.sin(e.bobPhase) * 3;
                     ctx.fillStyle = 'rgba(0,0,0,0.45)';
@@ -2734,14 +3018,14 @@
                         ctx.restore();
                     }
 
-                    if (e.hp < e.maxHp || e.type === 'tank') {
+                    if (e.hp < e.maxHp || e.type === 'tank' || e.type === 'necromancer') {
                         const bw = e.type === 'tank' ? 42 : 26;
                         const bh = 5;
                         const bx = Math.floor(e.x - bw / 2);
                         const by = Math.floor(e.y - e.radius - 12);
                         ctx.fillStyle = '#000000';
                         ctx.fillRect(bx - 1, by - 1, bw + 2, bh + 2);
-                        ctx.fillStyle = '#ef4444';
+                        ctx.fillStyle = e.type === 'necromancer' ? '#c084fc' : '#ef4444';
                         ctx.fillRect(bx, by, Math.max(0, Math.floor((e.hp / e.maxHp) * bw)), bh);
                     }
                 }
@@ -2802,7 +3086,7 @@
                     }
                 }
 
-                // 8. Draw Enemy Ectoplasm Projectiles (with Ghosting Trail & Pulsing Mini-Glow)
+                // 8. Draw Enemy Ectoplasm Projectiles
                 for (const eb of Game.enemyBullets) {
                     if (eb.trail && eb.trail.length > 0) {
                         for (let t = eb.trail.length - 1; t >= 0; t--) {
@@ -2880,8 +3164,8 @@
                     mctx.fillRect(Math.floor(g.x * scale), Math.floor(g.y * scale), 2, 2);
                 }
 
-                mctx.fillStyle = '#ffffff';
                 for (const e of Game.enemies) {
+                    mctx.fillStyle = e.type === 'tank' ? '#fde047' : (e.type === 'necromancer' ? '#c084fc' : '#ffffff');
                     const s = e.type === 'tank' ? 4 : 2;
                     mctx.fillRect(Math.floor(e.x * scale - s / 2), Math.floor(e.y * scale - s / 2), s, s);
                 }
@@ -2899,7 +3183,7 @@
                 lctx.imageSmoothingEnabled = false;
                 lctx.clearRect(0, 0, 96, 96);
                 const heroSp = getSpriteCanvas('playerIdle', 6);
-                const ghostSp = getSpriteCanvas('ghostMelee', 4);
+                const ghostSp = getSpriteCanvas('ghostDasher', 4);
                 if (ghostSp) lctx.drawImage(ghostSp, 44, 8);
                 if (heroSp) lctx.drawImage(heroSp, 8, 22);
 
@@ -2931,7 +3215,7 @@
             }
 
             /* ==========================================================================
-               14. UI BINDINGS (CONTROLS, VOLUME, DIFFICULTY, MODALS)
+               14. UI BINDINGS (CONTROLS, SEPARATE SFX/BGM VOLUME, DIFFICULTY, MODALS)
             ========================================================================== */
             function refreshMenuStats() {
                 document.getElementById('menuBestWave').textContent = savedStats.bestWave;
@@ -2974,22 +3258,11 @@
                 });
             }
 
-            function renderVolumeModalUI() {
-                const pct = Math.round(AudioEngine.volume * 100);
-                document.getElementById('volumePercentText').textContent = AudioEngine.muted ? 'MUTED' : `${pct}%`;
-
-                const statusSub = document.getElementById('audioStatusSub');
-                statusSub.textContent = AudioEngine.muted ? 'SOUND MUTED' : 'SOUND ENABLED';
-                statusSub.className = `font-retro text-base ${AudioEngine.muted ? 'text-rose-400' : 'text-emerald-400'}`;
-
-                document.getElementById('btnHudMute').textContent = AudioEngine.muted ? '🔇' : '🔊';
-
-                const bgmBtn = document.getElementById('btnToggleBgm');
-                bgmBtn.textContent = AudioEngine.bgmEnabled ? 'ON' : 'OFF';
-
-                const segContainer = document.getElementById('volumeSegments');
+            function renderSegmentBar(containerId, volumeValue, isMuted) {
+                const segContainer = document.getElementById(containerId);
+                if (!segContainer) return;
                 segContainer.innerHTML = '';
-                const activeBars = AudioEngine.muted ? 0 : Math.round(AudioEngine.volume * 10);
+                const activeBars = isMuted ? 0 : Math.round(volumeValue * 10);
                 for (let i = 1; i <= 10; i++) {
                     const seg = document.createElement('div');
                     seg.className = i <= activeBars
@@ -2997,6 +3270,26 @@
                         : 'bg-slate-900';
                     segContainer.appendChild(seg);
                 }
+            }
+
+            function renderVolumeModalUI() {
+                const sfxPct = Math.round(AudioEngine.sfxVolume * 100);
+                const bgmPct = Math.round(AudioEngine.bgmVolume * 100);
+
+                document.getElementById('sfxPercentText').textContent = AudioEngine.muted ? 'MUTED' : `${sfxPct}%`;
+                document.getElementById('bgmPercentText').textContent = AudioEngine.muted ? 'MUTED' : `${bgmPct}%`;
+
+                const statusSub = document.getElementById('audioStatusSub');
+                statusSub.textContent = AudioEngine.muted ? 'MASTER MUTED' : 'ALL AUDIO ACTIVE';
+                statusSub.className = `font-retro text-base ${AudioEngine.muted ? 'text-rose-400' : 'text-emerald-400'}`;
+
+                const muteBtn = document.getElementById('btnToggleMuteModal');
+                muteBtn.textContent = AudioEngine.muted ? 'UNMUTE ALL' : 'MUTE ALL';
+
+                document.getElementById('btnHudMute').textContent = AudioEngine.muted ? '🔇' : '🔊';
+
+                renderSegmentBar('sfxSegments', AudioEngine.sfxVolume, AudioEngine.muted);
+                renderSegmentBar('bgmSegments', AudioEngine.bgmVolume, AudioEngine.muted);
             }
 
             function setupEventListeners() {
@@ -3061,6 +3354,7 @@
                     updateHud();
                 });
 
+                // Master Mute
                 document.getElementById('btnToggleMuteModal').addEventListener('click', () => {
                     AudioEngine.muted = !AudioEngine.muted;
                     AudioEngine.sfxClick();
@@ -3068,25 +3362,36 @@
                     renderVolumeModalUI();
                 });
 
-                document.getElementById('btnVolDown').addEventListener('click', () => {
+                // SFX Volume Down / Up
+                document.getElementById('btnSfxDown').addEventListener('click', () => {
                     AudioEngine.muted = false;
-                    AudioEngine.volume = Math.max(0, Math.round((AudioEngine.volume - 0.1) * 10) / 10);
+                    AudioEngine.sfxVolume = Math.max(0, Math.round((AudioEngine.sfxVolume - 0.1) * 10) / 10);
                     AudioEngine.sfxClick();
                     saveStorage();
                     renderVolumeModalUI();
                 });
 
-                document.getElementById('btnVolUp').addEventListener('click', () => {
+                document.getElementById('btnSfxUp').addEventListener('click', () => {
                     AudioEngine.muted = false;
-                    AudioEngine.volume = Math.min(1, Math.round((AudioEngine.volume + 0.1) * 10) / 10);
+                    AudioEngine.sfxVolume = Math.min(1, Math.round((AudioEngine.sfxVolume + 0.1) * 10) / 10);
                     AudioEngine.sfxClick();
                     saveStorage();
                     renderVolumeModalUI();
                 });
 
-                document.getElementById('btnToggleBgm').addEventListener('click', () => {
-                    AudioEngine.bgmEnabled = !AudioEngine.bgmEnabled;
-                    AudioEngine.sfxClick();
+                // BGM (Music) Volume Down / Up
+                document.getElementById('btnBgmDown').addEventListener('click', () => {
+                    AudioEngine.muted = false;
+                    AudioEngine.bgmVolume = Math.max(0, Math.round((AudioEngine.bgmVolume - 0.1) * 10) / 10);
+                    AudioEngine.playTone(261.6, 'triangle', 0.1, 0.25, null, 'bgm');
+                    saveStorage();
+                    renderVolumeModalUI();
+                });
+
+                document.getElementById('btnBgmUp').addEventListener('click', () => {
+                    AudioEngine.muted = false;
+                    AudioEngine.bgmVolume = Math.min(1, Math.round((AudioEngine.bgmVolume + 0.1) * 10) / 10);
+                    AudioEngine.playTone(329.6, 'triangle', 0.1, 0.25, null, 'bgm');
                     saveStorage();
                     renderVolumeModalUI();
                 });
