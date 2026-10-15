@@ -147,6 +147,14 @@
             animation: infernalPulse 1.2s infinite alternate;
         }
 
+        /* Skin Button Active State */
+        .skin-btn.active-skin {
+            border-color: #fde047 !important;
+            background: #3b2e54;
+            color: #fde047;
+            box-shadow: inset -2px -2px 0px 0px #140f21, inset 2px 2px 0px 0px #6d569e, 0 0 10px rgba(253, 224, 71, 0.45);
+        }
+
         @keyframes infernalPulse {
             0% { filter: drop-shadow(0 0 4px #ef4444); }
             100% { filter: drop-shadow(0 0 12px #c084fc); }
@@ -164,6 +172,21 @@
             background-size: 100% 4px, 100% 100%;
         }
 
+        /* Low HP Pulsing Red Vignette */
+        .low-hp-vignette {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 15;
+            background: radial-gradient(circle at center, transparent 42%, rgba(220, 38, 38, 0.42) 82%, rgba(153, 27, 27, 0.78) 100%);
+            animation: lowHpPulse 0.75s ease-in-out infinite alternate;
+        }
+
+        @keyframes lowHpPulse {
+            0% { opacity: 0.35; transform: scale(1); }
+            100% { opacity: 0.92; transform: scale(1.01); }
+        }
+
         /* Title Glow Animation */
         .title-shadow {
             text-shadow: 
@@ -171,13 +194,22 @@
                 8px 8px 0px #000000;
         }
 
-        /* Upgrade Card Hover & Icon Frame */
+        /* Upgrade Card Hover, Keyboard Selection & Icon Frame */
         .upgrade-card {
-            transition: transform 0.1s steps(2), border-color 0.1s;
+            transition: transform 0.08s steps(2), border-color 0.08s, box-shadow 0.08s;
         }
         .upgrade-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-4px);
+        }
+        .upgrade-card.selected-card {
+            transform: translateY(-8px);
             border-color: #fde047 !important;
+            background: rgba(38, 28, 62, 0.96);
+            box-shadow: 
+                inset -3px -3px 0px 0px #120c21,
+                inset 3px 3px 0px 0px #584382,
+                0px 0px 18px rgba(253, 224, 71, 0.65),
+                0px 6px 0px 0px #000000;
         }
         .upgrade-icon-frame {
             background: radial-gradient(circle at center, #1e1630 0%, #09060e 100%);
@@ -209,19 +241,22 @@
     <!-- CRT Scanline Filter Overlay (Toggleable) -->
     <div id="crtOverlay" class="crt-overlay"></div>
 
+    <!-- Low HP Pulsing Red Vignette Overlay -->
+    <div id="lowHpVignette" class="low-hp-vignette hidden"></div>
+
     <!-- MAIN GAME CANVAS -->
     <canvas id="gameCanvas" class="absolute inset-0 z-0"></canvas>
 
     <!-- ==========================================
          MAIN MENU OVERLAY
     =========================================== -->
-    <div id="mainMenu" class="absolute inset-0 z-30 flex flex-col items-center justify-between p-4 sm:p-6 overflow-y-auto bg-black/55 backdrop-blur-[1px]">
+    <div id="mainMenu" class="absolute inset-0 z-30 flex flex-col items-center justify-between p-3 sm:p-5 overflow-y-auto bg-black/55 backdrop-blur-[1px]">
         
         <!-- Top Status Bar -->
         <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-300">
             <div class="pixel-box-dark px-3 py-2 flex items-center gap-2">
                 <span class="inline-block w-2.5 h-2.5 bg-red-500 animate-pulse"></span>
-                <span>8-BIT ARENA SURVIVAL // VER 1.3</span>
+                <span>8-BIT ARENA SURVIVAL // VER 1.4</span>
             </div>
             <div class="flex items-center gap-2">
                 <div class="pixel-box-dark px-3 py-2 text-amber-300">
@@ -234,62 +269,73 @@
         </div>
 
         <!-- Center Hero & Menu Controls -->
-        <div class="my-auto w-full max-w-2xl flex flex-col items-center text-center py-4">
+        <div class="my-auto w-full max-w-2xl flex flex-col items-center text-center py-2">
             <!-- Animated Pixel Emblem Canvas -->
-            <div class="mb-2 relative">
+            <div class="mb-1 relative">
                 <canvas id="menuLogoCanvas" width="96" height="96" class="w-20 h-20 sm:w-24 sm:h-24 mx-auto"></canvas>
             </div>
 
             <div class="text-[10px] sm:text-xs tracking-[0.25em] text-red-400 mb-1 uppercase">
                 25 Waves of Pure Bullet-Heaven Chaos
             </div>
-            <h1 class="text-2xl sm:text-5xl font-pixel text-amber-400 title-shadow tracking-wider mb-6 leading-tight">
+            <h1 class="text-2xl sm:text-4xl font-pixel text-amber-400 title-shadow tracking-wider mb-4 leading-tight">
                 INFERNAL SANDBOX
             </h1>
 
+            <!-- Survivor Skin Selector -->
+            <div class="w-full pixel-box p-3 sm:p-4 mb-3">
+                <div class="text-[10px] sm:text-xs text-cyan-300 mb-2.5 flex items-center justify-between">
+                    <span>🎭 SELECT SURVIVOR SKIN</span>
+                    <span id="skinTraitLabel" class="font-retro text-sm sm:text-base text-amber-300">CLASSIC CRIMSON ARMOR</span>
+                </div>
+                <div id="skinSelectorGrid" class="grid grid-cols-5 gap-2">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
             <!-- Difficulty Selector -->
-            <div class="w-full pixel-box p-4 sm:p-5 mb-5">
-                <div class="text-xs sm:text-sm text-slate-300 mb-3 flex items-center justify-center gap-2">
+            <div class="w-full pixel-box p-3.5 sm:p-4 mb-4">
+                <div class="text-[10px] sm:text-xs text-slate-300 mb-2.5 flex items-center justify-center gap-2">
                     <span>SELECT DIFFICULTY TIER</span>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-3">
-                    <button data-diff="easy" class="diff-btn pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2.5">
+                    <button data-diff="easy" class="diff-btn pixel-btn py-2 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-0.5">
                         <span>EASY</span>
                         <span class="font-retro text-sm opacity-80">0.75x Threat</span>
                     </button>
-                    <button data-diff="medium" class="diff-btn active-medium pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
+                    <button data-diff="medium" class="diff-btn active-medium pixel-btn py-2 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-0.5">
                         <span>MEDIUM</span>
                         <span class="font-retro text-sm opacity-80">1.00x Standard</span>
                     </button>
-                    <button data-diff="hard" class="diff-btn pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
+                    <button data-diff="hard" class="diff-btn pixel-btn py-2 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-0.5">
                         <span>HARD</span>
                         <span class="font-retro text-sm opacity-80">1.35x Brutal</span>
                     </button>
-                    <button data-diff="infernal" class="diff-btn pixel-btn py-2.5 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-1">
+                    <button data-diff="infernal" class="diff-btn pixel-btn py-2 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-0.5">
                         <span>INFERNAL</span>
                         <span class="font-retro text-sm opacity-90">1.80x Nightmare</span>
                     </button>
                 </div>
-                <p id="diffDescription" class="font-retro text-base sm:text-lg text-amber-200 min-h-[1.5rem]">
-                    True 1.0x arena challenge. Aggressive ghost variety and ruthless swarms.
+                <p id="diffDescription" class="font-retro text-base sm:text-lg text-amber-200 min-h-[1.5rem] leading-tight">
+                    True 1.0x arena challenge. Standard upgrade potency (100% stats &amp; regen).
                 </p>
             </div>
 
             <!-- Main Action Buttons -->
-            <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                <button id="btnPlay" class="sm:col-span-2 pixel-btn pixel-btn-primary py-4 text-base sm:text-xl tracking-wider">
+            <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-2.5">
+                <button id="btnPlay" class="sm:col-span-2 pixel-btn pixel-btn-primary py-3.5 text-base sm:text-xl tracking-wider">
                     ▶ PLAY GAME
                 </button>
-                <button id="btnControls" class="pixel-btn py-3 text-xs sm:text-sm">
+                <button id="btnControls" class="pixel-btn py-2.5 text-xs sm:text-sm">
                     ⌨ CONTROLS
                 </button>
-                <button id="btnVolume" class="pixel-btn py-3 text-xs sm:text-sm">
+                <button id="btnVolume" class="pixel-btn py-2.5 text-xs sm:text-sm">
                     🔊 AUDIO MIXER
                 </button>
             </div>
 
             <div class="w-full">
-                <button id="btnCredits" class="w-full pixel-btn py-3 text-xs sm:text-sm text-cyan-300">
+                <button id="btnCredits" class="w-full pixel-btn py-2.5 text-xs sm:text-sm text-cyan-300">
                     ★ CREDITS (NICO / NICO03.PL)
                 </button>
             </div>
@@ -297,7 +343,7 @@
 
         <!-- Bottom Tip Footer -->
         <div class="w-full max-w-4xl text-center font-retro text-base sm:text-lg text-slate-400">
-            9 SPIRIT ARCHETYPES • AUTO-AIM WEAPON ENABLED • SURVIVE 25 WAVES FOR FREEPLAY
+            SPACE TO DODGE • A/D + ENTER FOR LEVEL-UP • BREAK GOLDEN CHESTS FOR OVERDRIVE
         </div>
     </div>
 
@@ -310,11 +356,12 @@
         <div class="w-full flex flex-col items-center">
             <div class="w-full flex items-start justify-between gap-2">
                 
-                <!-- Top-Left: Difficulty & Kill Counter -->
+                <!-- Top-Left: Difficulty, Kill Counter & Combo Badge -->
                 <div class="pixel-box-dark px-3 py-2 pointer-events-auto flex flex-col gap-1">
                     <div class="flex items-center gap-2">
                         <span id="hudDifficultyBadge" class="text-[10px] px-1.5 py-0.5 bg-amber-600 text-white">MEDIUM</span>
                         <span class="text-[10px] text-slate-300">SLAIN: <strong id="hudKills" class="text-white">0</strong></span>
+                        <span id="hudComboBadge" class="hidden text-[9px] px-1.5 py-0.5 bg-rose-600 text-amber-200 border border-amber-300 animate-pulse">0x STREAK</span>
                     </div>
                     <div class="w-full flex items-center gap-1.5">
                         <span class="text-[10px] text-cyan-300">LVL <span id="hudLevel">1</span></span>
@@ -332,6 +379,9 @@
                     </div>
                     <div id="hudWaveTimer" class="text-xl sm:text-3xl font-pixel text-white mt-1">
                         25
+                    </div>
+                    <div id="hudOverdriveBadge" class="hidden text-[9px] text-amber-300 bg-red-800/90 px-2 py-0.5 mt-1 border border-amber-300 animate-bounce">
+                        ⚡ OVERDRIVE ACTIVE!
                     </div>
                 </div>
 
@@ -364,7 +414,7 @@
                 <!-- Player HP Bar -->
                 <div class="pixel-box-dark p-2.5 w-full sm:w-72">
                     <div class="flex items-center justify-between text-[10px] mb-1">
-                        <span class="text-red-400">♥ PLAYER HP</span>
+                        <span id="hudHpLabel" class="text-red-400">♥ PLAYER HP</span>
                         <span id="hudHpText" class="text-white">140 / 140</span>
                     </div>
                     <div class="w-full h-4 bg-black border-2 border-slate-400 relative overflow-hidden">
@@ -400,7 +450,7 @@
                 </div>
             </div>
 
-            <!-- BOTTOM-CENTER: Power Timers & Dash Cooldown -->
+            <!-- BOTTOM-CENTER: Power Timers & Dodge Cooldown -->
             <div class="pointer-events-auto flex items-center justify-center gap-2.5 sm:gap-3.5 mx-auto sm:mx-0">
                 
                 <!-- Main Power (Q - 45s base cooldown, 3 big bullets x3.5 DMG) -->
@@ -431,17 +481,17 @@
                     <div id="descSecPower" class="font-retro text-xs text-cyan-300 leading-none">5x ORB NOVA</div>
                 </button>
 
-                <!-- Dash / Dodge (C - 6s base cooldown) -->
-                <button id="slotDash" class="pixel-box-dark p-2 w-20 sm:w-24 flex flex-col items-center relative overflow-hidden cursor-pointer hover:border-emerald-400 transition-colors" title="Dash / Dodge forward with Invulnerability">
+                <!-- Dodge (SPACE - 6s base cooldown) -->
+                <button id="slotDash" class="pixel-box-dark p-2 w-20 sm:w-24 flex flex-col items-center relative overflow-hidden cursor-pointer hover:border-emerald-400 transition-colors" title="Dodge forward with Invulnerability">
                     <div id="cdOverlayDash" class="absolute inset-0 bg-black/80 z-10 flex items-center justify-center hidden">
                         <span id="cdTextDash" class="text-xs sm:text-sm text-emerald-300 font-pixel">6.0s</span>
                     </div>
                     <div class="w-full flex items-center justify-between text-[9px] mb-1">
-                        <span class="px-1.5 py-0.5 bg-emerald-700 text-white border border-white" id="keyBadgeDash">C</span>
+                        <span class="px-1.5 py-0.5 bg-emerald-700 text-white border border-white" id="keyBadgeDash">SPC</span>
                         <span id="statusBadgeDash" class="text-emerald-400">READY</span>
                     </div>
                     <canvas id="iconDash" width="32" height="32" class="w-7 h-7 my-0.5"></canvas>
-                    <div class="text-[8px] text-slate-300 truncate w-full text-center mt-0.5">DODGE DASH</div>
+                    <div class="text-[8px] text-slate-300 w-full text-center mt-0.5">DODGE</div>
                     <div id="descDash" class="font-retro text-xs text-emerald-300 leading-none">6.0s CD</div>
                 </button>
             </div>
@@ -468,7 +518,7 @@
             </div>
 
             <p class="font-retro text-base sm:text-lg text-slate-300">
-                Click any button below and press a key on your keyboard to customize its keybind. Your weapon aims and shoots automatically!
+                Click any button below and press a key to rebind. During Level-Up, use <strong class="text-amber-300">A / D</strong> to switch cards, <strong class="text-amber-300">ENTER / SPACE</strong> to confirm, and <strong class="text-cyan-300">R</strong> to reroll!
             </p>
 
             <div id="keybindList" class="flex flex-col gap-2.5">
@@ -531,7 +581,7 @@
             <!-- Music (BGM) Volume Controls -->
             <div class="pixel-box-dark p-3.5 flex flex-col gap-2.5">
                 <div class="flex items-center justify-between text-xs">
-                    <span class="text-cyan-300">🎵 MUSIC VOLUME (CHIPTUNE BGM)</span>
+                    <span class="text-cyan-300">🎵 MUSIC VOLUME (ADAPTIVE BGM)</span>
                     <span id="bgmPercentText" class="text-white">60%</span>
                 </div>
 
@@ -578,7 +628,7 @@
             <div class="pixel-box-dark p-4 w-full text-left font-retro text-base sm:text-lg text-slate-300 space-y-1.5">
                 <div><strong class="text-amber-300">GAME TITLE:</strong> INFERNAL SANDBOX</div>
                 <div><strong class="text-amber-300">INSPIRATION:</strong> Brotato (1x1 Arena Auto-Shooter)</div>
-                <div><strong class="text-cyan-300">ENGINE:</strong> Custom HTML5 8-Bit Pixel Canvas &amp; Dual-Channel WebAudio Synth</div>
+                <div><strong class="text-cyan-300">ENGINE:</strong> Custom HTML5 8-Bit Pixel Canvas &amp; Adaptive Wave Synth</div>
             </div>
 
             <button data-close-modal="modalCredits" class="pixel-btn pixel-btn-primary w-full py-3 text-xs">
@@ -644,23 +694,35 @@
     </div>
 
     <!-- ==========================================
-         MODAL: LEVEL UP! (CHOOSE 1 OF 3 UPGRADES WITH PIXEL ICONS)
+         MODAL: LEVEL UP! (KEYBOARD A/D + ENTER/SPACE & REROLL)
     =========================================== -->
     <div id="modalLevelUp" class="hidden absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
-        <div class="pixel-box w-full max-w-3xl p-5 sm:p-6 flex flex-col items-center text-center gap-4 max-h-[92vh] overflow-y-auto">
+        <div class="pixel-box w-full max-w-3xl p-5 sm:p-6 flex flex-col items-center text-center gap-3.5 max-h-[94vh] overflow-y-auto">
             <div class="text-xs text-cyan-300 tracking-widest uppercase animate-pulse">
                 ★ SOUL POWER ASCENSION ★
             </div>
             <h2 class="text-xl sm:text-3xl text-amber-400 title-shadow">
                 LEVEL UP! CHOOSE 1 UPGRADE
             </h2>
-            <p class="font-retro text-base sm:text-lg text-slate-300 -mt-2">
-                Select a passive or active enhancement to empower your survivor:
-            </p>
+            <div class="flex flex-wrap items-center justify-center gap-2 text-[10px] text-slate-300">
+                <span class="px-2 py-1 bg-slate-900 border border-slate-600 text-amber-300">◀ [A] / [D] ▶ SELECT</span>
+                <span class="px-2 py-1 bg-slate-900 border border-slate-600 text-emerald-300">[ENTER] / [SPACE] CONFIRM</span>
+                <span id="lvlDiffScalingBadge" class="px-2 py-1 bg-slate-900 border border-slate-600 text-cyan-300">POTENCY: 100%</span>
+            </div>
 
             <!-- 3 Upgrade Cards Container -->
-            <div id="upgradeChoicesContainer" class="w-full grid grid-cols-1 sm:grid-cols-3 gap-3.5 my-2">
+            <div id="upgradeChoicesContainer" class="w-full grid grid-cols-1 sm:grid-cols-3 gap-3.5 my-1">
                 <!-- Populated dynamically on Level Up -->
+            </div>
+
+            <!-- Reroll Bar -->
+            <div class="w-full flex items-center justify-between border-t-2 border-slate-800 pt-3">
+                <span class="font-retro text-base sm:text-lg text-slate-400">
+                    TIP: Break Golden Soul Chests in the arena for extra Rerolls &amp; Overdrive!
+                </span>
+                <button id="btnRerollUpgrades" class="pixel-btn px-4 py-2 text-xs text-cyan-300">
+                    🎲 REROLL [R] (<span id="rerollCountText">2</span>)
+                </button>
             </div>
         </div>
     </div>
@@ -728,9 +790,9 @@
             'use strict';
 
             /* ==========================================================================
-               1. STORAGE, KEYBINDS & PERSISTENT STATS
+               1. STORAGE, KEYBINDS (SPACE FOR DODGE) & PERSISTENT STATS
             ========================================================================== */
-            const STORAGE_KEY = 'infernal_sandbox_nico03_v3';
+            const STORAGE_KEY = 'infernal_sandbox_nico03_v4';
 
             const DEFAULT_KEYBINDS = {
                 up: 'KeyW',
@@ -739,7 +801,7 @@
                 right: 'KeyD',
                 mainPower: 'KeyQ',
                 secPower: 'KeyE',
-                dash: 'KeyC'
+                dash: 'Space' // Default hotkey is now SPACEBAR
             };
 
             const KEYBIND_LABELS = {
@@ -749,7 +811,7 @@
                 right: 'MOVE RIGHT',
                 mainPower: 'MAIN POWER (3x GIANT)',
                 secPower: 'SECONDARY POWER (5x ORBS)',
-                dash: 'DODGE / DASH'
+                dash: 'DODGE'
             };
 
             let keybinds = { ...DEFAULT_KEYBINDS };
@@ -760,7 +822,8 @@
                 crtEnabled: true,
                 sfxVolume: 0.7,
                 bgmVolume: 0.6,
-                muted: false
+                muted: false,
+                selectedSkin: 'hellknight'
             };
 
             function formatKeyCode(code) {
@@ -781,9 +844,6 @@
                         if (parsed.keybinds) keybinds = { ...DEFAULT_KEYBINDS, ...parsed.keybinds };
                         if (parsed.stats) {
                             savedStats = { ...savedStats, ...parsed.stats };
-                            if (typeof parsed.stats.volume === 'number' && parsed.stats.sfxVolume === undefined) {
-                                savedStats.sfxVolume = parsed.stats.volume;
-                            }
                         }
                     }
                 } catch (e) {
@@ -809,14 +869,14 @@
             }
 
             /* ==========================================================================
-               2. 8-BIT WEBAUDIO CHIPTUNE SYNTHESIZER (SEPARATE SFX & BGM CHANNELS)
+               2. 8-BIT WEBAUDIO SYNTHESIZER (PROGRESSIVE WAVE-SCALED AGGRESSIVE BGM)
             ========================================================================== */
             const AudioEngine = {
                 ctx: null,
                 sfxVolume: 0.7,
                 bgmVolume: 0.6,
                 muted: false,
-                bgmInterval: null,
+                bgmRunning: false,
                 bgmStep: 0,
 
                 init() {
@@ -890,6 +950,13 @@
                     this.playTone(740, 'sine', 0.05, 0.15, 1080, 'sfx');
                 },
 
+                sfxChestOpen() {
+                    const notes = [523.25, 659.25, 783.99, 1046.5];
+                    notes.forEach((n, idx) => {
+                        setTimeout(() => this.playTone(n, 'triangle', 0.11, 0.32, null, 'sfx'), idx * 55);
+                    });
+                },
+
                 sfxLevelUp() {
                     const notes = [440, 554, 659, 880];
                     notes.forEach((n, idx) => {
@@ -898,31 +965,72 @@
                 },
 
                 startBGM() {
-                    if (this.bgmInterval) return;
-                    const bassline = [
+                    if (this.bgmRunning) return;
+                    this.bgmRunning = true;
+
+                    // Calm/dark pattern for early waves
+                    const calmBass = [
                         110, 110, 130.8, 110, 146.8, 130.8, 98, 110,
                         110, 110, 164.8, 146.8, 130.8, 123.5, 98, 103.8
                     ];
+                    // Faster, darker Phrygian/minor riff for higher waves
+                    const intenseBass = [
+                        110, 116.5, 110, 146.8, 110, 164.8, 155.6, 130.8,
+                        110, 116.5, 130.8, 174.6, 164.8, 146.8, 130.8, 116.5
+                    ];
                     const leadline = [
                         220, 0, 261.6, 0, 293.7, 261.6, 196, 0,
-                        220, 0, 329.6, 293.7, 261.6, 246.9, 196, 207.6
+                        220, 329.6, 311.1, 293.7, 261.6, 246.9, 196, 233.1
                     ];
-                    this.bgmInterval = setInterval(() => {
-                        if (Game.state !== 'PLAYING' || this.muted || this.bgmVolume <= 0) return;
-                        const idx = this.bgmStep % bassline.length;
-                        const bassNote = bassline[idx];
-                        const leadNote = leadline[idx];
-                        this.playTone(bassNote, 'triangle', 0.15, 0.14, null, 'bgm');
-                        if (leadNote > 0 && idx % 2 === 0) {
-                            this.playTone(leadNote, 'square', 0.09, 0.06, null, 'bgm');
+
+                    const tickBGM = () => {
+                        const w = Game.wave || 1;
+                        // Gradually speed up tempo from 205ms (Wave 1) down to 145ms (Wave 25+)
+                        const stepDelay = Math.max(145, Math.round(205 - Math.min(26, w) * 2.3));
+
+                        if (Game.state === 'PLAYING' && !this.muted && this.bgmVolume > 0) {
+                            const idx = this.bgmStep % 16;
+                            const useIntense = w >= 8;
+                            const bassNote = useIntense ? intenseBass[idx] : calmBass[idx];
+                            const leadNote = leadline[idx];
+
+                            // Bass timbre gets grittier as waves progress
+                            let bassType = 'triangle';
+                            let bassVol = 0.14;
+                            if (w >= 14) {
+                                bassType = idx % 2 === 0 ? 'sawtooth' : 'square';
+                                bassVol = 0.13;
+                            } else if (w >= 6) {
+                                bassType = idx % 4 === 0 ? 'square' : 'triangle';
+                                bassVol = 0.14;
+                            }
+
+                            this.playTone(bassNote, bassType, 0.14, bassVol, null, 'bgm');
+
+                            // Lead melody triggers more frequently on higher waves
+                            const playLead = w >= 12 ? (leadNote > 0) : (leadNote > 0 && idx % 2 === 0);
+                            if (playLead) {
+                                const leadMult = (w >= 18 && idx % 4 === 0) ? 1.5 : 1.0;
+                                this.playTone(leadNote * leadMult, 'square', 0.08, 0.06, null, 'bgm');
+                            }
+
+                            // Subtle sub-kick pulse on downbeats from Wave 10+
+                            if (w >= 10 && idx % 4 === 0) {
+                                this.playTone(95, 'sine', 0.07, 0.18, 38, 'bgm');
+                            }
+
+                            this.bgmStep++;
                         }
-                        this.bgmStep++;
-                    }, 205);
+
+                        setTimeout(tickBGM, stepDelay);
+                    };
+
+                    tickBGM();
                 }
             };
 
             /* ==========================================================================
-               3. 8-BIT PIXEL ART SPRITE MATRICES (CHARACTERS, WEAPONS & UPGRADE ICONS)
+               3. 8-BIT PIXEL ART SPRITE MATRICES & SURVIVOR SKINS
             ========================================================================== */
             const PALETTE = {
                 'K': '#09060e',
@@ -938,6 +1046,45 @@
                 'P': '#c084fc',
                 'E': '#4ade80',
                 'T': '#a16207'
+            };
+
+            // 5Selectable Survivor Skins for the Player
+            const PLAYER_SKINS = {
+                hellknight: {
+                    id: 'hellknight',
+                    name: 'HELLKNIGHT',
+                    trait: 'CLASSIC CRIMSON ARMOR',
+                    dashColor: '#ef4444',
+                    map: { 'R': '#ef4444', 'Y': '#fde047', 'F': '#fdba74', 'D': '#991b1b', 'T': '#a16207' }
+                },
+                cyber: {
+                    id: 'cyber',
+                    name: 'CYBER RONIN',
+                    trait: 'NEON SYNTH RUNNER',
+                    dashColor: '#22d3ee',
+                    map: { 'R': '#0ea5e9', 'Y': '#22d3ee', 'F': '#e2e8f0', 'D': '#1e293b', 'T': '#ec4899' }
+                },
+                necro: {
+                    id: 'necro',
+                    name: 'VOID REAPER',
+                    trait: 'ABYSSAL CULTIST CLOAK',
+                    dashColor: '#c084fc',
+                    map: { 'R': '#9333ea', 'Y': '#4ade80', 'F': '#d8b4fe', 'D': '#3b0764', 'T': '#22c55e' }
+                },
+                paladin: {
+                    id: 'paladin',
+                    name: 'SOLAR PALADIN',
+                    trait: 'GOLDEN RADIANT PLATE',
+                    dashColor: '#fde047',
+                    map: { 'R': '#f59e0b', 'Y': '#ffffff', 'F': '#fef08a', 'D': '#fef3c7', 'T': '#38bdf8' }
+                },
+                toxic: {
+                    id: 'toxic',
+                    name: 'BIO STALKER',
+                    trait: 'VENOMOUS HAZMAT SUIT',
+                    dashColor: '#4ade80',
+                    map: { 'R': '#22c55e', 'Y': '#facc15', 'F': '#bbf7d0', 'D': '#14532d', 'T': '#a855f7' }
+                }
             };
 
             const SPRITES = {
@@ -966,6 +1113,17 @@
                     "..KTTTTTTK..",
                     ".K..K..K..K.",
                     ".K........K."
+                ],
+                soulChest: [
+                    "..KKKKKKKK..",
+                    ".KYYYYYYYYK.",
+                    "KYYTTTTTTYYK",
+                    "KYTTTTTTTTYK",
+                    "KYYYYWWYYYYK",
+                    "KYTTTWWTTTYK",
+                    "KYYTTTTTTYYK",
+                    "KYYYYYYYYYYK",
+                    ".KKKKKKKKKK."
                 ],
                 ghostMelee: [
                     "....KKKK....",
@@ -1165,7 +1323,6 @@
                     "KYYYYYYYYK",
                     "KKKKKKKKKK"
                 ],
-                /* --- DEDICATED PIXEL-ART ICONS FOR EVERY UPGRADE --- */
                 upgPowder: [
                     "..K..KK..K..",
                     ".KOK.KYYKOK.",
@@ -1306,8 +1463,9 @@
             };
 
             const spriteCache = {};
-            function getSpriteCanvas(name, scale = 1, tint = null) {
-                const key = `${name}_${scale}_${tint || 'none'}`;
+            function getSpriteCanvas(name, scale = 1, tint = null, customPalette = null) {
+                const skinTag = customPalette ? JSON.stringify(customPalette) : 'default';
+                const key = `${name}_${scale}_${tint || 'none'}_${skinTag}`;
                 if (spriteCache[key]) return spriteCache[key];
 
                 const matrix = SPRITES[name];
@@ -1323,8 +1481,10 @@
                 for (let r = 0; r < rows; r++) {
                     for (let c = 0; c < cols; c++) {
                         const ch = matrix[r][c];
-                        const color = tint || PALETTE[ch];
-                        if (color && ch !== '.') {
+                        if (ch === '.') continue;
+                        const mappedColor = (customPalette && customPalette[ch]) ? customPalette[ch] : PALETTE[ch];
+                        const color = tint || mappedColor;
+                        if (color) {
                             octx.fillStyle = color;
                             octx.fillRect(c * scale, r * scale, scale, scale);
                         }
@@ -1334,12 +1494,18 @@
                 return off;
             }
 
-            function drawCenteredPixelIcon(canvasEl, spriteName, scale = 3) {
+            function getPlayerSpriteCanvas(spriteName, scale = 3, tint = null, skinId = null) {
+                const activeSkinId = skinId || savedStats.selectedSkin || 'hellknight';
+                const skinObj = PLAYER_SKINS[activeSkinId] || PLAYER_SKINS.hellknight;
+                return getSpriteCanvas(spriteName, scale, tint, skinObj.map);
+            }
+
+            function drawCenteredPixelIcon(canvasEl, spriteName, scale = 3, customPalette = null) {
                 if (!canvasEl) return;
                 const cctx = canvasEl.getContext('2d');
                 cctx.imageSmoothingEnabled = false;
                 cctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-                const sp = getSpriteCanvas(spriteName, scale);
+                const sp = getSpriteCanvas(spriteName, scale, null, customPalette);
                 if (sp) {
                     const ox = Math.floor((canvasEl.width - sp.width) / 2);
                     const oy = Math.floor((canvasEl.height - sp.height) / 2);
@@ -1348,7 +1514,7 @@
             }
 
             /* ==========================================================================
-               4. DIFFICULTY CONFIGURATIONS & WEAPON ARSENAL (TOUGHER SCALING)
+               4. DIFFICULTY CONFIGURATIONS (WITH UPGRADE & REGEN SCALING)
             ========================================================================== */
             const DIFFICULTIES = {
                 easy: {
@@ -1357,8 +1523,10 @@
                     dmgMult: 0.70,
                     spawnMult: 0.82,
                     xpMult: 1.15,
+                    upgMult: 1.08,       // +8% stronger general upgrades
+                    regenUpgMult: 1.15,  // +15% stronger healing/regen upgrades
                     badgeColor: 'bg-emerald-700',
-                    desc: '0.75x Ghost Health & Damage with +15% XP. Forgiving but still keeps you moving!'
+                    desc: '0.75x Ghost Threat & +15% XP. Upgrades are 108% stronger (115% HP Regen).'
                 },
                 medium: {
                     name: 'MEDIUM',
@@ -1366,8 +1534,10 @@
                     dmgMult: 0.95,
                     spawnMult: 1.02,
                     xpMult: 1.00,
+                    upgMult: 1.00,       // 100% standard upgrades
+                    regenUpgMult: 1.00,
                     badgeColor: 'bg-amber-600',
-                    desc: 'True 1.0x arena challenge. Aggressive ghost variety and ruthless swarms.'
+                    desc: 'True 1.0x arena challenge. Standard upgrade potency (100% stats & regen).'
                 },
                 hard: {
                     name: 'HARD',
@@ -1375,8 +1545,10 @@
                     dmgMult: 1.25,
                     spawnMult: 1.22,
                     xpMult: 0.95,
+                    upgMult: 0.90,       // 10% weaker general upgrades
+                    regenUpgMult: 0.78,  // 22% weaker healing/regen upgrades
                     badgeColor: 'bg-red-700',
-                    desc: '1.35x Ghost Health, 1.25x Damage & faster spawns. Punishes every mistake!'
+                    desc: '1.35x Ghost Threat. Upgrades grant 90% power & HP Regen upgrades are 78% effective!'
                 },
                 infernal: {
                     name: 'INFERNAL',
@@ -1384,8 +1556,10 @@
                     dmgMult: 1.60,
                     spawnMult: 1.45,
                     xpMult: 1.05,
+                    upgMult: 0.82,       // 18% weaker general upgrades
+                    regenUpgMult: 0.65,  // 35% weaker healing/regen upgrades
                     badgeColor: 'bg-purple-700',
-                    desc: '1.80x Nightmare Ghost Health & relentless chaos in a blood-soaked arena!'
+                    desc: '1.80x Nightmare Threat! Upgrades grant 82% power & HP Regen is reduced to 65%!'
                 }
             };
 
@@ -1513,7 +1687,7 @@
             };
 
             /* ==========================================================================
-               5. UPGRADE POOL (WITH DEDICATED PIXEL SPRITES & WEIGHTS)
+               5. UPGRADE POOL (SCALED BY DIFFICULTY TIER, ESPECIALLY HP REGEN)
             ========================================================================== */
             const UPGRADE_POOL = [
                 {
@@ -1523,8 +1697,13 @@
                     type: 'PASSIVE',
                     weight: 1.15,
                     color: '#ef4444',
-                    desc: 'x1.18 DMG to all Auto-Attacks and Abilities.',
-                    apply(p) { p.dmg *= 1.18; }
+                    getDesc(d) {
+                        const pct = Math.round(18 * d.upgMult);
+                        return `+${pct}% Damage to all Auto-Attacks and Abilities.`;
+                    },
+                    apply(p, d) {
+                        p.dmg *= (1 + 0.18 * d.upgMult);
+                    }
                 },
                 {
                     id: 'main_overcharge',
@@ -1533,9 +1712,12 @@
                     type: 'ACTIVE UPGRADE',
                     weight: 1.0,
                     color: '#f97316',
-                    desc: 'Main Power [Q] deals +x1.25 extra DMG multiplier & fires +1 Giant Bullet!',
-                    apply(p) {
-                        p.mainPowerMult += 1.25;
+                    getDesc(d) {
+                        const bonusMult = (1.25 * d.upgMult).toFixed(2);
+                        return `Main Power [Q] deals +x${bonusMult} extra DMG & fires +1 Giant Bullet!`;
+                    },
+                    apply(p, d) {
+                        p.mainPowerMult += 1.25 * d.upgMult;
                         p.mainPowerCount += 1;
                     }
                 },
@@ -1546,10 +1728,13 @@
                     type: 'ACTIVE UPGRADE',
                     weight: 1.0,
                     color: '#22d3ee',
-                    desc: 'Secondary Power [E] unleashes +2 extra Orbs and +35% Orb Damage.',
-                    apply(p) {
+                    getDesc(d) {
+                        const pct = Math.round(35 * d.upgMult);
+                        return `Secondary Power [E] unleashes +2 extra Orbs and +${pct}% Orb Damage.`;
+                    },
+                    apply(p, d) {
                         p.secPowerCount += 2;
-                        p.secPowerMult *= 1.35;
+                        p.secPowerMult *= (1 + 0.35 * d.upgMult);
                     }
                 },
                 {
@@ -1559,9 +1744,12 @@
                     type: 'ACTIVE & PASSIVE',
                     weight: 1.0,
                     color: '#c084fc',
-                    desc: '-16% Cooldown on Main Power [Q], Secondary Power [E], and Dash [C]!',
-                    apply(p) {
-                        p.cdr *= 0.84;
+                    getDesc(d) {
+                        const cdrPct = Math.round(16 * d.upgMult);
+                        return `-${cdrPct}% Cooldown on Main Power [Q], Secondary [E], and Dodge!`;
+                    },
+                    apply(p, d) {
+                        p.cdr *= (1 - 0.16 * d.upgMult);
                     }
                 },
                 {
@@ -1571,9 +1759,12 @@
                     type: 'PASSIVE',
                     weight: 0.9,
                     color: '#fde047',
-                    desc: '+20% Auto-Weapon Attack Speed.',
-                    apply(p) {
-                        p.fireRate *= 1.20;
+                    getDesc(d) {
+                        const spdPct = Math.round(20 * d.upgMult);
+                        return `+${spdPct}% Auto-Weapon Attack Speed.`;
+                    },
+                    apply(p, d) {
+                        p.fireRate *= (1 + 0.20 * d.upgMult);
                     }
                 },
                 {
@@ -1581,9 +1772,11 @@
                     name: 'TWIN CHAMBER',
                     sprite: 'upgMultishot',
                     type: 'WEAPON UPGRADE',
-                    weight: 0.42, // Appears less frequently
+                    weight: 0.42,
                     color: '#38bdf8',
-                    desc: '+1 Projectile per Auto-Attack shot.',
+                    getDesc() {
+                        return '+1 Projectile per Auto-Attack shot.';
+                    },
                     apply(p) {
                         p.projectiles += 1;
                     }
@@ -1595,10 +1788,14 @@
                     type: 'MOBILITY',
                     weight: 1.1,
                     color: '#4ade80',
-                    desc: '+14% Movement Speed & reduces Dash [C] base cooldown by 0.7s.',
-                    apply(p) {
-                        p.speed *= 1.14;
-                        p.dashBaseCd = Math.max(2.2, p.dashBaseCd - 0.7);
+                    getDesc(d) {
+                        const mvPct = Math.round(14 * d.upgMult);
+                        const cdCut = (0.7 * d.upgMult).toFixed(1);
+                        return `+${mvPct}% Move Speed & reduces Dodge base cooldown by ${cdCut}s.`;
+                    },
+                    apply(p, d) {
+                        p.speed *= (1 + 0.14 * d.upgMult);
+                        p.dashBaseCd = Math.max(2.2, p.dashBaseCd - 0.7 * d.upgMult);
                     }
                 },
                 {
@@ -1608,10 +1805,16 @@
                     type: 'SURVIVAL',
                     weight: 1.15,
                     color: '#f43f5e',
-                    desc: '+30 Max HP and immediately restores 35 HP.',
-                    apply(p) {
-                        p.maxHp += 30;
-                        p.hp = Math.min(p.maxHp, p.hp + 35);
+                    getDesc(d) {
+                        const hpGain = Math.round(30 * d.upgMult);
+                        const healNow = Math.round(35 * d.regenUpgMult);
+                        return `+${hpGain} Max HP and immediately restores ${healNow} HP.`;
+                    },
+                    apply(p, d) {
+                        const hpGain = Math.round(30 * d.upgMult);
+                        const healNow = Math.round(35 * d.regenUpgMult);
+                        p.maxHp += hpGain;
+                        p.hp = Math.min(p.maxHp, p.hp + healNow);
                     }
                 },
                 {
@@ -1621,10 +1824,14 @@
                     type: 'SURVIVAL',
                     weight: 1.0,
                     color: '#ec4899',
-                    desc: 'Heal +2 HP for every 6 Ghosts slain & +12% Crit Chance (2x DMG).',
-                    apply(p) {
-                        p.lifeStealOnKill += 0.34;
-                        p.critChance = Math.min(0.85, p.critChance + 0.12);
+                    getDesc(d) {
+                        const leech = (0.34 * d.regenUpgMult).toFixed(2);
+                        const crit = Math.round(12 * d.upgMult);
+                        return `+${leech} HP Leech per Ghost slain & +${crit}% Crit Chance (2x DMG).`;
+                    },
+                    apply(p, d) {
+                        p.lifeStealOnKill += 0.34 * d.regenUpgMult;
+                        p.critChance = Math.min(0.85, p.critChance + 0.12 * d.upgMult);
                     }
                 },
                 {
@@ -1632,12 +1839,15 @@
                     name: 'SPECTRAL PIERCE',
                     sprite: 'upgPierce',
                     type: 'WEAPON UPGRADE',
-                    weight: 0.45, // Appears less frequently
+                    weight: 0.45,
                     color: '#a855f7',
-                    desc: 'Auto-Bullets pierce +1 additional Ghost and deal +12% DMG.',
-                    apply(p) {
+                    getDesc(d) {
+                        const dmgPct = Math.round(12 * d.upgMult);
+                        return `Auto-Bullets pierce +1 additional Ghost and deal +${dmgPct}% DMG.`;
+                    },
+                    apply(p, d) {
                         p.pierce += 1;
-                        p.dmg *= 1.12;
+                        p.dmg *= (1 + 0.12 * d.upgMult);
                     }
                 },
                 {
@@ -1647,10 +1857,14 @@
                     type: 'UTILITY',
                     weight: 1.0,
                     color: '#2dd4bf',
-                    desc: '+55% XP Pickup Radius & +18% XP gained from all Ghosts.',
-                    apply(p) {
-                        p.pickupRadius *= 1.55;
-                        p.xpGainMult *= 1.18;
+                    getDesc(d) {
+                        const radPct = Math.round(55 * d.upgMult);
+                        const xpPct = Math.round(18 * d.upgMult);
+                        return `+${radPct}% XP Pickup Radius & +${xpPct}% XP gained from all Ghosts.`;
+                    },
+                    apply(p, d) {
+                        p.pickupRadius *= (1 + 0.55 * d.upgMult);
+                        p.xpGainMult *= (1 + 0.18 * d.upgMult);
                     }
                 },
                 {
@@ -1660,11 +1874,17 @@
                     type: 'SURVIVAL',
                     weight: 1.05,
                     color: '#fb7185',
-                    desc: '+1.6 HP/s passive Regeneration & +15 Max HP.',
-                    apply(p) {
-                        p.hpRegen += 1.6;
-                        p.maxHp += 15;
-                        p.hp = Math.min(p.maxHp, p.hp + 15);
+                    getDesc(d) {
+                        const regenVal = (1.6 * d.regenUpgMult).toFixed(2);
+                        const maxHpVal = Math.round(15 * d.upgMult);
+                        return `+${regenVal} HP/s passive Regeneration & +${maxHpVal} Max HP.`;
+                    },
+                    apply(p, d) {
+                        const regenVal = 1.6 * d.regenUpgMult;
+                        const maxHpVal = Math.round(15 * d.upgMult);
+                        p.hpRegen += regenVal;
+                        p.maxHp += maxHpVal;
+                        p.hp = Math.min(p.maxHp, p.hp + maxHpVal);
                     }
                 }
             ];
@@ -1709,14 +1929,22 @@
                 waveTimer: 25,
                 waveDuration: 25,
                 spawnAccumulator: 0,
+                chestSpawnTimer: 11,
                 shakeTime: 0,
                 shakeMagnitude: 0,
                 killsThisRun: 0,
                 keysPressed: {},
                 rebindTarget: null,
 
+                // Level-Up Keyboard Selection & Rerolls
+                currentUpgradeChoices: [],
+                selectedUpgradeIndex: 0,
+                levelUpInputLockTimer: 0,
+                rerollsLeft: 2,
+
                 player: null,
                 enemies: [],
+                chests: [],
                 spawnMarkers: [],
                 bullets: [],
                 enemyBullets: [],
@@ -1760,13 +1988,14 @@
             }
 
             function createPlayer() {
+                const diff = DIFFICULTIES[Game.difficulty];
                 return {
                     x: ARENA_SIZE / 2,
                     y: ARENA_SIZE / 2,
                     radius: 15,
                     hp: 140,
                     maxHp: 140,
-                    hpRegen: 0.9,
+                    hpRegen: 0.9 * diff.regenUpgMult,
                     regenCarry: 0,
                     speed: 225,
                     dmg: 17,
@@ -1776,7 +2005,7 @@
                     pierce: 0,
                     range: 420,
                     critChance: 0.10,
-                    lifeStealOnKill: 0.12,
+                    lifeStealOnKill: 0.12 * diff.regenUpgMult,
                     killHealProgress: 0,
 
                     weaponId: 'blaster',
@@ -1812,12 +2041,17 @@
                     dashVx: 0,
                     dashVy: 0,
 
+                    // Bonus Features: Killstreak Combo & Overdrive Buff
+                    comboCount: 0,
+                    comboTimer: 0,
+                    overdriveTimer: 0,
+
                     inventory: {}
                 };
             }
 
             /* ==========================================================================
-               7. STARTING RUN, WAVES, & 9-ARCHETYPE SPAWNING LOGIC
+               7. STARTING RUN, WAVES, CHESTS & 9-ARCHETYPE SPAWNING LOGIC
             ========================================================================== */
             function startNewRun() {
                 AudioEngine.init();
@@ -1826,6 +2060,7 @@
 
                 Game.player = createPlayer();
                 Game.enemies = [];
+                Game.chests = [];
                 Game.spawnMarkers = [];
                 Game.bullets = [];
                 Game.enemyBullets = [];
@@ -1837,6 +2072,8 @@
                 Game.wave = 1;
                 Game.freeplay = false;
                 Game.killsThisRun = 0;
+                Game.rerollsLeft = 2;
+                Game.chestSpawnTimer = 10;
 
                 initFloorDetails();
                 refreshWeaponCanvasIcons();
@@ -1865,11 +2102,16 @@
                 Game.enemyBullets = [];
                 Game.spawnMarkers = [];
 
+                const diff = DIFFICULTIES[Game.difficulty];
                 if (waveNum > 1 && Game.player) {
-                    const heal = Math.ceil((Game.player.maxHp - Game.player.hp) * 0.14);
+                    const heal = Math.ceil((Game.player.maxHp - Game.player.hp) * 0.14 * diff.regenUpgMult);
                     if (heal > 0) {
                         Game.player.hp = Math.min(Game.player.maxHp, Game.player.hp + heal);
                         spawnFloatingText(Game.player.x, Game.player.y - 24, `+${heal} HP`, '#4ade80');
+                    }
+                    if (waveNum % 5 === 0) {
+                        Game.rerollsLeft += 1;
+                        spawnFloatingText(Game.player.x, Game.player.y - 40, '+1 REROLL [R]!', '#22d3ee');
                     }
                 }
 
@@ -1897,6 +2139,59 @@
                 const initialCount = 4 + Math.min(10, Math.floor(waveNum * 0.75));
                 for (let i = 0; i < initialCount; i++) {
                     queueEnemySpawn();
+                }
+            }
+
+            function spawnSoulChest() {
+                if (Game.chests.length >= 2) return;
+                const margin = 110;
+                const x = margin + Math.random() * (ARENA_SIZE - margin * 2);
+                const y = margin + Math.random() * (ARENA_SIZE - margin * 2);
+                Game.chests.push({
+                    x,
+                    y,
+                    hp: 25 + Game.wave * 8,
+                    maxHp: 25 + Game.wave * 8,
+                    radius: 16,
+                    bobPhase: Math.random() * Math.PI * 2
+                });
+                if (Game.player) {
+                    spawnFloatingText(x, y - 20, '★ SOUL CHEST SPAWNED! ★', '#fde047');
+                }
+            }
+
+            function openSoulChest(index) {
+                const c = Game.chests[index];
+                if (!c) return;
+                Game.chests.splice(index, 1);
+
+                AudioEngine.sfxChestOpen();
+                spawnParticles(c.x, c.y, '#fde047', 16);
+                addScreenShake(0.18, 5);
+
+                const p = Game.player;
+                // Drop 3 high-value golden XP gems
+                for (let i = 0; i < 3; i++) {
+                    Game.xpGems.push({
+                        x: c.x + (Math.random() - 0.5) * 32,
+                        y: c.y + (Math.random() - 0.5) * 32,
+                        val: 18 + Game.wave * 2
+                    });
+                }
+
+                const roll = Math.random();
+                if (roll < 0.45) {
+                    p.overdriveTimer = 6.5;
+                    spawnFloatingText(c.x, c.y - 24, '⚡ 6.5s OVERDRIVE (+35% SPD & FIRE RATE)!', '#fde047');
+                } else if (roll < 0.78) {
+                    Game.rerollsLeft += 1;
+                    const heal = Math.round(22 * DIFFICULTIES[Game.difficulty].regenUpgMult);
+                    p.hp = Math.min(p.maxHp, p.hp + heal);
+                    spawnFloatingText(c.x, c.y - 24, `🎲 +1 REROLL & +${heal} HP!`, '#22d3ee');
+                } else {
+                    const heal = Math.round(35 * DIFFICULTIES[Game.difficulty].regenUpgMult);
+                    p.hp = Math.min(p.maxHp, p.hp + heal);
+                    spawnFloatingText(c.x, c.y - 24, `♥ SOUL BLESSING (+${heal} HP)!`, '#4ade80');
                 }
             }
 
@@ -2063,7 +2358,7 @@
             }
 
             /* ==========================================================================
-               8. PLAYER ABILITIES (MAIN POWER [Q], SECONDARY [E], DASH [C])
+               8. PLAYER ABILITIES (MAIN POWER [Q], SECONDARY [E], DODGE [SPACE])
             ========================================================================== */
             function triggerMainPower() {
                 const p = Game.player;
@@ -2150,9 +2445,10 @@
                 p.dashVx = (p.facingX / mag) * 680;
                 p.dashVy = (p.facingY / mag) * 680;
 
+                const skinObj = PLAYER_SKINS[savedStats.selectedSkin] || PLAYER_SKINS.hellknight;
                 AudioEngine.sfxDash();
-                spawnParticles(p.x, p.y, '#4ade80', 12);
-                spawnFloatingText(p.x, p.y - 22, 'DASH!', '#4ade80');
+                spawnParticles(p.x, p.y, skinObj.dashColor, 12);
+                spawnFloatingText(p.x, p.y - 22, 'DODGE!', skinObj.dashColor);
             }
 
             /* ==========================================================================
@@ -2205,6 +2501,10 @@
             }
 
             function updateGame(dt) {
+                if (Game.levelUpInputLockTimer > 0) {
+                    Game.levelUpInputLockTimer = Math.max(0, Game.levelUpInputLockTimer - dt);
+                }
+
                 if (Game.state === 'MENU') {
                     for (const mg of Game.menuGhosts) {
                         mg.x += mg.vx * dt;
@@ -2229,6 +2529,17 @@
                 if (p.secCd > 0) p.secCd = Math.max(0, p.secCd - dt);
                 if (p.dashCd > 0) p.dashCd = Math.max(0, p.dashCd - dt);
                 if (p.invulnTimer > 0) p.invulnTimer = Math.max(0, p.invulnTimer - dt);
+                if (p.overdriveTimer > 0) p.overdriveTimer = Math.max(0, p.overdriveTimer - dt);
+
+                if (p.comboTimer > 0) {
+                    p.comboTimer -= dt;
+                    if (p.comboTimer <= 0) {
+                        p.comboCount = 0;
+                    }
+                }
+
+                const overdriveSpeedMult = p.overdriveTimer > 0 ? 1.30 : 1.0;
+                const comboSpeedMult = 1 + Math.min(0.18, p.comboCount * 0.006);
 
                 if (p.dashActiveTimer > 0) {
                     p.dashActiveTimer -= dt;
@@ -2255,8 +2566,8 @@
                         my /= len;
                         p.facingX = mx;
                         p.facingY = my;
-                        p.x += mx * p.speed * dt;
-                        p.y += my * p.speed * dt;
+                        p.x += mx * (p.speed * overdriveSpeedMult * comboSpeedMult) * dt;
+                        p.y += my * (p.speed * overdriveSpeedMult * comboSpeedMult) * dt;
 
                         p.walkAnimTimer += dt;
                         if (p.walkAnimTimer > 0.14) {
@@ -2281,11 +2592,27 @@
                     }
                 }
 
+                // Periodic Golden Soul Chest Spawns
+                Game.chestSpawnTimer -= dt;
+                if (Game.chestSpawnTimer <= 0) {
+                    Game.chestSpawnTimer = 14 + Math.random() * 5;
+                    spawnSoulChest();
+                }
+
+                for (let cIdx = Game.chests.length - 1; cIdx >= 0; cIdx--) {
+                    const ch = Game.chests[cIdx];
+                    ch.bobPhase += dt * 4;
+                    if (Math.hypot(p.x - ch.x, p.y - ch.y) < p.radius + ch.radius) {
+                        openSoulChest(cIdx);
+                    }
+                }
+
                 const wep = WEAPONS[p.weaponId] || WEAPONS.blaster;
                 const tierDmgBonus = 1 + (p.weaponTier - 1) * 0.22;
                 const tierExtraShots = Math.floor((p.weaponTier - 1) / 2);
                 const effDmgBase = p.dmg * wep.dmgFactor * tierDmgBonus;
-                const effFireRate = p.fireRate * wep.rateFactor;
+                const overdriveFireMult = p.overdriveTimer > 0 ? 1.38 : 1.0;
+                const effFireRate = p.fireRate * wep.rateFactor * overdriveFireMult;
                 const effShots = p.projectiles + wep.bonusShots + tierExtraShots;
                 const effPierce = p.pierce + wep.bonusPierce;
 
@@ -2362,6 +2689,27 @@
                         Game.bullets.splice(i, 1);
                         continue;
                     }
+
+                    // Check collision with Soul Chests
+                    let bulletConsumed = false;
+                    for (let cIdx = Game.chests.length - 1; cIdx >= 0; cIdx--) {
+                        const ch = Game.chests[cIdx];
+                        if (Math.hypot(b.x - ch.x, b.y - ch.y) < b.radius + ch.radius) {
+                            ch.hp -= b.dmg;
+                            spawnParticles(ch.x, ch.y, '#fde047', 4);
+                            if (ch.hp <= 0) {
+                                openSoulChest(cIdx);
+                            }
+                            if (b.pierce <= 0) {
+                                Game.bullets.splice(i, 1);
+                                bulletConsumed = true;
+                                break;
+                            } else {
+                                b.pierce--;
+                            }
+                        }
+                    }
+                    if (bulletConsumed) continue;
 
                     for (let j = Game.enemies.length - 1; j >= 0; j--) {
                         const e = Game.enemies[j];
@@ -2678,11 +3026,12 @@
                     val: e.xpVal
                 });
 
+                const diff = DIFFICULTIES[Game.difficulty];
                 if (e.type === 'tank' || Math.random() < 0.065) {
                     Game.heartDrops.push({
                         x: e.x + (Math.random() - 0.5) * 12,
                         y: e.y + (Math.random() - 0.5) * 12,
-                        heal: e.type === 'tank' ? 32 : 15
+                        heal: Math.max(6, Math.round((e.type === 'tank' ? 32 : 15) * diff.regenUpgMult))
                     });
                 }
 
@@ -2695,6 +3044,13 @@
                 saveStorage();
 
                 const p = Game.player;
+                // Killstreak Combo Update
+                p.comboCount++;
+                p.comboTimer = 2.6;
+                if (p.comboCount === 10) spawnFloatingText(p.x, p.y - 32, '🔥 10x KILLSTREAK!', '#fde047');
+                if (p.comboCount === 25) spawnFloatingText(p.x, p.y - 32, '⚡ 25x RAMPAGE!', '#f97316');
+                if (p.comboCount === 50) spawnFloatingText(p.x, p.y - 32, '💀 50x GODLIKE!', '#c084fc');
+
                 if (p.lifeStealOnKill > 0) {
                     p.killHealProgress += p.lifeStealOnKill;
                     if (p.killHealProgress >= 1) {
@@ -2709,6 +3065,8 @@
                 const p = Game.player;
                 p.hp = Math.max(0, p.hp - amount);
                 p.invulnTimer = 0.52;
+                p.comboCount = 0;
+                p.comboTimer = 0;
                 AudioEngine.sfxPlayerHit();
                 addScreenShake(0.25, 8);
                 spawnParticles(p.x, p.y, '#ef4444', 12);
@@ -2741,7 +3099,7 @@
             }
 
             /* ==========================================================================
-               10. LEVEL UP (WITH PIXEL-ART THUMBNAILS), VICTORY, INVENTORY & GAME OVER
+               10. LEVEL UP (A/D + ENTER/SPACE NAVIGATION & REROLLS), VICTORY & INVENTORY
             ========================================================================== */
             function refreshWeaponCanvasIcons() {
                 if (!Game.player) return;
@@ -2752,12 +3110,9 @@
                 });
             }
 
-            function openLevelUpModal() {
-                Game.state = 'LEVEL_UP';
-                AudioEngine.sfxLevelUp();
-                updateHud();
-
+            function generateUpgradeOffer() {
                 const p = Game.player;
+                const diff = DIFFICULTIES[Game.difficulty];
                 const choices = pickWeightedUpgrades(3);
 
                 if (p.level % 4 === 0 || Math.random() < 0.18) {
@@ -2777,9 +3132,11 @@
                             : `EQUIP: ${wep.name}`,
                         type: isSameWeapon ? '★ WEAPON TIER UP' : '⚔ NEW WEAPON',
                         color: wep.color,
-                        desc: isSameWeapon
-                            ? `Upgrades your ${wep.name} to MK ${nextTier}! (+22% Weapon DMG & +1 Bonus Shot every 2 Tiers).`
-                            : `${wep.desc} (Replaces current weapon while keeping your MK ${p.weaponTier} tier & stats!)`,
+                        getDesc() {
+                            return isSameWeapon
+                                ? `Upgrades your ${wep.name} to MK ${nextTier}! (+${Math.round(22 * diff.upgMult)}% Weapon DMG & +1 Bonus Shot every 2 Tiers).`
+                                : `${wep.desc} (Replaces current weapon while keeping your MK ${p.weaponTier} tier!)`;
+                        },
                         apply(player) {
                             if (player.weaponId === wep.id) {
                                 player.weaponTier += 1;
@@ -2794,32 +3151,47 @@
                     };
                 }
 
+                Game.currentUpgradeChoices = choices;
+                Game.selectedUpgradeIndex = 0;
+                renderLevelUpCards();
+            }
+
+            function renderLevelUpCards() {
+                const p = Game.player;
+                const diff = DIFFICULTIES[Game.difficulty];
                 const container = document.getElementById('upgradeChoicesContainer');
                 container.innerHTML = '';
 
-                choices.forEach((upg) => {
+                document.getElementById('lvlDiffScalingBadge').textContent =
+                    `POTENCY: ${Math.round(diff.upgMult * 100)}% (REGEN: ${Math.round(diff.regenUpgMult * 100)}%)`;
+                document.getElementById('rerollCountText').textContent = Game.rerollsLeft;
+
+                Game.currentUpgradeChoices.forEach((upg, index) => {
                     const currentStacks = upg.isWeaponCard
                         ? `MK ${p.weaponTier}`
                         : (p.inventory[upg.id] || 0);
+                    const isSelected = index === Game.selectedUpgradeIndex;
+                    const descText = upg.getDesc ? upg.getDesc(diff) : upg.desc;
+
                     const card = document.createElement('div');
-                    card.className = `upgrade-card pixel-box-dark p-4 flex flex-col justify-between text-center cursor-pointer ${upg.isWeaponCard ? 'border-amber-400' : ''}`;
+                    card.className = `upgrade-card pixel-box-dark p-4 flex flex-col justify-between text-center cursor-pointer ${isSelected ? 'selected-card' : ''}`;
                     card.innerHTML = `
                         <div class="flex flex-col items-center">
-                            <div class="w-full flex items-center justify-between text-[9px] mb-3">
+                            <div class="w-full flex items-center justify-between text-[9px] mb-2">
                                 <span class="upg-type-badge px-1.5 py-0.5 bg-slate-900 border border-slate-500">${upg.type}</span>
                                 <span class="text-slate-400">${upg.isWeaponCard ? currentStacks : 'OWNED: ' + currentStacks}</span>
                             </div>
 
                             <!-- 8-Bit Pixel Art Upgrade Thumbnail -->
-                            <div class="upg-icon-box upgrade-icon-frame w-16 h-16 mb-3 border-2 flex items-center justify-center">
+                            <div class="upg-icon-box upgrade-icon-frame w-16 h-16 mb-2.5 border-2 flex items-center justify-center">
                                 <canvas width="48" height="48" class="upg-icon-canvas w-12 h-12"></canvas>
                             </div>
 
-                            <div class="text-xs sm:text-sm text-amber-300 mb-2 leading-snug">${upg.name}</div>
-                            <p class="font-retro text-base sm:text-lg text-slate-200 leading-snug">${upg.desc}</p>
+                            <div class="text-xs sm:text-sm text-amber-300 mb-1.5 leading-snug">${upg.name}</div>
+                            <p class="font-retro text-base sm:text-lg text-slate-200 leading-snug">${descText}</p>
                         </div>
-                        <button class="pixel-btn pixel-btn-primary w-full py-2.5 text-[10px] mt-4">
-                            ${upg.isWeaponCard ? '⚔ EQUIP / UPGRADE' : 'SELECT UPGRADE'}
+                        <button class="pixel-btn ${isSelected ? 'pixel-btn-primary' : ''} w-full py-2.5 text-[10px] mt-4">
+                            ${isSelected ? '▶ [ENTER / SPC] CONFIRM ◀' : 'SELECT UPGRADE'}
                         </button>
                     `;
 
@@ -2832,19 +3204,70 @@
                     const iconCanvas = card.querySelector('.upg-icon-canvas');
                     drawCenteredPixelIcon(iconCanvas, upg.sprite || 'upgPowder', 3);
 
-                    card.addEventListener('click', () => {
-                        AudioEngine.sfxClick();
-                        upg.apply(Game.player);
-                        if (!upg.isWeaponCard) {
-                            Game.player.inventory[upg.id] = (Game.player.inventory[upg.id] || 0) + 1;
+                    card.addEventListener('mouseenter', () => {
+                        if (Game.selectedUpgradeIndex !== index) {
+                            Game.selectedUpgradeIndex = index;
+                            updateLevelUpCardHighlight();
                         }
-                        document.getElementById('modalLevelUp').classList.add('hidden');
-                        Game.state = 'PLAYING';
-                        updateHud();
                     });
+
+                    card.addEventListener('click', () => {
+                        confirmUpgradeChoice(index);
+                    });
+
                     container.appendChild(card);
                 });
+            }
 
+            function updateLevelUpCardHighlight() {
+                const container = document.getElementById('upgradeChoicesContainer');
+                const cards = container.querySelectorAll('.upgrade-card');
+                cards.forEach((card, idx) => {
+                    const btn = card.querySelector('button');
+                    if (idx === Game.selectedUpgradeIndex) {
+                        card.classList.add('selected-card');
+                        if (btn) {
+                            btn.classList.add('pixel-btn-primary');
+                            btn.textContent = '▶ [ENTER / SPC] CONFIRM ◀';
+                        }
+                    } else {
+                        card.classList.remove('selected-card');
+                        if (btn) {
+                            btn.classList.remove('pixel-btn-primary');
+                            btn.textContent = 'SELECT UPGRADE';
+                        }
+                    }
+                });
+            }
+
+            function confirmUpgradeChoice(index) {
+                const upg = Game.currentUpgradeChoices[index];
+                if (!upg) return;
+
+                const diff = DIFFICULTIES[Game.difficulty];
+                AudioEngine.sfxClick();
+                upg.apply(Game.player, diff);
+                if (!upg.isWeaponCard) {
+                    Game.player.inventory[upg.id] = (Game.player.inventory[upg.id] || 0) + 1;
+                }
+                document.getElementById('modalLevelUp').classList.add('hidden');
+                Game.state = 'PLAYING';
+                updateHud();
+            }
+
+            function triggerRerollUpgrades() {
+                if (Game.state !== 'LEVEL_UP' || Game.rerollsLeft <= 0) return;
+                Game.rerollsLeft -= 1;
+                AudioEngine.sfxSecPower();
+                generateUpgradeOffer();
+            }
+
+            function openLevelUpModal() {
+                Game.state = 'LEVEL_UP';
+                Game.levelUpInputLockTimer = 0.22; // Prevents accidental Spacebar confirm while dashing
+                AudioEngine.sfxLevelUp();
+                updateHud();
+                generateUpgradeOffer();
                 document.getElementById('modalLevelUp').classList.remove('hidden');
             }
 
@@ -2854,11 +3277,12 @@
                 AudioEngine.sfxClick();
 
                 const p = Game.player;
+                const diff = DIFFICULTIES[Game.difficulty];
                 const wep = WEAPONS[p.weaponId] || WEAPONS.blaster;
                 refreshWeaponCanvasIcons();
                 document.getElementById('invWeaponTitle').textContent = `${wep.name} MK ${p.weaponTier}`;
 
-                const tierDmgBonus = 1 + (p.weaponTier - 1) * 0.22;
+                const tierDmgBonus = 1 + (p.weaponTier - 1) * (0.22 * diff.upgMult);
                 const effDmg = Math.round(p.dmg * wep.dmgFactor * tierDmgBonus);
                 const effRate = (p.fireRate * wep.rateFactor).toFixed(2);
                 const effShots = p.projectiles + wep.bonusShots + Math.floor((p.weaponTier - 1) / 2);
@@ -2866,13 +3290,12 @@
                 const statsList = document.getElementById('invStatsList');
                 statsList.innerHTML = `
                     <div class="flex justify-between"><span>Max HP:</span><strong class="text-red-400">${Math.ceil(p.hp)} / ${p.maxHp}</strong></div>
-                    <div class="flex justify-between"><span>HP Regen:</span><strong class="text-emerald-400">+${p.hpRegen.toFixed(1)}/s</strong></div>
+                    <div class="flex justify-between"><span>HP Regen:</span><strong class="text-emerald-400">+${p.hpRegen.toFixed(2)}/s</strong></div>
                     <div class="flex justify-between"><span>Weapon DMG:</span><strong class="text-amber-300">${effDmg}</strong></div>
                     <div class="flex justify-between"><span>Attack Speed:</span><strong class="text-cyan-300">${effRate}/s</strong></div>
                     <div class="flex justify-between"><span>Projectiles:</span><strong class="text-white">${effShots}</strong></div>
                     <div class="flex justify-between"><span>Crit Chance:</span><strong class="text-yellow-300">${Math.round(p.critChance * 100)}%</strong></div>
-                    <div class="flex justify-between"><span>Main Power [Q]:</span><strong class="text-orange-400">${p.mainPowerCount}x (x${p.mainPowerMult.toFixed(1)} DMG)</strong></div>
-                    <div class="flex justify-between"><span>Sec. Power [E]:</span><strong class="text-cyan-300">${p.secPowerCount} Orbs</strong></div>
+                    <div class="flex justify-between"><span>Rerolls Left:</span><strong class="text-cyan-300">${Game.rerollsLeft}</strong></div>
                     <div class="flex justify-between"><span>Ability Cooldown:</span><strong class="text-purple-300">${Math.round(p.cdr * 100)}%</strong></div>
                     <div class="flex justify-between"><span>Move Speed:</span><strong class="text-emerald-300">${Math.round(p.speed)}</strong></div>
                 `;
@@ -2902,6 +3325,7 @@
                             }
                         }
                         if (!upg) return;
+                        const descText = upg.getDesc ? upg.getDesc(diff) : upg.desc;
                         const itemEl = document.createElement('div');
                         itemEl.className = 'bg-black/60 border-2 border-slate-600 p-2.5 flex flex-col justify-between';
                         itemEl.innerHTML = `
@@ -2916,7 +3340,7 @@
                                     </div>
                                     <div class="text-[10px] text-white leading-tight">${upg.name}</div>
                                 </div>
-                                <div class="font-retro text-sm text-slate-300 leading-tight">${upg.desc}</div>
+                                <div class="font-retro text-sm text-slate-300 leading-tight">${descText}</div>
                             </div>
                         `;
                         const badgeEl = itemEl.querySelector('.inv-type-badge');
@@ -2940,6 +3364,7 @@
 
             function openVictoryModal() {
                 Game.state = 'VICTORY';
+                document.getElementById('lowHpVignette').classList.add('hidden');
                 AudioEngine.sfxLevelUp();
 
                 const box = document.getElementById('victoryStatsBox');
@@ -2954,6 +3379,7 @@
 
             function triggerGameOver() {
                 Game.state = 'GAME_OVER';
+                document.getElementById('lowHpVignette').classList.add('hidden');
                 const box = document.getElementById('gameOverStatsBox');
                 box.innerHTML = `
                     <div>DIFFICULTY: <strong class="text-amber-300">${DIFFICULTIES[Game.difficulty].name}</strong></div>
@@ -2966,7 +3392,7 @@
             }
 
             /* ==========================================================================
-               11. HUD UPDATER
+               11. HUD UPDATER (WITH LOW-HP RED VIGNETTE & COMBO / OVERDRIVE BADGES)
             ========================================================================== */
             function updateHud() {
                 const p = Game.player;
@@ -2978,19 +3404,49 @@
                 document.getElementById('hudXpBar').style.width = `${xpPct}%`;
                 document.getElementById('hudXpText').textContent = `${Math.floor(p.xp)}/${p.xpNext}`;
 
+                const comboBadge = document.getElementById('hudComboBadge');
+                if (p.comboCount >= 3) {
+                    comboBadge.classList.remove('hidden');
+                    comboBadge.textContent = `🔥 ${p.comboCount}x STREAK`;
+                } else {
+                    comboBadge.classList.add('hidden');
+                }
+
+                const overdriveBadge = document.getElementById('hudOverdriveBadge');
+                if (p.overdriveTimer > 0) {
+                    overdriveBadge.classList.remove('hidden');
+                    overdriveBadge.textContent = `⚡ OVERDRIVE (${p.overdriveTimer.toFixed(1)}s)`;
+                } else {
+                    overdriveBadge.classList.add('hidden');
+                }
+
                 document.getElementById('hudWaveTitle').textContent = Game.freeplay
                     ? `FREEPLAY - WAVE ${Game.wave}`
                     : `WAVE ${Game.wave} / ${Game.maxTargetWave}`;
                 document.getElementById('hudWaveTimer').textContent = Math.ceil(Math.max(0, Game.waveTimer));
 
                 document.getElementById('hudHpText').textContent = `${Math.ceil(p.hp)} / ${p.maxHp}`;
-                const hpPct = Math.max(0, Math.min(100, (p.hp / p.maxHp) * 100));
-                document.getElementById('hudHpBar').style.width = `${hpPct}%`;
+                const hpRatio = Math.max(0, Math.min(1, p.hp / p.maxHp));
+                document.getElementById('hudHpBar').style.width = `${hpRatio * 100}%`;
 
+                // Low HP Red Vignette Trigger (<= 35% Max HP)
+                const lowHpEl = document.getElementById('lowHpVignette');
+                const hpLabel = document.getElementById('hudHpLabel');
+                if (Game.state === 'PLAYING' && hpRatio <= 0.35 && p.hp > 0) {
+                    lowHpEl.classList.remove('hidden');
+                    hpLabel.textContent = '⚠ CRITICAL HP!';
+                    hpLabel.className = 'text-red-400 animate-pulse';
+                } else {
+                    lowHpEl.classList.add('hidden');
+                    hpLabel.textContent = '♥ PLAYER HP';
+                    hpLabel.className = 'text-red-400';
+                }
+
+                const diff = DIFFICULTIES[Game.difficulty];
                 const wep = WEAPONS[p.weaponId] || WEAPONS.blaster;
-                const tierDmgBonus = 1 + (p.weaponTier - 1) * 0.22;
+                const tierDmgBonus = 1 + (p.weaponTier - 1) * (0.22 * diff.upgMult);
                 const effDmg = Math.round(p.dmg * wep.dmgFactor * tierDmgBonus);
-                const effRate = (p.fireRate * wep.rateFactor).toFixed(1);
+                const effRate = (p.fireRate * wep.rateFactor * (p.overdriveTimer > 0 ? 1.38 : 1.0)).toFixed(1);
                 const effShots = p.projectiles + wep.bonusShots + Math.floor((p.weaponTier - 1) / 2);
 
                 document.getElementById('hudWeaponName').textContent = `${wep.name} MK ${p.weaponTier}`;
@@ -3147,6 +3603,17 @@
                     }
                 }
 
+                // 2.5 Draw Golden Soul Chests
+                const chestSp = getSpriteCanvas('soulChest', 3);
+                for (const ch of Game.chests) {
+                    const bob = Math.sin(ch.bobPhase) * 2.5;
+                    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                    ctx.fillRect(Math.floor(ch.x - 14), Math.floor(ch.y + 12), 28, 6);
+                    if (chestSp) {
+                        ctx.drawImage(chestSp, Math.floor(ch.x - chestSp.width / 2), Math.floor(ch.y - chestSp.height / 2 + bob));
+                    }
+                }
+
                 // 3. Draw XP Gems & Soul Heart Pickups
                 for (const g of Game.xpGems) {
                     ctx.fillStyle = g.val >= 18 ? '#fde047' : '#22d3ee';
@@ -3162,9 +3629,10 @@
                     ctx.fillRect(Math.floor(hd.x - 3), Math.floor(hd.y - 3), 4, 4);
                 }
 
-                // 4. Draw Dash Afterimages
+                // 4. Draw Dodge Afterimages (Matched to Selected Skin)
+                const skinObj = PLAYER_SKINS[savedStats.selectedSkin] || PLAYER_SKINS.hellknight;
                 for (const dt of Game.dashTrails) {
-                    const sp = getSpriteCanvas('playerIdle', 3, '#4ade80');
+                    const sp = getPlayerSpriteCanvas('playerIdle', 3, skinObj.dashColor);
                     if (sp) {
                         ctx.globalAlpha = dt.life * 2;
                         ctx.drawImage(sp, Math.floor(dt.x - sp.width / 2), Math.floor(dt.y - sp.height / 2));
@@ -3206,13 +3674,19 @@
                     }
                 }
 
-                // 6. Draw Player Character & Orbiting Auto-Weapon
+                // 6. Draw Player Character (In Selected Skin) & Orbiting Auto-Weapon
                 ctx.fillStyle = 'rgba(0,0,0,0.55)';
                 ctx.fillRect(Math.floor(p.x - 12), Math.floor(p.y + 13), 24, 6);
 
+                if (p.overdriveTimer > 0) {
+                    ctx.strokeStyle = '#fde047';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(Math.floor(p.x - 20), Math.floor(p.y - 20), 40, 40);
+                }
+
                 const pSpriteName = p.walkFrame === 1 ? 'playerWalk' : 'playerIdle';
                 const pTint = p.invulnTimer > 0 && Math.floor(p.invulnTimer * 20) % 2 === 0 ? '#ffffff' : null;
-                const pSprite = getSpriteCanvas(pSpriteName, 3, pTint);
+                const pSprite = getPlayerSpriteCanvas(pSpriteName, 3, pTint);
 
                 if (pSprite) {
                     ctx.save();
@@ -3340,6 +3814,11 @@
                     mctx.fillRect(Math.floor(g.x * scale), Math.floor(g.y * scale), 2, 2);
                 }
 
+                mctx.fillStyle = '#fde047';
+                for (const ch of Game.chests) {
+                    mctx.fillRect(Math.floor(ch.x * scale - 2), Math.floor(ch.y * scale - 2), 4, 4);
+                }
+
                 for (const e of Game.enemies) {
                     mctx.fillStyle = e.type === 'tank' ? '#fde047' : (e.type === 'necromancer' ? '#c084fc' : '#ffffff');
                     const s = e.type === 'tank' ? 4 : 2;
@@ -3351,18 +3830,54 @@
             }
 
             /* ==========================================================================
-               13. STATIC HUD & MENU PIXEL ICONS INITIALIZATION
+               13. STATIC HUD, SKIN SELECTOR & MENU PIXEL ICONS INITIALIZATION
             ========================================================================== */
-            function drawStaticHudIcons() {
+            function refreshMenuLogoEmblem() {
                 const logoCanvas = document.getElementById('menuLogoCanvas');
+                if (!logoCanvas) return;
                 const lctx = logoCanvas.getContext('2d');
                 lctx.imageSmoothingEnabled = false;
                 lctx.clearRect(0, 0, 96, 96);
-                const heroSp = getSpriteCanvas('playerIdle', 6);
+                const heroSp = getPlayerSpriteCanvas('playerIdle', 6);
                 const ghostSp = getSpriteCanvas('ghostDasher', 4);
                 if (ghostSp) lctx.drawImage(ghostSp, 44, 8);
                 if (heroSp) lctx.drawImage(heroSp, 8, 22);
+            }
 
+            function renderSkinSelector() {
+                const grid = document.getElementById('skinSelectorGrid');
+                if (!grid) return;
+                grid.innerHTML = '';
+
+                Object.values(PLAYER_SKINS).forEach((skin) => {
+                    const isSelected = savedStats.selectedSkin === skin.id;
+                    const btn = document.createElement('button');
+                    btn.className = `skin-btn pixel-btn py-2 px-1 flex flex-col items-center gap-1 ${isSelected ? 'active-skin' : ''}`;
+                    btn.innerHTML = `
+                        <canvas width="36" height="36" class="w-8 h-8"></canvas>
+                        <span class="text-[8px] sm:text-[9px] leading-none truncate w-full text-center">${skin.name}</span>
+                    `;
+                    const c = btn.querySelector('canvas');
+                    drawCenteredPixelIcon(c, 'playerIdle', 3, skin.map);
+
+                    btn.addEventListener('click', () => {
+                        AudioEngine.sfxClick();
+                        savedStats.selectedSkin = skin.id;
+                        saveStorage();
+                        document.getElementById('skinTraitLabel').textContent = skin.trait;
+                        renderSkinSelector();
+                        refreshMenuLogoEmblem();
+                    });
+
+                    grid.appendChild(btn);
+                });
+
+                const currentSkin = PLAYER_SKINS[savedStats.selectedSkin] || PLAYER_SKINS.hellknight;
+                document.getElementById('skinTraitLabel').textContent = currentSkin.trait;
+            }
+
+            function drawStaticHudIcons() {
+                refreshMenuLogoEmblem();
                 drawCenteredPixelIcon(document.getElementById('invIconCanvas'), 'backpack', 3);
                 drawCenteredPixelIcon(document.getElementById('weaponIconCanvas'), 'weaponGun', 3);
                 drawCenteredPixelIcon(document.getElementById('invModalWeaponCanvas'), 'weaponGun', 3);
@@ -3372,7 +3887,7 @@
             }
 
             /* ==========================================================================
-               14. UI BINDINGS (CONTROLS, SEPARATE SFX/BGM VOLUME, DIFFICULTY, MODALS)
+               14. UI BINDINGS (CONTROLS, KEYBOARD LEVEL-UP, VOLUME, DIFFICULTY)
             ========================================================================== */
             function refreshMenuStats() {
                 document.getElementById('menuBestWave').textContent = savedStats.bestWave;
@@ -3466,6 +3981,7 @@
                 });
 
                 document.getElementById('btnPlay').addEventListener('click', startNewRun);
+                document.getElementById('btnRerollUpgrades').addEventListener('click', triggerRerollUpgrades);
 
                 document.getElementById('btnControls').addEventListener('click', () => {
                     AudioEngine.sfxClick();
@@ -3576,6 +4092,7 @@
 
                 document.getElementById('btnAbandonRun').addEventListener('click', () => {
                     AudioEngine.sfxClick();
+                    document.getElementById('lowHpVignette').classList.add('hidden');
                     document.getElementById('modalInventory').classList.add('hidden');
                     document.getElementById('gameHud').classList.add('hidden');
                     document.getElementById('mainMenu').classList.remove('hidden');
@@ -3627,6 +4144,35 @@
                         return;
                     }
 
+                    // Keyboard Navigation inside LEVEL_UP Modal (A/D + Enter/Space + R)
+                    if (Game.state === 'LEVEL_UP') {
+                        if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
+                            e.preventDefault();
+                            AudioEngine.sfxClick();
+                            Game.selectedUpgradeIndex = (Game.selectedUpgradeIndex + 2) % 3;
+                            updateLevelUpCardHighlight();
+                            return;
+                        }
+                        if (e.code === 'KeyD' || e.code === 'ArrowRight') {
+                            e.preventDefault();
+                            AudioEngine.sfxClick();
+                            Game.selectedUpgradeIndex = (Game.selectedUpgradeIndex + 1) % 3;
+                            updateLevelUpCardHighlight();
+                            return;
+                        }
+                        if (e.code === 'KeyR' && !e.repeat) {
+                            e.preventDefault();
+                            triggerRerollUpgrades();
+                            return;
+                        }
+                        if ((e.code === 'Enter' || e.code === 'Space') && !e.repeat && Game.levelUpInputLockTimer <= 0) {
+                            e.preventDefault();
+                            confirmUpgradeChoice(Game.selectedUpgradeIndex);
+                            return;
+                        }
+                        return;
+                    }
+
                     Game.keysPressed[e.code] = true;
 
                     if (e.code === 'Escape' || e.code === 'KeyI' || e.code === 'Tab') {
@@ -3642,10 +4188,13 @@
 
                     if (Game.state === 'PLAYING') {
                         if (e.code === keybinds.mainPower) {
+                            e.preventDefault();
                             triggerMainPower();
                         } else if (e.code === keybinds.secPower) {
+                            e.preventDefault();
                             triggerSecPower();
                         } else if (e.code === keybinds.dash) {
+                            e.preventDefault();
                             triggerDash();
                         }
                     }
@@ -3677,6 +4226,7 @@
             window.onload = function() {
                 loadStorage();
                 initMenuGhosts();
+                renderSkinSelector();
                 drawStaticHudIcons();
                 refreshMenuStats();
                 renderVolumeModalUI();
