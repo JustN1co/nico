@@ -256,7 +256,7 @@
         <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-300">
             <div class="pixel-box-dark px-3 py-2 flex items-center gap-2">
                 <span class="inline-block w-2.5 h-2.5 bg-red-500 animate-pulse"></span>
-                <span>8-BIT ARENA SURVIVAL // VER 1.4</span>
+                <span>8-BIT ARENA SURVIVAL // VER 1.5</span>
             </div>
             <div class="flex items-center gap-2">
                 <div class="pixel-box-dark px-3 py-2 text-amber-300">
@@ -343,7 +343,7 @@
 
         <!-- Bottom Tip Footer -->
         <div class="w-full max-w-4xl text-center font-retro text-base sm:text-lg text-slate-400">
-            SPACE TO DODGE • A/D + ENTER FOR LEVEL-UP • BREAK GOLDEN CHESTS FOR OVERDRIVE
+            SPACE TO DODGE • TAP A/D + ENTER FOR LEVEL-UP • BREAK GOLDEN CHESTS FOR OVERDRIVE
         </div>
     </div>
 
@@ -518,7 +518,7 @@
             </div>
 
             <p class="font-retro text-base sm:text-lg text-slate-300">
-                Click any button below and press a key to rebind. During Level-Up, use <strong class="text-amber-300">A / D</strong> to switch cards, <strong class="text-amber-300">ENTER / SPACE</strong> to confirm, and <strong class="text-cyan-300">R</strong> to reroll!
+                Click any button below and press a key to rebind. During Level-Up, tap <strong class="text-amber-300">A / D</strong> (1 click = 1 step), press <strong class="text-amber-300">ENTER / SPACE</strong> to confirm, and <strong class="text-cyan-300">R</strong> to reroll!
             </p>
 
             <div id="keybindList" class="flex flex-col gap-2.5">
@@ -694,7 +694,7 @@
     </div>
 
     <!-- ==========================================
-         MODAL: LEVEL UP! (KEYBOARD A/D + ENTER/SPACE & REROLL)
+         MODAL: LEVEL UP! (SINGLE-STEP A/D + ENTER/SPACE & REROLL)
     =========================================== -->
     <div id="modalLevelUp" class="hidden absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
         <div class="pixel-box w-full max-w-3xl p-5 sm:p-6 flex flex-col items-center text-center gap-3.5 max-h-[94vh] overflow-y-auto">
@@ -705,7 +705,7 @@
                 LEVEL UP! CHOOSE 1 UPGRADE
             </h2>
             <div class="flex flex-wrap items-center justify-center gap-2 text-[10px] text-slate-300">
-                <span class="px-2 py-1 bg-slate-900 border border-slate-600 text-amber-300">◀ [A] / [D] ▶ SELECT</span>
+                <span class="px-2 py-1 bg-slate-900 border border-slate-600 text-amber-300">◀ TAP [A] / [D] ▶ SELECT</span>
                 <span class="px-2 py-1 bg-slate-900 border border-slate-600 text-emerald-300">[ENTER] / [SPACE] CONFIRM</span>
                 <span id="lvlDiffScalingBadge" class="px-2 py-1 bg-slate-900 border border-slate-600 text-cyan-300">POTENCY: 100%</span>
             </div>
@@ -792,7 +792,7 @@
             /* ==========================================================================
                1. STORAGE, KEYBINDS (SPACE FOR DODGE) & PERSISTENT STATS
             ========================================================================== */
-            const STORAGE_KEY = 'infernal_sandbox_nico03_v4';
+            const STORAGE_KEY = 'infernal_sandbox_nico03_v5';
 
             const DEFAULT_KEYBINDS = {
                 up: 'KeyW',
@@ -801,7 +801,7 @@
                 right: 'KeyD',
                 mainPower: 'KeyQ',
                 secPower: 'KeyE',
-                dash: 'Space' // Default hotkey is now SPACEBAR
+                dash: 'Space' // Default hotkey is SPACEBAR
             };
 
             const KEYBIND_LABELS = {
@@ -968,12 +968,10 @@
                     if (this.bgmRunning) return;
                     this.bgmRunning = true;
 
-                    // Calm/dark pattern for early waves
                     const calmBass = [
                         110, 110, 130.8, 110, 146.8, 130.8, 98, 110,
                         110, 110, 164.8, 146.8, 130.8, 123.5, 98, 103.8
                     ];
-                    // Faster, darker Phrygian/minor riff for higher waves
                     const intenseBass = [
                         110, 116.5, 110, 146.8, 110, 164.8, 155.6, 130.8,
                         110, 116.5, 130.8, 174.6, 164.8, 146.8, 130.8, 116.5
@@ -985,7 +983,6 @@
 
                     const tickBGM = () => {
                         const w = Game.wave || 1;
-                        // Gradually speed up tempo from 205ms (Wave 1) down to 145ms (Wave 25+)
                         const stepDelay = Math.max(145, Math.round(205 - Math.min(26, w) * 2.3));
 
                         if (Game.state === 'PLAYING' && !this.muted && this.bgmVolume > 0) {
@@ -994,7 +991,6 @@
                             const bassNote = useIntense ? intenseBass[idx] : calmBass[idx];
                             const leadNote = leadline[idx];
 
-                            // Bass timbre gets grittier as waves progress
                             let bassType = 'triangle';
                             let bassVol = 0.14;
                             if (w >= 14) {
@@ -1007,14 +1003,12 @@
 
                             this.playTone(bassNote, bassType, 0.14, bassVol, null, 'bgm');
 
-                            // Lead melody triggers more frequently on higher waves
                             const playLead = w >= 12 ? (leadNote > 0) : (leadNote > 0 && idx % 2 === 0);
                             if (playLead) {
                                 const leadMult = (w >= 18 && idx % 4 === 0) ? 1.5 : 1.0;
                                 this.playTone(leadNote * leadMult, 'square', 0.08, 0.06, null, 'bgm');
                             }
 
-                            // Subtle sub-kick pulse on downbeats from Wave 10+
                             if (w >= 10 && idx % 4 === 0) {
                                 this.playTone(95, 'sine', 0.07, 0.18, 38, 'bgm');
                             }
@@ -1048,7 +1042,6 @@
                 'T': '#a16207'
             };
 
-            // 5Selectable Survivor Skins for the Player
             const PLAYER_SKINS = {
                 hellknight: {
                     id: 'hellknight',
@@ -1514,7 +1507,7 @@
             }
 
             /* ==========================================================================
-               4. DIFFICULTY CONFIGURATIONS (WITH UPGRADE & REGEN SCALING)
+               4. DIFFICULTY CONFIGURATIONS (WITH UPGRADE, REGEN & CHEST SCALING)
             ========================================================================== */
             const DIFFICULTIES = {
                 easy: {
@@ -1523,10 +1516,13 @@
                     dmgMult: 0.70,
                     spawnMult: 0.82,
                     xpMult: 1.15,
-                    upgMult: 1.08,       // +8% stronger general upgrades
-                    regenUpgMult: 1.15,  // +15% stronger healing/regen upgrades
+                    upgMult: 1.08,
+                    regenUpgMult: 1.15,
+                    chestMinSec: 12,
+                    chestMaxSec: 16,
+                    maxChests: 2,
                     badgeColor: 'bg-emerald-700',
-                    desc: '0.75x Ghost Threat & +15% XP. Upgrades are 108% stronger (115% HP Regen).'
+                    desc: '0.75x Ghost Threat & frequent Golden Chests. Upgrades are 108% stronger (115% Regen).'
                 },
                 medium: {
                     name: 'MEDIUM',
@@ -1534,8 +1530,11 @@
                     dmgMult: 0.95,
                     spawnMult: 1.02,
                     xpMult: 1.00,
-                    upgMult: 1.00,       // 100% standard upgrades
+                    upgMult: 1.00,
                     regenUpgMult: 1.00,
+                    chestMinSec: 18,
+                    chestMaxSec: 24,
+                    maxChests: 2,
                     badgeColor: 'bg-amber-600',
                     desc: 'True 1.0x arena challenge. Standard upgrade potency (100% stats & regen).'
                 },
@@ -1545,10 +1544,13 @@
                     dmgMult: 1.25,
                     spawnMult: 1.22,
                     xpMult: 0.95,
-                    upgMult: 0.90,       // 10% weaker general upgrades
-                    regenUpgMult: 0.78,  // 22% weaker healing/regen upgrades
+                    upgMult: 0.90,
+                    regenUpgMult: 0.78,
+                    chestMinSec: 26,
+                    chestMaxSec: 34,
+                    maxChests: 1,
                     badgeColor: 'bg-red-700',
-                    desc: '1.35x Ghost Threat. Upgrades grant 90% power & HP Regen upgrades are 78% effective!'
+                    desc: '1.35x Threat & rarer Chests. Upgrades grant 90% power & HP Regen is 78% effective!'
                 },
                 infernal: {
                     name: 'INFERNAL',
@@ -1556,12 +1558,20 @@
                     dmgMult: 1.60,
                     spawnMult: 1.45,
                     xpMult: 1.05,
-                    upgMult: 0.82,       // 18% weaker general upgrades
-                    regenUpgMult: 0.65,  // 35% weaker healing/regen upgrades
+                    upgMult: 0.82,
+                    regenUpgMult: 0.65,
+                    chestMinSec: 36,
+                    chestMaxSec: 46,
+                    maxChests: 1,
                     badgeColor: 'bg-purple-700',
-                    desc: '1.80x Nightmare Threat! Upgrades grant 82% power & HP Regen is reduced to 65%!'
+                    desc: '1.80x Nightmare Threat & scarce Chests! Upgrades grant 82% power & Regen is 65%!'
                 }
             };
+
+            function getNextChestSpawnDelay() {
+                const diff = DIFFICULTIES[Game.difficulty] || DIFFICULTIES.medium;
+                return diff.chestMinSec + Math.random() * (diff.chestMaxSec - diff.chestMinSec);
+            }
 
             const WEAPONS = {
                 blaster: {
@@ -1929,11 +1939,12 @@
                 waveTimer: 25,
                 waveDuration: 25,
                 spawnAccumulator: 0,
-                chestSpawnTimer: 11,
+                chestSpawnTimer: 16,
                 shakeTime: 0,
                 shakeMagnitude: 0,
                 killsThisRun: 0,
                 keysPressed: {},
+                navKeyHeld: {}, // Strict physical key-release lock for 1-step Level-Up navigation
                 rebindTarget: null,
 
                 // Level-Up Keyboard Selection & Rerolls
@@ -2041,7 +2052,6 @@
                     dashVx: 0,
                     dashVy: 0,
 
-                    // Bonus Features: Killstreak Combo & Overdrive Buff
                     comboCount: 0,
                     comboTimer: 0,
                     overdriveTimer: 0,
@@ -2073,7 +2083,7 @@
                 Game.freeplay = false;
                 Game.killsThisRun = 0;
                 Game.rerollsLeft = 2;
-                Game.chestSpawnTimer = 10;
+                Game.chestSpawnTimer = getNextChestSpawnDelay();
 
                 initFloorDetails();
                 refreshWeaponCanvasIcons();
@@ -2143,15 +2153,19 @@
             }
 
             function spawnSoulChest() {
-                if (Game.chests.length >= 2) return;
+                const diff = DIFFICULTIES[Game.difficulty] || DIFFICULTIES.medium;
+                if (Game.chests.length >= diff.maxChests) return;
+
                 const margin = 110;
                 const x = margin + Math.random() * (ARENA_SIZE - margin * 2);
                 const y = margin + Math.random() * (ARENA_SIZE - margin * 2);
+                const chestHp = Math.round((25 + Game.wave * 8) * diff.hpMult);
+
                 Game.chests.push({
                     x,
                     y,
-                    hp: 25 + Game.wave * 8,
-                    maxHp: 25 + Game.wave * 8,
+                    hp: chestHp,
+                    maxHp: chestHp,
                     radius: 16,
                     bobPhase: Math.random() * Math.PI * 2
                 });
@@ -2170,7 +2184,8 @@
                 addScreenShake(0.18, 5);
 
                 const p = Game.player;
-                // Drop 3 high-value golden XP gems
+                const diff = DIFFICULTIES[Game.difficulty] || DIFFICULTIES.medium;
+
                 for (let i = 0; i < 3; i++) {
                     Game.xpGems.push({
                         x: c.x + (Math.random() - 0.5) * 32,
@@ -2181,15 +2196,15 @@
 
                 const roll = Math.random();
                 if (roll < 0.45) {
-                    p.overdriveTimer = 6.5;
-                    spawnFloatingText(c.x, c.y - 24, '⚡ 6.5s OVERDRIVE (+35% SPD & FIRE RATE)!', '#fde047');
+                    p.overdriveTimer = Math.max(4.5, 6.5 * diff.upgMult);
+                    spawnFloatingText(c.x, c.y - 24, `⚡ ${p.overdriveTimer.toFixed(1)}s OVERDRIVE (+35% SPD & FIRE)!`, '#fde047');
                 } else if (roll < 0.78) {
                     Game.rerollsLeft += 1;
-                    const heal = Math.round(22 * DIFFICULTIES[Game.difficulty].regenUpgMult);
+                    const heal = Math.round(22 * diff.regenUpgMult);
                     p.hp = Math.min(p.maxHp, p.hp + heal);
                     spawnFloatingText(c.x, c.y - 24, `🎲 +1 REROLL & +${heal} HP!`, '#22d3ee');
                 } else {
-                    const heal = Math.round(35 * DIFFICULTIES[Game.difficulty].regenUpgMult);
+                    const heal = Math.round(35 * diff.regenUpgMult);
                     p.hp = Math.min(p.maxHp, p.hp + heal);
                     spawnFloatingText(c.x, c.y - 24, `♥ SOUL BLESSING (+${heal} HP)!`, '#4ade80');
                 }
@@ -2592,10 +2607,10 @@
                     }
                 }
 
-                // Periodic Golden Soul Chest Spawns
+                // Difficulty-Scaled Golden Soul Chest Spawns
                 Game.chestSpawnTimer -= dt;
                 if (Game.chestSpawnTimer <= 0) {
-                    Game.chestSpawnTimer = 14 + Math.random() * 5;
+                    Game.chestSpawnTimer = getNextChestSpawnDelay();
                     spawnSoulChest();
                 }
 
@@ -2608,7 +2623,7 @@
                 }
 
                 const wep = WEAPONS[p.weaponId] || WEAPONS.blaster;
-                const tierDmgBonus = 1 + (p.weaponTier - 1) * 0.22;
+                const tierDmgBonus = 1 + (p.weaponTier - 1) * (0.22 * diff.upgMult);
                 const tierExtraShots = Math.floor((p.weaponTier - 1) / 2);
                 const effDmgBase = p.dmg * wep.dmgFactor * tierDmgBonus;
                 const overdriveFireMult = p.overdriveTimer > 0 ? 1.38 : 1.0;
@@ -2690,7 +2705,6 @@
                         continue;
                     }
 
-                    // Check collision with Soul Chests
                     let bulletConsumed = false;
                     for (let cIdx = Game.chests.length - 1; cIdx >= 0; cIdx--) {
                         const ch = Game.chests[cIdx];
@@ -3044,7 +3058,6 @@
                 saveStorage();
 
                 const p = Game.player;
-                // Killstreak Combo Update
                 p.comboCount++;
                 p.comboTimer = 2.6;
                 if (p.comboCount === 10) spawnFloatingText(p.x, p.y - 32, '🔥 10x KILLSTREAK!', '#fde047');
@@ -3099,7 +3112,7 @@
             }
 
             /* ==========================================================================
-               10. LEVEL UP (A/D + ENTER/SPACE NAVIGATION & REROLLS), VICTORY & INVENTORY
+               10. LEVEL UP (STRICT 1-STEP A/D + ENTER/SPACE & REROLLS), VICTORY & BAG
             ========================================================================== */
             function refreshWeaponCanvasIcons() {
                 if (!Game.player) return;
@@ -3264,7 +3277,9 @@
 
             function openLevelUpModal() {
                 Game.state = 'LEVEL_UP';
-                Game.levelUpInputLockTimer = 0.22; // Prevents accidental Spacebar confirm while dashing
+                Game.levelUpInputLockTimer = 0.22;
+                // Lock any keys currently held down during gameplay so holding A/D doesn't trigger until released!
+                Game.navKeyHeld = { ...Game.keysPressed };
                 AudioEngine.sfxLevelUp();
                 updateHud();
                 generateUpgradeOffer();
@@ -3429,7 +3444,6 @@
                 const hpRatio = Math.max(0, Math.min(1, p.hp / p.maxHp));
                 document.getElementById('hudHpBar').style.width = `${hpRatio * 100}%`;
 
-                // Low HP Red Vignette Trigger (<= 35% Max HP)
                 const lowHpEl = document.getElementById('lowHpVignette');
                 const hpLabel = document.getElementById('hudHpLabel');
                 if (Game.state === 'PLAYING' && hpRatio <= 0.35 && p.hp > 0) {
@@ -3629,7 +3643,7 @@
                     ctx.fillRect(Math.floor(hd.x - 3), Math.floor(hd.y - 3), 4, 4);
                 }
 
-                // 4. Draw Dodge Afterimages (Matched to Selected Skin)
+                // 4. Draw Dodge Afterimages
                 const skinObj = PLAYER_SKINS[savedStats.selectedSkin] || PLAYER_SKINS.hellknight;
                 for (const dt of Game.dashTrails) {
                     const sp = getPlayerSpriteCanvas('playerIdle', 3, skinObj.dashColor);
@@ -3674,7 +3688,7 @@
                     }
                 }
 
-                // 6. Draw Player Character (In Selected Skin) & Orbiting Auto-Weapon
+                // 6. Draw Player Character & Orbiting Auto-Weapon
                 ctx.fillStyle = 'rgba(0,0,0,0.55)';
                 ctx.fillRect(Math.floor(p.x - 12), Math.floor(p.y + 13), 24, 6);
 
@@ -3887,7 +3901,7 @@
             }
 
             /* ==========================================================================
-               14. UI BINDINGS (CONTROLS, KEYBOARD LEVEL-UP, VOLUME, DIFFICULTY)
+               14. UI BINDINGS (CONTROLS, SINGLE-STEP LEVEL-UP NAV, VOLUME, DIFFICULTY)
             ========================================================================== */
             function refreshMenuStats() {
                 document.getElementById('menuBestWave').textContent = savedStats.bestWave;
@@ -4144,10 +4158,12 @@
                         return;
                     }
 
-                    // Keyboard Navigation inside LEVEL_UP Modal (A/D + Enter/Space + R)
+                    // Strict 1-Step Keyboard Navigation inside LEVEL_UP Modal (No holding A/D spam!)
                     if (Game.state === 'LEVEL_UP') {
                         if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
                             e.preventDefault();
+                            if (e.repeat || Game.navKeyHeld[e.code]) return;
+                            Game.navKeyHeld[e.code] = true;
                             AudioEngine.sfxClick();
                             Game.selectedUpgradeIndex = (Game.selectedUpgradeIndex + 2) % 3;
                             updateLevelUpCardHighlight();
@@ -4155,18 +4171,24 @@
                         }
                         if (e.code === 'KeyD' || e.code === 'ArrowRight') {
                             e.preventDefault();
+                            if (e.repeat || Game.navKeyHeld[e.code]) return;
+                            Game.navKeyHeld[e.code] = true;
                             AudioEngine.sfxClick();
                             Game.selectedUpgradeIndex = (Game.selectedUpgradeIndex + 1) % 3;
                             updateLevelUpCardHighlight();
                             return;
                         }
-                        if (e.code === 'KeyR' && !e.repeat) {
+                        if (e.code === 'KeyR') {
                             e.preventDefault();
+                            if (e.repeat || Game.navKeyHeld[e.code]) return;
+                            Game.navKeyHeld[e.code] = true;
                             triggerRerollUpgrades();
                             return;
                         }
-                        if ((e.code === 'Enter' || e.code === 'Space') && !e.repeat && Game.levelUpInputLockTimer <= 0) {
+                        if (e.code === 'Enter' || e.code === 'Space') {
                             e.preventDefault();
+                            if (e.repeat || Game.navKeyHeld[e.code] || Game.levelUpInputLockTimer > 0) return;
+                            Game.navKeyHeld[e.code] = true;
                             confirmUpgradeChoice(Game.selectedUpgradeIndex);
                             return;
                         }
@@ -4202,10 +4224,12 @@
 
                 window.addEventListener('keyup', (e) => {
                     Game.keysPressed[e.code] = false;
+                    Game.navKeyHeld[e.code] = false;
                 });
 
                 window.addEventListener('blur', () => {
                     Game.keysPressed = {};
+                    Game.navKeyHeld = {};
                 });
             }
 
