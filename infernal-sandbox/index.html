@@ -256,7 +256,7 @@
         <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-300">
             <div class="pixel-box-dark px-3 py-2 flex items-center gap-2">
                 <span class="inline-block w-2.5 h-2.5 bg-red-500 animate-pulse"></span>
-                <span>8-BIT ARENA SURVIVAL // VER 1.5</span>
+                <span>8-BIT ARENA SURVIVAL // VER 1.6</span>
             </div>
             <div class="flex items-center gap-2">
                 <div class="pixel-box-dark px-3 py-2 text-amber-300">
@@ -792,7 +792,7 @@
             /* ==========================================================================
                1. STORAGE, KEYBINDS (SPACE FOR DODGE) & PERSISTENT STATS
             ========================================================================== */
-            const STORAGE_KEY = 'infernal_sandbox_nico03_v5';
+            const STORAGE_KEY = 'infernal_sandbox_nico03_v6';
 
             const DEFAULT_KEYBINDS = {
                 up: 'KeyW',
@@ -1224,6 +1224,35 @@
                     ".KSK.KK.KSK.",
                     "..K......K.."
                 ],
+                // NEW LATE-GAME BOSS 1: SOUL REAPER (Teleporting Scythe Boss)
+                ghostReaper: [
+                    "..KKKKKKKK..",
+                    ".KPPPPPPPPK.",
+                    "KPPKKKKKKPPK",
+                    "KPKWCCCCWKPK",
+                    "KPKWCCCCWKPK",
+                    "KPPKWWWWKPPK",
+                    "KPPPWWWWPPPK",
+                    "KPPCCCCCCPPK",
+                    "KPPPPPPPPPPK",
+                    ".KPK.KK.KPK.",
+                    "..K..KK..K.."
+                ],
+                // NEW LATE-GAME BOSS 2: INFERNAL OVERLORD (Arch-Demon Bullet Hell Boss)
+                ghostOverlord: [
+                    "KYYK.KK.KYYK",
+                    "KYYKKRRKKYYK",
+                    ".KRRRRRRRRK.",
+                    "KRRWWWWWWWRK",
+                    "KRWYYKKYYWRK",
+                    "KRWYYKKYYWRK",
+                    "KRRWWWWWWWRK",
+                    "KRRRRRRRRRRK",
+                    "KRRYYYYYYRRK",
+                    "KDDDDDDDDDDK",
+                    "KDK.KKKK.KDK",
+                    ".K...KK...K."
+                ],
                 weaponGun: [
                     "....KKKKKK",
                     "..KKCCCCCCK",
@@ -1517,12 +1546,12 @@
                     spawnMult: 0.82,
                     xpMult: 1.15,
                     upgMult: 1.08,
-                    regenUpgMult: 1.15,
+                    regenUpgMult: 1.10,
                     chestMinSec: 12,
                     chestMaxSec: 16,
                     maxChests: 2,
                     badgeColor: 'bg-emerald-700',
-                    desc: '0.75x Ghost Threat & frequent Golden Chests. Upgrades are 108% stronger (115% Regen).'
+                    desc: '0.75x Ghost Threat & frequent Golden Chests. Upgrades are 108% stronger (110% Regen).'
                 },
                 medium: {
                     name: 'MEDIUM',
@@ -1545,12 +1574,12 @@
                     spawnMult: 1.22,
                     xpMult: 0.95,
                     upgMult: 0.90,
-                    regenUpgMult: 0.78,
+                    regenUpgMult: 0.75,
                     chestMinSec: 26,
                     chestMaxSec: 34,
                     maxChests: 1,
                     badgeColor: 'bg-red-700',
-                    desc: '1.35x Threat & rarer Chests. Upgrades grant 90% power & HP Regen is 78% effective!'
+                    desc: '1.35x Threat & rarer Chests. Upgrades grant 90% power & HP Regen is 75% effective!'
                 },
                 infernal: {
                     name: 'INFERNAL',
@@ -1559,12 +1588,12 @@
                     spawnMult: 1.45,
                     xpMult: 1.05,
                     upgMult: 0.82,
-                    regenUpgMult: 0.65,
+                    regenUpgMult: 0.60,
                     chestMinSec: 36,
                     chestMaxSec: 46,
                     maxChests: 1,
                     badgeColor: 'bg-purple-700',
-                    desc: '1.80x Nightmare Threat & scarce Chests! Upgrades grant 82% power & Regen is 65%!'
+                    desc: '1.80x Nightmare Threat & scarce Chests! Upgrades grant 82% power & Regen is 60%!'
                 }
             };
 
@@ -1697,7 +1726,7 @@
             };
 
             /* ==========================================================================
-               5. UPGRADE POOL (SCALED BY DIFFICULTY TIER, ESPECIALLY HP REGEN)
+               5. UPGRADE POOL (NERFED MAGNET, HP REGEN & LIFESTEAL)
             ========================================================================== */
             const UPGRADE_POOL = [
                 {
@@ -1813,16 +1842,16 @@
                     name: 'DEMON HEART',
                     sprite: 'upgHeart',
                     type: 'SURVIVAL',
-                    weight: 1.15,
+                    weight: 1.0,
                     color: '#f43f5e',
                     getDesc(d) {
-                        const hpGain = Math.round(30 * d.upgMult);
-                        const healNow = Math.round(35 * d.regenUpgMult);
+                        const hpGain = Math.round(22 * d.upgMult);
+                        const healNow = Math.round(20 * d.regenUpgMult);
                         return `+${hpGain} Max HP and immediately restores ${healNow} HP.`;
                     },
                     apply(p, d) {
-                        const hpGain = Math.round(30 * d.upgMult);
-                        const healNow = Math.round(35 * d.regenUpgMult);
+                        const hpGain = Math.round(22 * d.upgMult);
+                        const healNow = Math.round(20 * d.regenUpgMult);
                         p.maxHp += hpGain;
                         p.hp = Math.min(p.maxHp, p.hp + healNow);
                     }
@@ -1832,16 +1861,16 @@
                     name: 'VAMPIRIC SOUL',
                     sprite: 'upgFangs',
                     type: 'SURVIVAL',
-                    weight: 1.0,
+                    weight: 0.8,
                     color: '#ec4899',
                     getDesc(d) {
-                        const leech = (0.34 * d.regenUpgMult).toFixed(2);
-                        const crit = Math.round(12 * d.upgMult);
+                        const leech = (0.14 * d.regenUpgMult).toFixed(2);
+                        const crit = Math.round(10 * d.upgMult);
                         return `+${leech} HP Leech per Ghost slain & +${crit}% Crit Chance (2x DMG).`;
                     },
                     apply(p, d) {
-                        p.lifeStealOnKill += 0.34 * d.regenUpgMult;
-                        p.critChance = Math.min(0.85, p.critChance + 0.12 * d.upgMult);
+                        p.lifeStealOnKill += 0.14 * d.regenUpgMult;
+                        p.critChance = Math.min(0.85, p.critChance + 0.10 * d.upgMult);
                     }
                 },
                 {
@@ -1865,16 +1894,16 @@
                     name: 'ASTRAL MAGNET',
                     sprite: 'upgMagnet',
                     type: 'UTILITY',
-                    weight: 1.0,
+                    weight: 0.75,
                     color: '#2dd4bf',
                     getDesc(d) {
-                        const radPct = Math.round(55 * d.upgMult);
-                        const xpPct = Math.round(18 * d.upgMult);
-                        return `+${radPct}% XP Pickup Radius & +${xpPct}% XP gained from all Ghosts.`;
+                        const radPct = Math.round(25 * d.upgMult);
+                        const xpPct = Math.round(10 * d.upgMult);
+                        return `+${radPct}% XP Pickup Radius (max 340px) & +${xpPct}% XP gained.`;
                     },
                     apply(p, d) {
-                        p.pickupRadius *= (1 + 0.55 * d.upgMult);
-                        p.xpGainMult *= (1 + 0.18 * d.upgMult);
+                        p.pickupRadius = Math.min(340, p.pickupRadius * (1 + 0.25 * d.upgMult));
+                        p.xpGainMult *= (1 + 0.10 * d.upgMult);
                     }
                 },
                 {
@@ -1882,16 +1911,16 @@
                     name: 'BLOOD CHALICE',
                     sprite: 'upgChalice',
                     type: 'SURVIVAL',
-                    weight: 1.05,
+                    weight: 0.8,
                     color: '#fb7185',
                     getDesc(d) {
-                        const regenVal = (1.6 * d.regenUpgMult).toFixed(2);
-                        const maxHpVal = Math.round(15 * d.upgMult);
+                        const regenVal = (0.65 * d.regenUpgMult).toFixed(2);
+                        const maxHpVal = Math.round(10 * d.upgMult);
                         return `+${regenVal} HP/s passive Regeneration & +${maxHpVal} Max HP.`;
                     },
                     apply(p, d) {
-                        const regenVal = 1.6 * d.regenUpgMult;
-                        const maxHpVal = Math.round(15 * d.upgMult);
+                        const regenVal = 0.65 * d.regenUpgMult;
+                        const maxHpVal = Math.round(10 * d.upgMult);
                         p.hpRegen += regenVal;
                         p.maxHp += maxHpVal;
                         p.hp = Math.min(p.maxHp, p.hp + maxHpVal);
@@ -1944,10 +1973,9 @@
                 shakeMagnitude: 0,
                 killsThisRun: 0,
                 keysPressed: {},
-                navKeyHeld: {}, // Strict physical key-release lock for 1-step Level-Up navigation
+                navKeyHeld: {},
                 rebindTarget: null,
 
-                // Level-Up Keyboard Selection & Rerolls
                 currentUpgradeChoices: [],
                 selectedUpgradeIndex: 0,
                 levelUpInputLockTimer: 0,
@@ -1983,7 +2011,8 @@
             function initMenuGhosts() {
                 const menuSprites = [
                     'ghostMelee', 'ghostFast', 'ghostRanged', 'ghostDasher',
-                    'ghostBomber', 'ghostNecro', 'ghostSwarm', 'ghostSniper'
+                    'ghostBomber', 'ghostNecro', 'ghostSwarm', 'ghostSniper',
+                    'ghostReaper', 'ghostOverlord'
                 ];
                 Game.menuGhosts = [];
                 for (let i = 0; i < 18; i++) {
@@ -2006,7 +2035,7 @@
                     radius: 15,
                     hp: 140,
                     maxHp: 140,
-                    hpRegen: 0.9 * diff.regenUpgMult,
+                    hpRegen: 0.35 * diff.regenUpgMult, // Nerfed base regen
                     regenCarry: 0,
                     speed: 225,
                     dmg: 17,
@@ -2016,7 +2045,7 @@
                     pierce: 0,
                     range: 420,
                     critChance: 0.10,
-                    lifeStealOnKill: 0.12 * diff.regenUpgMult,
+                    lifeStealOnKill: 0.05 * diff.regenUpgMult, // Nerfed base lifesteal
                     killHealProgress: 0,
 
                     weaponId: 'blaster',
@@ -2025,7 +2054,7 @@
                     level: 1,
                     xp: 0,
                     xpNext: 18,
-                    pickupRadius: 145,
+                    pickupRadius: 115, // Nerfed base magnet radius
                     xpGainMult: 1.05,
 
                     facingX: 1,
@@ -2061,7 +2090,7 @@
             }
 
             /* ==========================================================================
-               7. STARTING RUN, WAVES, CHESTS & 9-ARCHETYPE SPAWNING LOGIC
+               7. STARTING RUN, WAVES, CHESTS & 11-ARCHETYPE SPAWNING LOGIC
             ========================================================================== */
             function startNewRun() {
                 AudioEngine.init();
@@ -2105,7 +2134,7 @@
 
             function startWave(waveNum) {
                 Game.wave = waveNum;
-                Game.waveDuration = Math.min(42, 24 + Math.floor(waveNum * 0.75));
+                Game.waveDuration = Math.min(45, 24 + Math.floor(waveNum * 0.8));
                 Game.waveTimer = Game.waveDuration;
                 Game.spawnAccumulator = 0;
 
@@ -2114,7 +2143,7 @@
 
                 const diff = DIFFICULTIES[Game.difficulty];
                 if (waveNum > 1 && Game.player) {
-                    const heal = Math.ceil((Game.player.maxHp - Game.player.hp) * 0.14 * diff.regenUpgMult);
+                    const heal = Math.ceil((Game.player.maxHp - Game.player.hp) * 0.08 * diff.regenUpgMult);
                     if (heal > 0) {
                         Game.player.hp = Math.min(Game.player.maxHp, Game.player.hp + heal);
                         spawnFloatingText(Game.player.x, Game.player.y - 24, `+${heal} HP`, '#4ade80');
@@ -2133,10 +2162,32 @@
                     ? `FREEPLAY - WAVE ${waveNum}`
                     : `WAVE ${waveNum} / ${Game.maxTargetWave}`;
 
-                if (waveNum % 5 === 0) {
-                    sub.textContent = '⚠ DREAD WRAITH BOSS & ELITES APPROACHING! ⚠';
+                if (waveNum === 25) {
+                    sub.textContent = '💀 FINAL WAVE: INFERNAL OVERLORDS & REAPERS! 💀';
+                    queueEnemySpawn('overlord');
+                    queueEnemySpawn('overlord');
+                    queueEnemySpawn('reaper');
                     queueEnemySpawn('tank');
-                    if (waveNum >= 10) queueEnemySpawn('necromancer');
+                } else if (waveNum % 5 === 0) {
+                    if (waveNum >= 20) {
+                        sub.textContent = '⚠ INFERNAL OVERLORD & SOUL REAPER BOSSES! ⚠';
+                        queueEnemySpawn('overlord');
+                        queueEnemySpawn('reaper');
+                        queueEnemySpawn('tank');
+                    } else if (waveNum >= 15) {
+                        sub.textContent = '⚠ SOUL REAPER & DREAD WRAITH BOSSES! ⚠';
+                        queueEnemySpawn('reaper');
+                        queueEnemySpawn('tank');
+                        queueEnemySpawn('necromancer');
+                    } else {
+                        sub.textContent = '⚠ DREAD WRAITH BOSS APPROACHING! ⚠';
+                        queueEnemySpawn('tank');
+                        if (waveNum >= 10) queueEnemySpawn('necromancer');
+                    }
+                } else if (waveNum >= 18) {
+                    sub.textContent = '🔥 END-GAME NIGHTMARE HORDE! 🔥';
+                    if (waveNum % 2 === 0) queueEnemySpawn('reaper');
+                    if (waveNum >= 22) queueEnemySpawn('overlord');
                 } else {
                     sub.textContent = 'PURGE THE NIGHTMARE SPIRITS!';
                 }
@@ -2146,7 +2197,7 @@
                     banner.classList.add('opacity-0');
                 }, 2200);
 
-                const initialCount = 4 + Math.min(10, Math.floor(waveNum * 0.75));
+                const initialCount = 4 + Math.min(14, Math.floor(waveNum * 0.85));
                 for (let i = 0; i < initialCount; i++) {
                     queueEnemySpawn();
                 }
@@ -2181,7 +2232,7 @@
 
                 AudioEngine.sfxChestOpen();
                 spawnParticles(c.x, c.y, '#fde047', 16);
-                addScreenShake(0.18, 5);
+                addScreenShake(0.10, 2.5);
 
                 const p = Game.player;
                 const diff = DIFFICULTIES[Game.difficulty] || DIFFICULTIES.medium;
@@ -2190,7 +2241,7 @@
                     Game.xpGems.push({
                         x: c.x + (Math.random() - 0.5) * 32,
                         y: c.y + (Math.random() - 0.5) * 32,
-                        val: 18 + Game.wave * 2
+                        val: 22 + Game.wave * 4
                     });
                 }
 
@@ -2200,11 +2251,11 @@
                     spawnFloatingText(c.x, c.y - 24, `⚡ ${p.overdriveTimer.toFixed(1)}s OVERDRIVE (+35% SPD & FIRE)!`, '#fde047');
                 } else if (roll < 0.78) {
                     Game.rerollsLeft += 1;
-                    const heal = Math.round(22 * diff.regenUpgMult);
+                    const heal = Math.round(14 * diff.regenUpgMult);
                     p.hp = Math.min(p.maxHp, p.hp + heal);
                     spawnFloatingText(c.x, c.y - 24, `🎲 +1 REROLL & +${heal} HP!`, '#22d3ee');
                 } else {
-                    const heal = Math.round(35 * diff.regenUpgMult);
+                    const heal = Math.round(22 * diff.regenUpgMult);
                     p.hp = Math.min(p.maxHp, p.hp + heal);
                     spawnFloatingText(c.x, c.y - 24, `♥ SOUL BLESSING (+${heal} HP)!`, '#4ade80');
                 }
@@ -2213,15 +2264,17 @@
             function pickGhostArchetype() {
                 const w = Game.wave;
                 const pool = [
-                    { type: 'melee', weight: 32 },
+                    { type: 'melee', weight: w >= 15 ? 20 : 32 },
                     { type: 'swarm', weight: w >= 1 ? 18 : 0 },
                     { type: 'fast', weight: w >= 2 ? 20 : 8 },
                     { type: 'ranged', weight: w >= 2 ? 18 : 0 },
-                    { type: 'dasher', weight: w >= 3 ? 15 : 0 },
-                    { type: 'bomber', weight: w >= 4 ? 14 : 0 },
-                    { type: 'sniper', weight: w >= 5 ? 12 : 0 },
-                    { type: 'necromancer', weight: w >= 6 ? 9 : 0 },
-                    { type: 'tank', weight: w >= 6 ? 6 : 0 }
+                    { type: 'dasher', weight: w >= 3 ? (w >= 14 ? 22 : 15) : 0 },
+                    { type: 'bomber', weight: w >= 4 ? (w >= 14 ? 18 : 14) : 0 },
+                    { type: 'sniper', weight: w >= 5 ? (w >= 14 ? 18 : 12) : 0 },
+                    { type: 'necromancer', weight: w >= 6 ? (w >= 15 ? 14 : 9) : 0 },
+                    { type: 'tank', weight: w >= 6 ? (w >= 15 ? 11 : 6) : 0 },
+                    { type: 'reaper', weight: w >= 12 ? (w >= 18 ? 9 : 5) : 0 },
+                    { type: 'overlord', weight: w >= 17 ? (w >= 22 ? 6 : 3) : 0 }
                 ];
 
                 const total = pool.reduce((acc, item) => acc + item.weight, 0);
@@ -2272,7 +2325,8 @@
 
             function spawnGhostFromMarker(marker) {
                 const diff = DIFFICULTIES[Game.difficulty];
-                const wScale = 1 + (Game.wave - 1) * 0.16 * (Game.freeplay ? 1.42 : 1.0);
+                const lateWaveBoost = Game.wave >= 12 ? 1 + (Game.wave - 11) * 0.11 : 1.0;
+                const wScale = (1 + (Game.wave - 1) * 0.17) * lateWaveBoost * (Game.freeplay ? 1.48 : 1.0);
 
                 let baseHp = 21;
                 let speed = 84;
@@ -2295,7 +2349,7 @@
                     speed = 142;
                     dmg = 6;
                     radius = 10;
-                    xpVal = 3;
+                    xpVal = 4;
                     sprite = 'ghostSwarm';
                     spriteScale = 3;
                 } else if (marker.type === 'ranged') {
@@ -2308,18 +2362,18 @@
                     spriteScale = 3;
                 } else if (marker.type === 'dasher') {
                     baseHp = 28;
-                    speed = 76;
+                    speed = 78;
                     dmg = 13;
                     radius = 15;
-                    xpVal = 11;
+                    xpVal = 12;
                     sprite = 'ghostDasher';
                     spriteScale = 3;
                 } else if (marker.type === 'bomber') {
                     baseHp = 20;
-                    speed = 112;
+                    speed = 114;
                     dmg = 14;
                     radius = 14;
-                    xpVal = 10;
+                    xpVal = 11;
                     sprite = 'ghostBomber';
                     spriteScale = 3;
                 } else if (marker.type === 'sniper') {
@@ -2327,28 +2381,49 @@
                     speed = 62;
                     dmg = 13;
                     radius = 14;
-                    xpVal = 11;
+                    xpVal = 12;
                     sprite = 'ghostSniper';
                     spriteScale = 3;
                 } else if (marker.type === 'necromancer') {
-                    baseHp = 42;
-                    speed = 55;
-                    dmg = 11;
+                    baseHp = 44;
+                    speed = 56;
+                    dmg = 12;
                     radius = 16;
-                    xpVal = 18;
+                    xpVal = 20;
                     sprite = 'ghostNecro';
                     spriteScale = 3;
                 } else if (marker.type === 'tank') {
-                    baseHp = 95;
-                    speed = 58;
+                    baseHp = 100;
+                    speed = 60;
                     dmg = 17;
                     radius = 24;
-                    xpVal = 32;
+                    xpVal = 38;
                     sprite = 'ghostTank';
+                    spriteScale = 4;
+                } else if (marker.type === 'reaper') {
+                    baseHp = 145;
+                    speed = 86;
+                    dmg = 20;
+                    radius = 22;
+                    xpVal = 62;
+                    sprite = 'ghostReaper';
+                    spriteScale = 4;
+                } else if (marker.type === 'overlord') {
+                    baseHp = 230;
+                    speed = 52;
+                    dmg = 24;
+                    radius = 26;
+                    xpVal = 98;
+                    sprite = 'ghostOverlord';
                     spriteScale = 4;
                 }
 
                 const maxHp = Math.max(8, Math.round(baseHp * wScale * diff.hpMult));
+                const lateDmgBoost = Game.wave >= 12 ? 1 + (Game.wave - 11) * 0.05 : 1.0;
+
+                // Generous mid/end-game XP scaling so late waves keep leveling smoothly!
+                const waveXpScale = 1 + (Game.wave - 1) * 0.14 + (Game.wave >= 11 ? (Game.wave - 10) * 0.24 : 0);
+                const scaledXp = Math.round(xpVal * waveXpScale);
 
                 Game.enemies.push({
                     x: marker.x,
@@ -2356,14 +2431,15 @@
                     type: marker.type,
                     hp: maxHp,
                     maxHp: maxHp,
-                    speed: speed * (0.94 + Math.random() * 0.12),
-                    dmg: Math.max(2, Math.round(dmg * (1 + (Game.wave - 1) * 0.075) * diff.dmgMult)),
+                    speed: speed * (0.94 + Math.random() * 0.12) * (Game.wave >= 15 ? 1.08 : 1.0),
+                    dmg: Math.max(2, Math.round(dmg * (1 + (Game.wave - 1) * 0.08) * lateDmgBoost * diff.dmgMult)),
                     radius,
-                    xpVal,
+                    xpVal: scaledXp,
                     sprite,
                     spriteScale,
                     shootCd: 1.3 + Math.random() * 1.2,
                     specialCd: 2.2 + Math.random() * 1.2,
+                    spiralAngle: 0,
                     dashBurstTimer: 0,
                     dashVx: 0,
                     dashVy: 0,
@@ -2381,7 +2457,7 @@
 
                 p.mainCd = p.mainBaseCd * p.cdr;
                 AudioEngine.sfxMainPower();
-                addScreenShake(0.28, 7);
+                addScreenShake(0.16, 3.2);
 
                 const nearest = findNearestGhost(p.x, p.y, 9999);
                 const baseAngle = nearest
@@ -2421,7 +2497,7 @@
 
                 p.secCd = p.secBaseCd * p.cdr;
                 AudioEngine.sfxSecPower();
-                addScreenShake(0.18, 4);
+                addScreenShake(0.10, 2.0);
 
                 const count = p.secPowerCount;
                 const orbDmg = Math.round(p.dmg * p.secPowerMult);
@@ -2680,11 +2756,13 @@
                     }
                 }
 
-                const spawnRatePerSec = (0.88 + Game.wave * 0.22) * diff.spawnMult;
+                const lateSpawnSurge = Game.wave >= 14 ? 1 + (Game.wave - 13) * 0.06 : 1.0;
+                const spawnRatePerSec = (0.88 + Game.wave * 0.24) * lateSpawnSurge * diff.spawnMult;
+                const maxArenaEnemies = Game.wave >= 15 ? 110 : 85;
                 Game.spawnAccumulator += spawnRatePerSec * dt;
                 while (Game.spawnAccumulator >= 1) {
                     Game.spawnAccumulator -= 1;
-                    if (Game.enemies.length + Game.spawnMarkers.length < 85) {
+                    if (Game.enemies.length + Game.spawnMarkers.length < maxArenaEnemies) {
                         queueEnemySpawn();
                     }
                 }
@@ -2741,9 +2819,10 @@
                             e.y += (b.vy / bSpeed) * kb;
 
                             if (b.explosiveRadius > 0) {
-                                spawnParticles(b.x, b.y, '#f97316', 14);
-                                spawnParticles(b.x, b.y, '#fde047', 8);
-                                addScreenShake(0.12, 4);
+                                spawnParticles(b.x, b.y, '#f97316', 12);
+                                spawnParticles(b.x, b.y, '#fde047', 6);
+                                // Reduced explosion screen shake so it stays smooth!
+                                addScreenShake(0.05, 1.4);
                                 const aoeDmg = Math.max(1, Math.round(b.dmg * 0.65));
                                 for (let k = Game.enemies.length - 1; k >= 0; k--) {
                                     const other = Game.enemies[k];
@@ -2873,10 +2952,83 @@
                         e.specialCd -= dt;
                         if (e.specialCd <= 0) {
                             e.specialCd = 4.6;
-                            if (Game.enemies.length < 85) {
+                            if (Game.enemies.length < 95) {
                                 spawnParticles(e.x, e.y, '#c084fc', 10);
                                 queueEnemySpawn('swarm', Math.max(40, Math.min(ARENA_SIZE - 40, e.x - 28)), e.y);
                                 queueEnemySpawn('swarm', Math.max(40, Math.min(ARENA_SIZE - 40, e.x + 28)), e.y);
+                            }
+                        }
+                    } else if (e.type === 'reaper') {
+                        // NEW BOSS 1: Soul Reaper — shadow-lunges and fires 3-way aimed scythe orbs
+                        if (e.dashBurstTimer > 0) {
+                            e.dashBurstTimer -= dt;
+                            e.x += e.dashVx * dt;
+                            e.y += e.dashVy * dt;
+                        } else {
+                            e.x += (dx / dist) * e.speed * dt;
+                            e.y += (dy / dist) * e.speed * dt;
+                            e.specialCd -= dt;
+                            if (e.specialCd <= 0 && dist < 440) {
+                                e.specialCd = 3.0;
+                                e.dashBurstTimer = 0.28;
+                                e.dashVx = (dx / dist) * (e.speed * 3.8);
+                                e.dashVy = (dy / dist) * (e.speed * 3.8);
+                                spawnParticles(e.x, e.y, '#22d3ee', 10);
+                            }
+                        }
+
+                        e.shootCd -= dt;
+                        if (e.shootCd <= 0 && dist < 560) {
+                            e.shootCd = 2.3;
+                            const baseAng = Math.atan2(dy, dx);
+                            for (let s = -1; s <= 1; s++) {
+                                const ang = baseAng + s * 0.22;
+                                Game.enemyBullets.push({
+                                    x: e.x,
+                                    y: e.y,
+                                    vx: Math.cos(ang) * 235,
+                                    vy: Math.sin(ang) * 235,
+                                    radius: 8,
+                                    dmg: e.dmg,
+                                    trail: [],
+                                    trailTimer: 0,
+                                    pulsePhase: s
+                                });
+                            }
+                        }
+                    } else if (e.type === 'overlord') {
+                        // NEW BOSS 2: Infernal Overlord — advances inexorably, fires 10-orb spiral hellfire & summons dashers
+                        e.x += (dx / dist) * e.speed * dt;
+                        e.y += (dy / dist) * e.speed * dt;
+
+                        e.shootCd -= dt;
+                        if (e.shootCd <= 0) {
+                            e.shootCd = 2.4;
+                            e.spiralAngle = (e.spiralAngle || 0) + 0.35;
+                            const count = 10;
+                            for (let k = 0; k < count; k++) {
+                                const ang = e.spiralAngle + (Math.PI * 2 * k) / count;
+                                Game.enemyBullets.push({
+                                    x: e.x,
+                                    y: e.y,
+                                    vx: Math.cos(ang) * 185,
+                                    vy: Math.sin(ang) * 185,
+                                    radius: 8,
+                                    dmg: e.dmg,
+                                    trail: [],
+                                    trailTimer: 0,
+                                    pulsePhase: k
+                                });
+                            }
+                        }
+
+                        e.specialCd -= dt;
+                        if (e.specialCd <= 0) {
+                            e.specialCd = 6.5;
+                            if (Game.enemies.length < 100) {
+                                spawnParticles(e.x, e.y, '#ef4444', 14);
+                                queueEnemySpawn('dasher', Math.max(50, Math.min(ARENA_SIZE - 50, e.x - 40)), e.y);
+                                queueEnemySpawn('dasher', Math.max(50, Math.min(ARENA_SIZE - 50, e.x + 40)), e.y);
                             }
                         }
                     } else {
@@ -2975,7 +3127,8 @@
                         if (p.xp >= p.xpNext) {
                             p.xp -= p.xpNext;
                             p.level += 1;
-                            p.xpNext = Math.round(p.xpNext * 1.22 + 9);
+                            // Smoother XP curve (1.13x instead of 1.22x) so end-game leveling stays rewarding!
+                            p.xpNext = Math.round(p.xpNext * 1.13 + 10);
                             openLevelUpModal();
                             return;
                         }
@@ -3041,11 +3194,12 @@
                 });
 
                 const diff = DIFFICULTIES[Game.difficulty];
-                if (e.type === 'tank' || Math.random() < 0.065) {
+                const isBoss = e.type === 'tank' || e.type === 'reaper' || e.type === 'overlord';
+                if (isBoss || Math.random() < 0.045) {
                     Game.heartDrops.push({
                         x: e.x + (Math.random() - 0.5) * 12,
                         y: e.y + (Math.random() - 0.5) * 12,
-                        heal: Math.max(6, Math.round((e.type === 'tank' ? 32 : 15) * diff.regenUpgMult))
+                        heal: Math.max(5, Math.round((isBoss ? 22 : 10) * diff.regenUpgMult))
                     });
                 }
 
@@ -3081,7 +3235,7 @@
                 p.comboCount = 0;
                 p.comboTimer = 0;
                 AudioEngine.sfxPlayerHit();
-                addScreenShake(0.25, 8);
+                addScreenShake(0.20, 6);
                 spawnParticles(p.x, p.y, '#ef4444', 12);
                 spawnFloatingText(p.x, p.y - 20, `-${amount} HP`, '#ef4444');
 
@@ -3278,7 +3432,6 @@
             function openLevelUpModal() {
                 Game.state = 'LEVEL_UP';
                 Game.levelUpInputLockTimer = 0.22;
-                // Lock any keys currently held down during gameplay so holding A/D doesn't trigger until released!
                 Game.navKeyHeld = { ...Game.keysPressed };
                 AudioEngine.sfxLevelUp();
                 updateHud();
@@ -3306,12 +3459,13 @@
                 statsList.innerHTML = `
                     <div class="flex justify-between"><span>Max HP:</span><strong class="text-red-400">${Math.ceil(p.hp)} / ${p.maxHp}</strong></div>
                     <div class="flex justify-between"><span>HP Regen:</span><strong class="text-emerald-400">+${p.hpRegen.toFixed(2)}/s</strong></div>
+                    <div class="flex justify-between"><span>Leech / Kill:</span><strong class="text-pink-400">${p.lifeStealOnKill.toFixed(2)} HP</strong></div>
                     <div class="flex justify-between"><span>Weapon DMG:</span><strong class="text-amber-300">${effDmg}</strong></div>
                     <div class="flex justify-between"><span>Attack Speed:</span><strong class="text-cyan-300">${effRate}/s</strong></div>
                     <div class="flex justify-between"><span>Projectiles:</span><strong class="text-white">${effShots}</strong></div>
                     <div class="flex justify-between"><span>Crit Chance:</span><strong class="text-yellow-300">${Math.round(p.critChance * 100)}%</strong></div>
+                    <div class="flex justify-between"><span>Magnet Radius:</span><strong class="text-teal-300">${Math.round(p.pickupRadius)}px</strong></div>
                     <div class="flex justify-between"><span>Rerolls Left:</span><strong class="text-cyan-300">${Game.rerollsLeft}</strong></div>
-                    <div class="flex justify-between"><span>Ability Cooldown:</span><strong class="text-purple-300">${Math.round(p.cdr * 100)}%</strong></div>
                     <div class="flex justify-between"><span>Move Speed:</span><strong class="text-emerald-300">${Math.round(p.speed)}</strong></div>
                 `;
 
@@ -3610,8 +3764,9 @@
                 // 2. Draw Spawn Warning Markers
                 for (const m of Game.spawnMarkers) {
                     if (Math.floor(m.timer * 14) % 2 === 0) {
-                        ctx.fillStyle = m.type === 'tank' ? '#fde047' : (m.type === 'necromancer' ? '#c084fc' : '#ef4444');
-                        const sz = m.type === 'tank' ? 16 : 10;
+                        const isBossMarker = m.type === 'tank' || m.type === 'reaper' || m.type === 'overlord';
+                        ctx.fillStyle = m.type === 'overlord' ? '#f97316' : (m.type === 'reaper' ? '#22d3ee' : (m.type === 'tank' ? '#fde047' : '#ef4444'));
+                        const sz = isBossMarker ? 18 : 10;
                         ctx.fillRect(Math.floor(m.x - sz), Math.floor(m.y - 2), sz * 2, 4);
                         ctx.fillRect(Math.floor(m.x - 2), Math.floor(m.y - sz), 4, sz * 2);
                     }
@@ -3630,7 +3785,7 @@
 
                 // 3. Draw XP Gems & Soul Heart Pickups
                 for (const g of Game.xpGems) {
-                    ctx.fillStyle = g.val >= 18 ? '#fde047' : '#22d3ee';
+                    ctx.fillStyle = g.val >= 25 ? '#fde047' : '#22d3ee';
                     ctx.fillRect(Math.floor(g.x - 5), Math.floor(g.y - 5), 10, 10);
                     ctx.fillStyle = '#ffffff';
                     ctx.fillRect(Math.floor(g.x - 2), Math.floor(g.y - 2), 4, 4);
@@ -3654,7 +3809,7 @@
                     }
                 }
 
-                // 5. Draw Ghosts (All 9 Archetypes)
+                // 5. Draw Ghosts (All 11 Archetypes & Bosses)
                 for (const e of Game.enemies) {
                     const bobOffset = Math.sin(e.bobPhase) * 3;
                     ctx.fillStyle = 'rgba(0,0,0,0.45)';
@@ -3676,14 +3831,15 @@
                         ctx.restore();
                     }
 
-                    if (e.hp < e.maxHp || e.type === 'tank' || e.type === 'necromancer') {
-                        const bw = e.type === 'tank' ? 42 : 26;
+                    const isMajor = e.type === 'tank' || e.type === 'necromancer' || e.type === 'reaper' || e.type === 'overlord';
+                    if (e.hp < e.maxHp || isMajor) {
+                        const bw = (e.type === 'overlord' || e.type === 'reaper' || e.type === 'tank') ? 46 : 26;
                         const bh = 5;
                         const bx = Math.floor(e.x - bw / 2);
                         const by = Math.floor(e.y - e.radius - 12);
                         ctx.fillStyle = '#000000';
                         ctx.fillRect(bx - 1, by - 1, bw + 2, bh + 2);
-                        ctx.fillStyle = e.type === 'necromancer' ? '#c084fc' : '#ef4444';
+                        ctx.fillStyle = e.type === 'overlord' ? '#f97316' : (e.type === 'reaper' ? '#22d3ee' : (e.type === 'necromancer' ? '#c084fc' : '#ef4444'));
                         ctx.fillRect(bx, by, Math.max(0, Math.floor((e.hp / e.maxHp) * bw)), bh);
                     }
                 }
@@ -3834,8 +3990,9 @@
                 }
 
                 for (const e of Game.enemies) {
-                    mctx.fillStyle = e.type === 'tank' ? '#fde047' : (e.type === 'necromancer' ? '#c084fc' : '#ffffff');
-                    const s = e.type === 'tank' ? 4 : 2;
+                    const isBoss = e.type === 'tank' || e.type === 'reaper' || e.type === 'overlord';
+                    mctx.fillStyle = e.type === 'overlord' ? '#f97316' : (e.type === 'reaper' ? '#22d3ee' : (e.type === 'tank' ? '#fde047' : '#ffffff'));
+                    const s = isBoss ? 4 : 2;
                     mctx.fillRect(Math.floor(e.x * scale - s / 2), Math.floor(e.y * scale - s / 2), s, s);
                 }
 
@@ -3853,8 +4010,8 @@
                 lctx.imageSmoothingEnabled = false;
                 lctx.clearRect(0, 0, 96, 96);
                 const heroSp = getPlayerSpriteCanvas('playerIdle', 6);
-                const ghostSp = getSpriteCanvas('ghostDasher', 4);
-                if (ghostSp) lctx.drawImage(ghostSp, 44, 8);
+                const ghostSp = getSpriteCanvas('ghostOverlord', 4);
+                if (ghostSp) lctx.drawImage(ghostSp, 42, 6);
                 if (heroSp) lctx.drawImage(heroSp, 8, 22);
             }
 
@@ -4158,7 +4315,6 @@
                         return;
                     }
 
-                    // Strict 1-Step Keyboard Navigation inside LEVEL_UP Modal (No holding A/D spam!)
                     if (Game.state === 'LEVEL_UP') {
                         if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
                             e.preventDefault();
