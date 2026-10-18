@@ -256,7 +256,7 @@
         <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-300">
             <div class="pixel-box-dark px-3 py-2 flex items-center gap-2">
                 <span class="inline-block w-2.5 h-2.5 bg-red-500 animate-pulse"></span>
-                <span>8-BIT ARENA SURVIVAL // VER 1.6</span>
+                <span>8-BIT ARENA SURVIVAL // VER 1.7</span>
             </div>
             <div class="flex items-center gap-2">
                 <div class="pixel-box-dark px-3 py-2 text-amber-300">
@@ -284,11 +284,11 @@
 
             <!-- Survivor Skin Selector -->
             <div class="w-full pixel-box p-3 sm:p-4 mb-3">
-                <div class="text-[10px] sm:text-xs text-cyan-300 mb-2.5 flex items-center justify-between">
-                    <span>🎭 SELECT SURVIVOR SKIN</span>
-                    <span id="skinTraitLabel" class="font-retro text-sm sm:text-base text-amber-300">CLASSIC CRIMSON ARMOR</span>
+                <div class="text-[10px] sm:text-xs text-cyan-300 mb-2.5 flex flex-col sm:flex-row items-center justify-between gap-1">
+                    <span class="shrink-0">🎭 SELECT SURVIVOR SKIN</span>
+                    <span id="skinTraitLabel" class="font-retro text-sm sm:text-base text-amber-300 text-center sm:text-right leading-tight">0 BUFFS / 0 NERFS (BASE STATS)</span>
                 </div>
-                <div id="skinSelectorGrid" class="grid grid-cols-5 gap-2">
+                <div id="skinSelectorGrid" class="grid grid-cols-5 gap-1.5 sm:gap-2">
                     <!-- Populated via JS -->
                 </div>
             </div>
@@ -1024,7 +1024,7 @@
             };
 
             /* ==========================================================================
-               3. 8-BIT PIXEL ART SPRITE MATRICES & SURVIVOR SKINS
+               3. 8-BIT PIXEL ART SPRITE MATRICES & SURVIVOR SKINS (WITH BUFFS & NERFS)
             ========================================================================== */
             const PALETTE = {
                 'K': '#09060e',
@@ -1046,36 +1046,81 @@
                 hellknight: {
                     id: 'hellknight',
                     name: 'HELLKNIGHT',
-                    trait: 'CLASSIC CRIMSON ARMOR',
+                    traitHtml: '<span class="text-amber-300">0 BUFFS / 0 NERFS (POSTAĆ PODSTAWOWA)</span>',
                     dashColor: '#ef4444',
+                    stats: {
+                        dmgMult: 1.0,
+                        hpMult: 1.0,
+                        speedMult: 1.0,
+                        regenMult: 1.0,
+                        lifestealMult: 1.0,
+                        startWeapon: 'blaster',
+                        thorns: 0
+                    },
                     map: { 'R': '#ef4444', 'Y': '#fde047', 'F': '#fdba74', 'D': '#991b1b', 'T': '#a16207' }
                 },
                 cyber: {
                     id: 'cyber',
                     name: 'CYBER RONIN',
-                    trait: 'NEON SYNTH RUNNER',
+                    traitHtml: '<span class="text-emerald-400">BUFF: x1.15 DMG</span> <span class="text-slate-500">|</span> <span class="text-rose-400">NERF: x0.90 HP</span>',
                     dashColor: '#22d3ee',
+                    stats: {
+                        dmgMult: 1.15,
+                        hpMult: 0.90,
+                        speedMult: 1.0,
+                        regenMult: 1.0,
+                        lifestealMult: 1.0,
+                        startWeapon: 'blaster',
+                        thorns: 0
+                    },
                     map: { 'R': '#0ea5e9', 'Y': '#22d3ee', 'F': '#e2e8f0', 'D': '#1e293b', 'T': '#ec4899' }
                 },
                 necro: {
                     id: 'necro',
                     name: 'VOID REAPER',
-                    trait: 'ABYSSAL CULTIST CLOAK',
+                    traitHtml: '<span class="text-emerald-400">BUFF: REAPER\'S SCYTHE MK1, x1.2 LIFESTEAL</span> <span class="text-slate-500">|</span> <span class="text-rose-400">NERF: x0.7 HP, x0.8 SPD</span>',
                     dashColor: '#c084fc',
+                    stats: {
+                        dmgMult: 1.0,
+                        hpMult: 0.70,
+                        speedMult: 0.80,
+                        regenMult: 1.0,
+                        lifestealMult: 1.20,
+                        startWeapon: 'scythe',
+                        thorns: 0
+                    },
                     map: { 'R': '#9333ea', 'Y': '#4ade80', 'F': '#d8b4fe', 'D': '#3b0764', 'T': '#22c55e' }
                 },
                 paladin: {
                     id: 'paladin',
                     name: 'SOLAR PALADIN',
-                    trait: 'GOLDEN RADIANT PLATE',
+                    traitHtml: '<span class="text-emerald-400">BUFF: x1.15 HP REGEN, x1.2 SPD</span> <span class="text-slate-500">|</span> <span class="text-rose-400">NERF: x0.75 HP, x0.9 DMG</span>',
                     dashColor: '#fde047',
+                    stats: {
+                        dmgMult: 0.90,
+                        hpMult: 0.75,
+                        speedMult: 1.20,
+                        regenMult: 1.15,
+                        lifestealMult: 1.0,
+                        startWeapon: 'blaster',
+                        thorns: 0
+                    },
                     map: { 'R': '#f59e0b', 'Y': '#ffffff', 'F': '#fef08a', 'D': '#fef3c7', 'T': '#38bdf8' }
                 },
                 toxic: {
                     id: 'toxic',
                     name: 'BIO STALKER',
-                    trait: 'VENOMOUS HAZMAT SUIT',
+                    traitHtml: '<span class="text-emerald-400">BUFF: THORNS 25% HP</span> <span class="text-slate-500">|</span> <span class="text-rose-400">NERF: x0.9 SPD, x0.9 HP</span>',
                     dashColor: '#4ade80',
+                    stats: {
+                        dmgMult: 1.0,
+                        hpMult: 0.90,
+                        speedMult: 0.90,
+                        regenMult: 1.0,
+                        lifestealMult: 1.0,
+                        startWeapon: 'blaster',
+                        thorns: 0.25
+                    },
                     map: { 'R': '#22c55e', 'Y': '#facc15', 'F': '#bbf7d0', 'D': '#14532d', 'T': '#a855f7' }
                 }
             };
@@ -1224,7 +1269,6 @@
                     ".KSK.KK.KSK.",
                     "..K......K.."
                 ],
-                // NEW LATE-GAME BOSS 1: SOUL REAPER (Teleporting Scythe Boss)
                 ghostReaper: [
                     "..KKKKKKKK..",
                     ".KPPPPPPPPK.",
@@ -1238,7 +1282,6 @@
                     ".KPK.KK.KPK.",
                     "..K..KK..K.."
                 ],
-                // NEW LATE-GAME BOSS 2: INFERNAL OVERLORD (Arch-Demon Bullet Hell Boss)
                 ghostOverlord: [
                     "KYYK.KK.KYYK",
                     "KYYKKRRKKYYK",
@@ -1690,7 +1733,7 @@
                 },
                 scythe: {
                     id: 'scythe',
-                    name: 'REAPER SCYTHES',
+                    name: "REAPER'S SCYTHE",
                     sprite: 'weaponScythe',
                     tag: 'CLEAVING BLADES',
                     color: '#4ade80',
@@ -1864,12 +1907,13 @@
                     weight: 0.8,
                     color: '#ec4899',
                     getDesc(d) {
-                        const leech = (0.14 * d.regenUpgMult).toFixed(2);
+                        const lMult = Game.player ? (Game.player.lifestealMult || 1) : 1;
+                        const leech = (0.14 * d.regenUpgMult * lMult).toFixed(2);
                         const crit = Math.round(10 * d.upgMult);
                         return `+${leech} HP Leech per Ghost slain & +${crit}% Crit Chance (2x DMG).`;
                     },
                     apply(p, d) {
-                        p.lifeStealOnKill += 0.14 * d.regenUpgMult;
+                        p.lifeStealOnKill += 0.14 * d.regenUpgMult * (p.lifestealMult || 1);
                         p.critChance = Math.min(0.85, p.critChance + 0.10 * d.upgMult);
                     }
                 },
@@ -1914,12 +1958,13 @@
                     weight: 0.8,
                     color: '#fb7185',
                     getDesc(d) {
-                        const regenVal = (0.65 * d.regenUpgMult).toFixed(2);
+                        const rMult = Game.player ? (Game.player.regenMult || 1) : 1;
+                        const regenVal = (0.65 * d.regenUpgMult * rMult).toFixed(2);
                         const maxHpVal = Math.round(10 * d.upgMult);
                         return `+${regenVal} HP/s passive Regeneration & +${maxHpVal} Max HP.`;
                     },
                     apply(p, d) {
-                        const regenVal = 0.65 * d.regenUpgMult;
+                        const regenVal = 0.65 * d.regenUpgMult * (p.regenMult || 1);
                         const maxHpVal = Math.round(10 * d.upgMult);
                         p.hpRegen += regenVal;
                         p.maxHp += maxHpVal;
@@ -2029,32 +2074,43 @@
 
             function createPlayer() {
                 const diff = DIFFICULTIES[Game.difficulty];
+                const skin = PLAYER_SKINS[savedStats.selectedSkin] || PLAYER_SKINS.hellknight;
+                const st = skin.stats;
+
+                const startMaxHp = Math.round(140 * st.hpMult);
+                const startWeaponId = st.startWeapon || 'blaster';
+
                 return {
+                    skinId: skin.id,
+                    skinName: skin.name,
                     x: ARENA_SIZE / 2,
                     y: ARENA_SIZE / 2,
                     radius: 15,
-                    hp: 140,
-                    maxHp: 140,
-                    hpRegen: 0.35 * diff.regenUpgMult, // Nerfed base regen
+                    hp: startMaxHp,
+                    maxHp: startMaxHp,
+                    regenMult: st.regenMult,
+                    lifestealMult: st.lifestealMult,
+                    thorns: st.thorns || 0,
+                    hpRegen: 0.35 * diff.regenUpgMult * st.regenMult,
                     regenCarry: 0,
-                    speed: 225,
-                    dmg: 17,
+                    speed: 225 * st.speedMult,
+                    dmg: 17 * st.dmgMult,
                     fireRate: 2.9,
                     fireCooldown: 0,
                     projectiles: 1,
                     pierce: 0,
                     range: 420,
                     critChance: 0.10,
-                    lifeStealOnKill: 0.05 * diff.regenUpgMult, // Nerfed base lifesteal
+                    lifeStealOnKill: 0.05 * diff.regenUpgMult * st.lifestealMult,
                     killHealProgress: 0,
 
-                    weaponId: 'blaster',
+                    weaponId: startWeaponId,
                     weaponTier: 1,
 
                     level: 1,
                     xp: 0,
                     xpNext: 18,
-                    pickupRadius: 115, // Nerfed base magnet radius
+                    pickupRadius: 115,
                     xpGainMult: 1.05,
 
                     facingX: 1,
@@ -2085,7 +2141,7 @@
                     comboTimer: 0,
                     overdriveTimer: 0,
 
-                    inventory: {}
+                    inventory: startWeaponId !== 'blaster' ? { [`wep_${startWeaponId}`]: 1 } : {}
                 };
             }
 
@@ -2421,7 +2477,6 @@
                 const maxHp = Math.max(8, Math.round(baseHp * wScale * diff.hpMult));
                 const lateDmgBoost = Game.wave >= 12 ? 1 + (Game.wave - 11) * 0.05 : 1.0;
 
-                // Generous mid/end-game XP scaling so late waves keep leveling smoothly!
                 const waveXpScale = 1 + (Game.wave - 1) * 0.14 + (Game.wave >= 11 ? (Game.wave - 10) * 0.24 : 0);
                 const scaledXp = Math.round(xpVal * waveXpScale);
 
@@ -2821,7 +2876,6 @@
                             if (b.explosiveRadius > 0) {
                                 spawnParticles(b.x, b.y, '#f97316', 12);
                                 spawnParticles(b.x, b.y, '#fde047', 6);
-                                // Reduced explosion screen shake so it stays smooth!
                                 addScreenShake(0.05, 1.4);
                                 const aoeDmg = Math.max(1, Math.round(b.dmg * 0.65));
                                 for (let k = Game.enemies.length - 1; k >= 0; k--) {
@@ -2891,6 +2945,7 @@
                                 vy: Math.sin(angle) * 175,
                                 radius: 7,
                                 dmg: e.dmg,
+                                attacker: e,
                                 trail: [],
                                 trailTimer: 0,
                                 pulsePhase: Math.random() * Math.PI * 2
@@ -2917,6 +2972,7 @@
                                 vy: Math.sin(angle) * 290,
                                 radius: 6,
                                 dmg: Math.round(e.dmg * 1.25),
+                                attacker: e,
                                 trail: [],
                                 trailTimer: 0,
                                 pulsePhase: Math.random() * Math.PI * 2
@@ -2959,7 +3015,6 @@
                             }
                         }
                     } else if (e.type === 'reaper') {
-                        // NEW BOSS 1: Soul Reaper — shadow-lunges and fires 3-way aimed scythe orbs
                         if (e.dashBurstTimer > 0) {
                             e.dashBurstTimer -= dt;
                             e.x += e.dashVx * dt;
@@ -2990,6 +3045,7 @@
                                     vy: Math.sin(ang) * 235,
                                     radius: 8,
                                     dmg: e.dmg,
+                                    attacker: e,
                                     trail: [],
                                     trailTimer: 0,
                                     pulsePhase: s
@@ -2997,7 +3053,6 @@
                             }
                         }
                     } else if (e.type === 'overlord') {
-                        // NEW BOSS 2: Infernal Overlord — advances inexorably, fires 10-orb spiral hellfire & summons dashers
                         e.x += (dx / dist) * e.speed * dt;
                         e.y += (dy / dist) * e.speed * dt;
 
@@ -3015,6 +3070,7 @@
                                     vy: Math.sin(ang) * 185,
                                     radius: 8,
                                     dmg: e.dmg,
+                                    attacker: e,
                                     trail: [],
                                     trailTimer: 0,
                                     pulsePhase: k
@@ -3048,6 +3104,7 @@
                                         vy: Math.sin(ang) * 165,
                                         radius: 8,
                                         dmg: e.dmg,
+                                        attacker: e,
                                         trail: [],
                                         trailTimer: 0,
                                         pulsePhase: k
@@ -3061,8 +3118,8 @@
                     e.y = Math.max(20, Math.min(ARENA_SIZE - 20, e.y));
 
                     if (dist < p.radius + e.radius - 2 && p.invulnTimer <= 0) {
-                        damagePlayer(e.dmg);
-                        if (e.type === 'bomber') {
+                        damagePlayer(e.dmg, e);
+                        if (e.type === 'bomber' && Game.enemies[i] === e) {
                             killGhost(i);
                         }
                     }
@@ -3089,7 +3146,7 @@
 
                     const d = Math.hypot(eb.x - p.x, eb.y - p.y);
                     if (d < eb.radius + p.radius - 2 && p.invulnTimer <= 0) {
-                        damagePlayer(eb.dmg);
+                        damagePlayer(eb.dmg, eb.attacker || null);
                         Game.enemyBullets.splice(i, 1);
                     }
                 }
@@ -3127,7 +3184,6 @@
                         if (p.xp >= p.xpNext) {
                             p.xp -= p.xpNext;
                             p.level += 1;
-                            // Smoother XP curve (1.13x instead of 1.22x) so end-game leveling stays rewarding!
                             p.xpNext = Math.round(p.xpNext * 1.13 + 10);
                             openLevelUpModal();
                             return;
@@ -3180,6 +3236,7 @@
                             vy: Math.sin(ang) * 155,
                             radius: 6,
                             dmg: Math.max(4, Math.round(e.dmg * 0.75)),
+                            attacker: null,
                             trail: [],
                             trailTimer: 0,
                             pulsePhase: k
@@ -3228,7 +3285,7 @@
                 }
             }
 
-            function damagePlayer(amount) {
+            function damagePlayer(amount, attacker = null) {
                 const p = Game.player;
                 p.hp = Math.max(0, p.hp - amount);
                 p.invulnTimer = 0.52;
@@ -3238,6 +3295,21 @@
                 addScreenShake(0.20, 6);
                 spawnParticles(p.x, p.y, '#ef4444', 12);
                 spawnFloatingText(p.x, p.y - 20, `-${amount} HP`, '#ef4444');
+
+                // BIO STALKER THORNS (25% reflected damage back to attacker)
+                if (p.thorns > 0 && attacker) {
+                    const idx = Game.enemies.indexOf(attacker);
+                    if (idx !== -1) {
+                        const thornsDmg = Math.max(1, Math.round(amount * p.thorns));
+                        attacker.hp -= thornsDmg;
+                        attacker.hitFlash = 0.14;
+                        spawnParticles(attacker.x, attacker.y, '#4ade80', 8);
+                        spawnFloatingText(attacker.x, attacker.y - 20, `-${thornsDmg} THORNS`, '#4ade80');
+                        if (attacker.hp <= 0) {
+                            killGhost(idx);
+                        }
+                    }
+                }
 
                 if (p.hp <= 0) {
                     triggerGameOver();
@@ -3457,9 +3529,11 @@
 
                 const statsList = document.getElementById('invStatsList');
                 statsList.innerHTML = `
+                    <div class="flex justify-between"><span>Survivor:</span><strong class="text-amber-300">${p.skinName}</strong></div>
                     <div class="flex justify-between"><span>Max HP:</span><strong class="text-red-400">${Math.ceil(p.hp)} / ${p.maxHp}</strong></div>
                     <div class="flex justify-between"><span>HP Regen:</span><strong class="text-emerald-400">+${p.hpRegen.toFixed(2)}/s</strong></div>
                     <div class="flex justify-between"><span>Leech / Kill:</span><strong class="text-pink-400">${p.lifeStealOnKill.toFixed(2)} HP</strong></div>
+                    <div class="flex justify-between"><span>Thorns DMG:</span><strong class="text-lime-400">${Math.round((p.thorns || 0) * 100)}%</strong></div>
                     <div class="flex justify-between"><span>Weapon DMG:</span><strong class="text-amber-300">${effDmg}</strong></div>
                     <div class="flex justify-between"><span>Attack Speed:</span><strong class="text-cyan-300">${effRate}/s</strong></div>
                     <div class="flex justify-between"><span>Projectiles:</span><strong class="text-white">${effShots}</strong></div>
@@ -3538,6 +3612,7 @@
 
                 const box = document.getElementById('victoryStatsBox');
                 box.innerHTML = `
+                    <div>SURVIVOR: <strong class="text-amber-300">${Game.player.skinName}</strong></div>
                     <div>DIFFICULTY: <strong class="text-amber-300">${DIFFICULTIES[Game.difficulty].name}</strong></div>
                     <div>WAVES COMPLETED: <strong class="text-emerald-400">25 / 25</strong></div>
                     <div>PLAYER LEVEL: <strong class="text-cyan-300">${Game.player.level}</strong></div>
@@ -3551,6 +3626,7 @@
                 document.getElementById('lowHpVignette').classList.add('hidden');
                 const box = document.getElementById('gameOverStatsBox');
                 box.innerHTML = `
+                    <div>SURVIVOR: <strong class="text-amber-300">${Game.player.skinName}</strong></div>
                     <div>DIFFICULTY: <strong class="text-amber-300">${DIFFICULTIES[Game.difficulty].name}</strong></div>
                     <div>WAVE REACHED: <strong class="text-red-400">WAVE ${Game.wave} ${Game.freeplay ? '(FREEPLAY)' : '/ 25'}</strong></div>
                     <div>PLAYER LEVEL: <strong class="text-cyan-300">${Game.player.level}</strong></div>
@@ -4023,10 +4099,10 @@
                 Object.values(PLAYER_SKINS).forEach((skin) => {
                     const isSelected = savedStats.selectedSkin === skin.id;
                     const btn = document.createElement('button');
-                    btn.className = `skin-btn pixel-btn py-2 px-1 flex flex-col items-center gap-1 ${isSelected ? 'active-skin' : ''}`;
+                    btn.className = `skin-btn pixel-btn py-2 px-1 flex flex-col items-center justify-between gap-1 min-h-[70px] ${isSelected ? 'active-skin' : ''}`;
                     btn.innerHTML = `
-                        <canvas width="36" height="36" class="w-8 h-8"></canvas>
-                        <span class="text-[8px] sm:text-[9px] leading-none truncate w-full text-center">${skin.name}</span>
+                        <canvas width="36" height="36" class="w-8 h-8 shrink-0"></canvas>
+                        <span class="text-[7px] sm:text-[8px] leading-tight tracking-tighter break-words w-full text-center">${skin.name}</span>
                     `;
                     const c = btn.querySelector('canvas');
                     drawCenteredPixelIcon(c, 'playerIdle', 3, skin.map);
@@ -4035,7 +4111,7 @@
                         AudioEngine.sfxClick();
                         savedStats.selectedSkin = skin.id;
                         saveStorage();
-                        document.getElementById('skinTraitLabel').textContent = skin.trait;
+                        document.getElementById('skinTraitLabel').innerHTML = skin.traitHtml;
                         renderSkinSelector();
                         refreshMenuLogoEmblem();
                     });
@@ -4044,7 +4120,7 @@
                 });
 
                 const currentSkin = PLAYER_SKINS[savedStats.selectedSkin] || PLAYER_SKINS.hellknight;
-                document.getElementById('skinTraitLabel').textContent = currentSkin.trait;
+                document.getElementById('skinTraitLabel').innerHTML = currentSkin.traitHtml;
             }
 
             function drawStaticHudIcons() {
