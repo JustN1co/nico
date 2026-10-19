@@ -1,0 +1,221 @@
+:root {
+    --pixel-font: 'Press Start 2P', monospace;
+    --retro-font: 'VT323', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #09060e;
+    font-family: var(--pixel-font);
+    color: #f8fafc;
+}
+
+.font-pixel {
+    font-family: var(--pixel-font);
+}
+
+.font-retro {
+    font-family: var(--retro-font);
+}
+
+/* 8-Bit Pixel Borders & Boxes */
+.pixel-box {
+    background: #14101f;
+    border: 4px solid #f8fafc;
+    box-shadow: 
+        inset -4px -4px 0px 0px #09060e,
+        inset 4px 4px 0px 0px #2d2442,
+        0px 6px 0px 0px #000000;
+}
+
+.pixel-box-dark {
+    background: rgba(15, 11, 24, 0.92);
+    border: 3px solid #cbd5e1;
+    box-shadow: 
+        inset -3px -3px 0px 0px #06040a,
+        inset 3px 3px 0px 0px #271f3a,
+        0px 4px 0px 0px #000000;
+}
+
+.pixel-box-red {
+    background: #1f0d16;
+    border: 4px solid #ef4444;
+    box-shadow: 
+        inset -4px -4px 0px 0px #11050a,
+        inset 4px 4px 0px 0px #451628,
+        0px 6px 0px 0px #000000;
+}
+
+/* 8-Bit Buttons */
+.pixel-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #2a213d;
+    border: 3px solid #f8fafc;
+    color: #ffffff;
+    box-shadow: 
+        inset -3px -3px 0px 0px #140f21,
+        inset 3px 3px 0px 0px #4c3d6e,
+        0px 4px 0px 0px #000000;
+    transition: transform 0.06s steps(2), background-color 0.1s;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.pixel-btn:hover {
+    background: #3b2e54;
+    border-color: #fde047;
+    color: #fde047;
+}
+
+.pixel-btn:active {
+    transform: translateY(3px);
+    box-shadow: 
+        inset -2px -2px 0px 0px #140f21,
+        inset 2px 2px 0px 0px #4c3d6e,
+        0px 1px 0px 0px #000000;
+}
+
+.pixel-btn-primary {
+    background: #dc2626;
+    border-color: #fef08a;
+    box-shadow: 
+        inset -4px -4px 0px 0px #7f1d1d,
+        inset 4px 4px 0px 0px #f87171,
+        0px 5px 0px 0px #000000;
+}
+
+.pixel-btn-primary:hover {
+    background: #ef4444;
+    color: #fef08a;
+    border-color: #ffffff;
+}
+
+/* Difficulty Button Active States */
+.diff-btn.active-easy {
+    background: #15803d;
+    border-color: #86efac;
+    color: #ffffff;
+    box-shadow: inset -3px -3px 0px 0px #052e16, inset 3px 3px 0px 0px #22c55e, 0 0 12px rgba(34, 197, 94, 0.5);
+}
+.diff-btn.active-medium {
+    background: #b45309;
+    border-color: #fde047;
+    color: #ffffff;
+    box-shadow: inset -3px -3px 0px 0px #451a03, inset 3px 3px 0px 0px #f59e0b, 0 0 12px rgba(245, 158, 11, 0.5);
+}
+.diff-btn.active-hard {
+    background: #b91c1c;
+    border-color: #fca5a5;
+    color: #ffffff;
+    box-shadow: inset -3px -3px 0px 0px #450a0a, inset 3px 3px 0px 0px #ef4444, 0 0 12px rgba(239, 68, 68, 0.5);
+}
+.diff-btn.active-infernal {
+    background: #6b21a8;
+    border-color: #f0abfc;
+    color: #fde047;
+    box-shadow: inset -3px -3px 0px 0px #2e1065, inset 3px 3px 0px 0px #a855f7, 0 0 16px rgba(192, 132, 252, 0.7);
+    animation: infernalPulse 1.2s infinite alternate;
+}
+
+/* Skin Button Active State */
+.skin-btn.active-skin {
+    border-color: #fde047 !important;
+    background: #3b2e54;
+    color: #fde047;
+    box-shadow: inset -2px -2px 0px 0px #140f21, inset 2px 2px 0px 0px #6d569e, 0 0 10px rgba(253, 224, 71, 0.45);
+}
+
+@keyframes infernalPulse {
+    0% { filter: drop-shadow(0 0 4px #ef4444); }
+    100% { filter: drop-shadow(0 0 12px #c084fc); }
+}
+
+/* CRT Scanline Overlay */
+.crt-overlay {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%),
+        radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.55) 100%);
+    background-size: 100% 4px, 100% 100%;
+}
+
+/* Low HP Pulsing Red Vignette */
+.low-hp-vignette {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 15;
+    background: radial-gradient(circle at center, transparent 42%, rgba(220, 38, 38, 0.42) 82%, rgba(153, 27, 27, 0.78) 100%);
+    animation: lowHpPulse 0.75s ease-in-out infinite alternate;
+}
+
+@keyframes lowHpPulse {
+    0% { opacity: 0.35; transform: scale(1); }
+    100% { opacity: 0.92; transform: scale(1.01); }
+}
+
+/* Title Glow Animation */
+.title-shadow {
+    text-shadow: 
+        4px 4px 0px #7f1d1d,
+        8px 8px 0px #000000;
+}
+
+/* Upgrade Card Hover, Keyboard Selection & Icon Frame */
+.upgrade-card {
+    transition: transform 0.08s steps(2), border-color 0.08s, box-shadow 0.08s;
+}
+.upgrade-card:hover {
+    transform: translateY(-4px);
+}
+.upgrade-card.selected-card {
+    transform: translateY(-8px);
+    border-color: #fde047 !important;
+    background: rgba(38, 28, 62, 0.96);
+    box-shadow: 
+        inset -3px -3px 0px 0px #120c21,
+        inset 3px 3px 0px 0px #584382,
+        0px 0px 18px rgba(253, 224, 71, 0.65),
+        0px 6px 0px 0px #000000;
+}
+.upgrade-icon-frame {
+    background: radial-gradient(circle at center, #1e1630 0%, #09060e 100%);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9), 0 4px 0 #000000;
+}
+
+/* Custom Scrollbar for Modals */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #09060e;
+}
+::-webkit-scrollbar-thumb {
+    background: #4c3d6e;
+    border: 2px solid #f8fafc;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}

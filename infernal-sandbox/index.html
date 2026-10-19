@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>INFERNAL SANDBOX</title>
+    <link rel="icon" type="image/webp" href="media/8bit.webp">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 8-Bit Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="relative select-none overflow-hidden">
+
+    <!-- CRT Scanline Filter Overlay (Toggleable) -->
+    <div id="crtOverlay" class="crt-overlay"></div>
+
+    <!-- Low HP Pulsing Red Vignette Overlay -->
+    <div id="lowHpVignette" class="low-hp-vignette hidden"></div>
+
+    <!-- MAIN GAME CANVAS -->
+    <canvas id="gameCanvas" class="absolute inset-0 z-0"></canvas>
+
+    <!-- ==========================================
+         MAIN MENU OVERLAY
+    =========================================== -->
+    <div id="mainMenu" class="absolute inset-0 z-30 flex flex-col items-center justify-between p-3 sm:p-5 overflow-y-auto bg-black/55 backdrop-blur-[1px]">
+        
+        <!-- Top Status Bar -->
+        <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-300">
+            <div class="pixel-box-dark px-3 py-2 flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 bg-red-500 animate-pulse"></span>
+                <span>8-BIT ARENA SURVIVAL // VER 1.8</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="pixel-box-dark px-3 py-2 text-amber-300">
+                    BEST WAVE: <span id="menuBestWave">0</span> | GHOSTS SLAIN: <span id="menuTotalKills">0</span>
+                </div>
+                <button id="btnToggleCRT" class="pixel-btn px-2.5 py-2 text-[10px]" title="Toggle CRT Scanlines">
+                    CRT: ON
+                </button>
+            </div>
+        </div>
+
+        <!-- Center Hero & Menu Controls -->
+        <div class="my-auto w-full max-w-2xl flex flex-col items-center text-center py-2">
+            <!-- Animated Pixel Emblem Canvas -->
+            <div class="mb-1 relative">
+                <canvas id="menuLogoCanvas" width="96" height="96" class="w-20 h-20 sm:w-24 sm:h-24 mx-auto"></canvas>
+            </div>
+
+            <div class="text-[10px] sm:text-xs tracking-[0.25em] text-red-400 mb-1 uppercase">
+                25 Waves of Pure Bullet-Heaven Chaos
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-pixel text-amber-400 title-shadow tracking-wider mb-4 leading-tight">
+                INFERNAL SANDBOX
+            </h1>
+
+            <!-- Survivor Skin Selector -->
+            <div class="w-full pixel-box p-3 sm:p-4 mb-3">
+                <div class="text-[10px] sm:text-xs text-cyan-300 mb-2.5 flex flex-col sm:flex-row items-center justify-between gap-1">
+                    <span class="shrink-0">🎭 SELECT SURVIVOR SKIN</span>
+                    <span id="skinTraitLabel" class="font-retro text-sm sm:text-base text-amber-300 text-center sm:text-right leading-tight">0 BUFFS / 0 NERFS (BASE STATS)</span>
+                </div>
+                <div id="skinSelectorGrid" class="grid grid-cols-5 gap-1.5 sm:gap-2">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Difficulty Selector -->
+            <div class="w-full pixel-box p-3.5 sm:p-4 mb-4">
+                <div class="text-[10px] sm:text-xs text-slate-300 mb-2.5 flex items-center justify-center gap-2">
+                    <span>SELECT DIFFICULTY TIER</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2.5">
+                    <button data-diff="easy" class="diff-btn pixel-btn py-2 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-0.5">
+                        <span>EASY</span>
+                        <span class="font-retro text-sm opacity-80">0.75x Threat</span>
+                    </button>
+                    <button data-diff="medium" class="diff-btn active-medium pixel-btn py-2 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-0.5">
+                        <span>MEDIUM</span>
+                        <span class="font-retro text-sm opacity-80">1.00x Standard</span>
+                    </button>
+                    <button data-diff="hard" class="diff-btn pixel-btn py-2 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-0.5">
+                        <span>HARD</span>
+                        <span class="font-retro text-sm opacity-80">1.35x Brutal</span>
+                    </button>
+                    <button data-diff="infernal" class="diff-btn pixel-btn py-2 px-2 text-[10px] sm:text-xs flex flex-col items-center gap-0.5">
+                        <span>INFERNAL</span>
+                        <span class="font-retro text-sm opacity-90">1.80x Nightmare</span>
+                    </button>
+                </div>
+                <p id="diffDescription" class="font-retro text-base sm:text-lg text-amber-200 min-h-[1.5rem] leading-tight">
+                    True 1.0x arena challenge. Standard upgrade potency (100% stats &amp; regen).
+                </p>
+            </div>
+
+            <!-- Main Action Buttons -->
+            <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-2.5">
+                <button id="btnPlay" class="sm:col-span-2 pixel-btn pixel-btn-primary py-3.5 text-base sm:text-xl tracking-wider">
+                    ▶ PLAY GAME
+                </button>
+                <button id="btnControls" class="pixel-btn py-2.5 text-xs sm:text-sm">
+                    ⌨ CONTROLS
+                </button>
+                <button id="btnVolume" class="pixel-btn py-2.5 text-xs sm:text-sm">
+                    🔊 AUDIO MIXER
+                </button>
+            </div>
+
+            <div class="w-full">
+                <button id="btnCredits" class="w-full pixel-btn py-2.5 text-xs sm:text-sm text-cyan-300">
+                    ★ CREDITS (NICO / NICO03.PL)
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Tip Footer -->
+        <div class="w-full max-w-4xl text-center font-retro text-base sm:text-lg text-slate-400">
+            SPACE TO DODGE • TAP A/D + ENTER FOR LEVEL-UP • BREAK GOLDEN CHESTS FOR OVERDRIVE
+        </div>
+    </div>
+
+    <!-- ==========================================
+         IN-GAME HUD (BROTATO STYLE)
+    =========================================== -->
+    <div id="gameHud" class="hidden absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-3 sm:p-5">
+        
+        <!-- TOP HUD: Wave, Countdown, Level & XP Bar, Quick Pause -->
+        <div class="w-full flex flex-col items-center">
+            <div class="w-full flex items-start justify-between gap-2">
+                
+                <!-- Top-Left: Difficulty, Kill Counter & Combo Badge -->
+                <div class="pixel-box-dark px-3 py-2 pointer-events-auto flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                        <span id="hudDifficultyBadge" class="text-[10px] px-1.5 py-0.5 bg-amber-600 text-white">MEDIUM</span>
+                        <span class="text-[10px] text-slate-300">SLAIN: <strong id="hudKills" class="text-white">0</strong></span>
+                        <span id="hudComboBadge" class="hidden text-[9px] px-1.5 py-0.5 bg-rose-600 text-amber-200 border border-amber-300 animate-pulse">0x STREAK</span>
+                    </div>
+                    <div class="w-full flex items-center gap-1.5">
+                        <span class="text-[10px] text-cyan-300">LVL <span id="hudLevel">1</span></span>
+                        <div class="w-28 sm:w-36 h-3 bg-slate-950 border-2 border-slate-500 relative overflow-hidden">
+                            <div id="hudXpBar" class="h-full bg-cyan-400 transition-all duration-150" style="width: 0%;"></div>
+                        </div>
+                        <span id="hudXpText" class="font-retro text-xs text-cyan-200">0/18</span>
+                    </div>
+                </div>
+
+                <!-- Top-Center: Wave & Timer -->
+                <div class="pixel-box-dark px-4 sm:px-6 py-2 text-center flex flex-col items-center">
+                    <div id="hudWaveTitle" class="text-xs sm:text-sm text-amber-400 tracking-wider">
+                        WAVE 1 / 25
+                    </div>
+                    <div id="hudWaveTimer" class="text-xl sm:text-3xl font-pixel text-white mt-1">
+                        25
+                    </div>
+                    <div id="hudOverdriveBadge" class="hidden text-[9px] text-amber-300 bg-red-800/90 px-2 py-0.5 mt-1 border border-amber-300 animate-bounce">
+                        ⚡ OVERDRIVE ACTIVE!
+                    </div>
+                </div>
+
+                <!-- Top-Right: Quick Pause & Audio -->
+                <div class="flex items-center gap-2 pointer-events-auto">
+                    <button id="btnHudMute" class="pixel-btn px-2.5 py-2 text-xs" title="Mute / Unmute All">
+                        🔊
+                    </button>
+                    <button id="btnHudPause" class="pixel-btn px-3 py-2 text-[10px] sm:text-xs">
+                        II PAUSE
+                    </button>
+                </div>
+            </div>
+
+            <!-- Wave Banner Notification -->
+            <div id="waveBanner" class="mt-6 transition-opacity duration-300 opacity-0 pointer-events-none">
+                <div class="pixel-box-red px-6 py-2.5 text-center">
+                    <div id="waveBannerTitle" class="text-sm sm:text-lg text-amber-300">WAVE 1 APPROACHING</div>
+                    <div id="waveBannerSub" class="font-retro text-base sm:text-lg text-red-200">PURGE THE WHITE SPIRITS!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM HUD ROW -->
+        <div class="w-full flex flex-col sm:flex-row items-center sm:items-end justify-between gap-3">
+            
+            <!-- BOTTOM-LEFT CORNER: HP Bar, Equipped Weapon, and Inventory Logo -->
+            <div class="w-full sm:w-auto flex flex-col gap-2 pointer-events-auto">
+                
+                <!-- Player HP Bar -->
+                <div class="pixel-box-dark p-2.5 w-full sm:w-72">
+                    <div class="flex items-center justify-between text-[10px] mb-1">
+                        <span id="hudHpLabel" class="text-red-400">♥ PLAYER HP</span>
+                        <span id="hudHpText" class="text-white">140 / 140</span>
+                    </div>
+                    <div class="w-full h-4 bg-black border-2 border-slate-400 relative overflow-hidden">
+                        <div id="hudHpBar" class="h-full bg-gradient-to-r from-red-700 via-red-500 to-rose-400 transition-all duration-100" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- Equipped Weapon & Inventory Button Row -->
+                <div class="flex items-stretch gap-2">
+                    <!-- Inventory Logo Button -->
+                    <button id="btnOpenInventory" class="pixel-btn px-3 py-2 flex flex-col items-center justify-center gap-1 min-w-[78px] group" title="Open Inventory & Upgrades">
+                        <canvas id="invIconCanvas" width="32" height="32" class="w-7 h-7"></canvas>
+                        <span class="text-[9px] text-amber-300 group-hover:text-white">BAG (<span id="hudItemCount">0</span>)</span>
+                    </button>
+
+                    <!-- Equipped Weapon Info Card -->
+                    <div class="pixel-box-dark px-3 py-2 flex items-center gap-2.5 flex-1">
+                        <div class="flex flex-col items-center gap-1 shrink-0">
+                            <!-- Main slot -->
+                            <div class="w-10 h-10 bg-slate-900 border-2 border-amber-400 flex items-center justify-center" title="MAIN WEAPON">
+                                <canvas id="weaponIconCanvas" width="32" height="32" class="w-8 h-8"></canvas>
+                            </div>
+                            <!-- Offhand slot -->
+                            <div id="offhandSlotBox" class="w-10 h-5 bg-slate-900 border border-slate-600 flex items-center justify-center hidden" title="OFFHAND: +1 Shot bonus">
+                                <canvas id="offhandIconCanvas" width="20" height="20" class="w-4 h-4"></canvas>
+                            </div>
+                            <div id="offhandSlotEmpty" class="w-10 h-5 bg-slate-950 border border-dashed border-slate-700 flex items-center justify-center" title="No offhand weapon">
+                                <span class="text-[7px] text-slate-600">OFF</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col text-left">
+                            <div class="text-[10px] text-amber-300 leading-tight" id="hudWeaponName">HELLFIRE BLASTER MK 1</div>
+                            <div class="font-retro text-sm text-slate-200 leading-tight mt-0.5">
+                                DMG: <span id="hudWeaponDmg" class="text-red-400 font-bold">18</span> • 
+                                SPD: <span id="hudWeaponRate" class="text-cyan-300">3.0/s</span> • 
+                                SHOT: <span id="hudWeaponShots" class="text-amber-200">1</span>
+                            </div>
+                            <div id="hudWeaponTag" class="font-retro text-xs text-emerald-400 leading-none">
+                                AUTO-AIM: BALANCED
+                            </div>
+                            <div id="hudOffhandBonus" class="font-retro text-xs text-purple-400 leading-none hidden">
+                                ⚔ OFFHAND: +1 SHOT
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM-CENTER: Power Timers & Dodge Cooldown -->
+            <div class="pointer-events-auto flex items-center justify-center gap-2.5 sm:gap-3.5 mx-auto sm:mx-0">
+                
+                <!-- Main Power (Q - 45s base cooldown, 3 big bullets x3.5 DMG) -->
+                <button id="slotMainPower" class="pixel-box-dark p-2 w-24 sm:w-28 flex flex-col items-center relative overflow-hidden cursor-pointer hover:border-amber-400 transition-colors" title="Main Power: 3 Giant Bullets (x3.5 DMG)">
+                    <div id="cdOverlayMain" class="absolute inset-0 bg-black/80 z-10 flex items-center justify-center hidden">
+                        <span id="cdTextMain" class="text-xs sm:text-sm text-amber-300 font-pixel">45.0s</span>
+                    </div>
+                    <div class="w-full flex items-center justify-between text-[9px] mb-1">
+                        <span class="px-1.5 py-0.5 bg-red-700 text-white border border-white" id="keyBadgeMain">Q</span>
+                        <span id="statusBadgeMain" class="text-emerald-400">READY</span>
+                    </div>
+                    <canvas id="iconMainPower" width="32" height="32" class="w-7 h-7 my-0.5"></canvas>
+                    <div class="text-[8px] text-slate-300 truncate w-full text-center mt-0.5">MAIN POWER</div>
+                    <div id="descMainPower" class="font-retro text-xs text-amber-300 leading-none">3x BIG (x3.5)</div>
+                </button>
+
+                <!-- Secondary Power (E - 20s base cooldown, 5 radial orbs) -->
+                <button id="slotSecPower" class="pixel-box-dark p-2 w-24 sm:w-28 flex flex-col items-center relative overflow-hidden cursor-pointer hover:border-cyan-400 transition-colors" title="Secondary Power: 5 Radial Orbs">
+                    <div id="cdOverlaySec" class="absolute inset-0 bg-black/80 z-10 flex items-center justify-center hidden">
+                        <span id="cdTextSec" class="text-xs sm:text-sm text-cyan-300 font-pixel">20.0s</span>
+                    </div>
+                    <div class="w-full flex items-center justify-between text-[9px] mb-1">
+                        <span class="px-1.5 py-0.5 bg-cyan-700 text-white border border-white" id="keyBadgeSec">E</span>
+                        <span id="statusBadgeSec" class="text-emerald-400">READY</span>
+                    </div>
+                    <canvas id="iconSecPower" width="32" height="32" class="w-7 h-7 my-0.5"></canvas>
+                    <div class="text-[8px] text-slate-300 truncate w-full text-center mt-0.5">SEC. POWER</div>
+                    <div id="descSecPower" class="font-retro text-xs text-cyan-300 leading-none">5x ORB NOVA</div>
+                </button>
+
+                <!-- Dodge (SPACE - 6s base cooldown) -->
+                <button id="slotDash" class="pixel-box-dark p-2 w-20 sm:w-24 flex flex-col items-center relative overflow-hidden cursor-pointer hover:border-emerald-400 transition-colors" title="Dodge forward with Invulnerability">
+                    <div id="cdOverlayDash" class="absolute inset-0 bg-black/80 z-10 flex items-center justify-center hidden">
+                        <span id="cdTextDash" class="text-xs sm:text-sm text-emerald-300 font-pixel">6.0s</span>
+                    </div>
+                    <div class="w-full flex items-center justify-between text-[9px] mb-1">
+                        <span class="px-1.5 py-0.5 bg-emerald-700 text-white border border-white" id="keyBadgeDash">SPC</span>
+                        <span id="statusBadgeDash" class="text-emerald-400">READY</span>
+                    </div>
+                    <canvas id="iconDash" width="32" height="32" class="w-7 h-7 my-0.5"></canvas>
+                    <div class="text-[8px] text-slate-300 w-full text-center mt-0.5">DODGE</div>
+                    <div id="descDash" class="font-retro text-xs text-emerald-300 leading-none">6.0s CD</div>
+                </button>
+            </div>
+
+            <!-- BOTTOM-RIGHT: Arena Minimap / Radar (1x1 Square Preview) -->
+            <div class="hidden lg:flex flex-col items-end pointer-events-auto">
+                <div class="pixel-box-dark p-2 flex flex-col items-center">
+                    <span class="text-[8px] text-slate-400 mb-1">1x1 ARENA RADAR</span>
+                    <canvas id="minimapCanvas" width="84" height="84" class="w-20 h-20 bg-black border border-slate-600"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: CONTROLS & KEYBINDS
+    =========================================== -->
+    <div id="modalControls" class="hidden absolute inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-lg p-5 sm:p-6 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b-2 border-slate-700 pb-3">
+                <h2 class="text-sm sm:text-lg text-amber-400">⌨ CONTROLS &amp; KEYBINDS</h2>
+                <button data-close-modal="modalControls" class="pixel-btn px-2.5 py-1 text-xs">X</button>
+            </div>
+
+            <p class="font-retro text-base sm:text-lg text-slate-300">
+                Click any button below and press a key to rebind. During Level-Up, tap <strong class="text-amber-300">A / D</strong> (1 click = 1 step), press <strong class="text-amber-300">ENTER / SPACE</strong> to confirm, and <strong class="text-cyan-300">R</strong> to reroll!
+            </p>
+
+            <div id="keybindList" class="flex flex-col gap-2.5">
+                <!-- Populated dynamically by JS -->
+            </div>
+
+            <div class="flex items-center justify-between gap-3 pt-2 border-t-2 border-slate-700">
+                <button id="btnResetKeybinds" class="pixel-btn px-3 py-2.5 text-[10px] sm:text-xs text-rose-300">
+                    RESET DEFAULTS
+                </button>
+                <button data-close-modal="modalControls" class="pixel-btn pixel-btn-primary px-5 py-2.5 text-xs">
+                    SAVE &amp; CLOSE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: SEPARATE SFX & MUSIC (BGM) VOLUME
+    =========================================== -->
+    <div id="modalVolume" class="hidden absolute inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-md p-5 sm:p-6 flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b-2 border-slate-700 pb-3">
+                <h2 class="text-sm sm:text-lg text-amber-400">🔊 8-BIT AUDIO MIXER</h2>
+                <button data-close-modal="modalVolume" class="pixel-btn px-2.5 py-1 text-xs">X</button>
+            </div>
+
+            <!-- Master Mute Toggle -->
+            <div class="pixel-box-dark p-3 flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-white">MASTER OUTPUT</div>
+                    <div id="audioStatusSub" class="font-retro text-base text-emerald-400">ALL AUDIO ACTIVE</div>
+                </div>
+                <button id="btnToggleMuteModal" class="pixel-btn px-4 py-2 text-xs">
+                    MUTE ALL
+                </button>
+            </div>
+
+            <!-- SFX Volume Controls -->
+            <div class="pixel-box-dark p-3.5 flex flex-col gap-2.5">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-amber-300">💥 SFX VOLUME (SHOTS &amp; HITS)</span>
+                    <span id="sfxPercentText" class="text-white">70%</span>
+                </div>
+
+                <div id="sfxSegments" class="grid grid-cols-10 gap-1.5 h-6 bg-black p-1 border-2 border-slate-600">
+                    <!-- Rendered via JS -->
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <button id="btnSfxDown" class="pixel-btn py-2 text-xs">
+                        - SFX QUIETER
+                    </button>
+                    <button id="btnSfxUp" class="pixel-btn py-2 text-xs">
+                        + SFX LOUDER
+                    </button>
+                </div>
+            </div>
+
+            <!-- Music (BGM) Volume Controls -->
+            <div class="pixel-box-dark p-3.5 flex flex-col gap-2.5">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-cyan-300">🎵 MUSIC VOLUME (ADAPTIVE BGM)</span>
+                    <span id="bgmPercentText" class="text-white">60%</span>
+                </div>
+
+                <div id="bgmSegments" class="grid grid-cols-10 gap-1.5 h-6 bg-black p-1 border-2 border-slate-600">
+                    <!-- Rendered via JS -->
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <button id="btnBgmDown" class="pixel-btn py-2 text-xs">
+                        - MUSIC QUIETER
+                    </button>
+                    <button id="btnBgmUp" class="pixel-btn py-2 text-xs">
+                        + MUSIC LOUDER
+                    </button>
+                </div>
+            </div>
+
+            <button data-close-modal="modalVolume" class="pixel-btn pixel-btn-primary w-full py-3 text-xs">
+                DONE
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: CREDITS (NICO / NICO03.PL)
+    =========================================== -->
+    <div id="modalCredits" class="hidden absolute inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-md p-6 flex flex-col items-center text-center gap-4">
+            <div class="w-full flex items-center justify-between border-b-2 border-slate-700 pb-3">
+                <h2 class="text-sm sm:text-lg text-amber-400">★ GAME CREDITS</h2>
+                <button data-close-modal="modalCredits" class="pixel-btn px-2.5 py-1 text-xs">X</button>
+            </div>
+
+            <div class="pixel-box-red p-5 w-full flex flex-col items-center gap-2 my-1">
+                <div class="text-[10px] text-red-300 tracking-widest uppercase">Created For &amp; Directed By</div>
+                <div class="text-xl sm:text-2xl text-amber-300 font-pixel tracking-wide mt-1">
+                    NICO
+                </div>
+                <a href="https://nico03.pl" target="_blank" rel="noopener noreferrer" class="pixel-btn px-4 py-2 mt-2 text-xs text-cyan-300 hover:text-amber-300">
+                    🌐 NICO03.PL
+                </a>
+            </div>
+
+            <div class="pixel-box-dark p-4 w-full text-left font-retro text-base sm:text-lg text-slate-300 space-y-1.5">
+                <div><strong class="text-amber-300">GAME TITLE:</strong> INFERNAL SANDBOX</div>
+                <div><strong class="text-amber-300">INSPIRATION:</strong> Brotato (1x1 Arena Auto-Shooter)</div>
+                <div><strong class="text-cyan-300">ENGINE:</strong> Custom HTML5 8-Bit Pixel Canvas &amp; Adaptive Wave Synth</div>
+            </div>
+
+            <button data-close-modal="modalCredits" class="pixel-btn pixel-btn-primary w-full py-3 text-xs">
+                BACK TO MENU
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: INVENTORY & PLAYER STATS
+    =========================================== -->
+    <div id="modalInventory" class="hidden absolute inset-0 z-40 bg-black/80 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-3xl p-5 sm:p-6 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b-2 border-slate-700 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <h2 class="text-sm sm:text-lg text-amber-400">🎒 INVENTORY &amp; ARSENAL</h2>
+                    <span class="text-[10px] px-2 py-0.5 bg-slate-800 text-cyan-300 border border-slate-600">GAME PAUSED</span>
+                </div>
+                <button id="btnCloseInventory" class="pixel-btn px-3 py-1.5 text-xs">RESUME [ESC]</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Left Column: Equipped Weapon & Combat Stats -->
+                <div class="pixel-box-dark p-4 flex flex-col gap-3">
+                    <div class="text-xs text-amber-300 border-b border-slate-700 pb-1.5">EQUIPPED WEAPON</div>
+                    <div class="flex items-center gap-3 bg-black/50 p-2.5 border border-slate-700">
+                        <canvas id="invModalWeaponCanvas" width="40" height="40" class="w-10 h-10 shrink-0"></canvas>
+                        <div>
+                            <div id="invWeaponTitle" class="text-xs text-white">HELLFIRE BLASTER</div>
+                            <div class="font-retro text-sm text-emerald-400">Auto-Targeting Soul Gun</div>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-cyan-300 border-b border-slate-700 pb-1.5 mt-1">ATTRIBUTES</div>
+                    <div id="invStatsList" class="font-retro text-base space-y-1 text-slate-200">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Right 2 Columns: Collected Upgrades Grid -->
+                <div class="md:col-span-2 pixel-box-dark p-4 flex flex-col">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-1.5 mb-3">
+                        <span class="text-xs text-amber-300">COLLECTED UPGRADES &amp; POWERS</span>
+                        <span id="invTotalUpgrades" class="font-retro text-base text-slate-400">0 Items</span>
+                    </div>
+                    <div id="invItemsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 overflow-y-auto max-h-72 pr-1">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t-2 border-slate-700">
+                <div class="flex gap-2">
+                    <button id="btnInvControls" class="pixel-btn px-3 py-2 text-[10px]">⌨ CONTROLS</button>
+                    <button id="btnInvVolume" class="pixel-btn px-3 py-2 text-[10px]">🔊 AUDIO MIXER</button>
+                    <button id="btnAbandonRun" class="pixel-btn px-3 py-2 text-[10px] text-rose-400">🏳 MAIN MENU</button>
+                </div>
+                <button id="btnResumeFromInv" class="pixel-btn pixel-btn-primary px-6 py-2.5 text-xs">
+                    ▶ RESUME BATTLE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: LEVEL UP! (SINGLE-STEP A/D + ENTER/SPACE & REROLL)
+    =========================================== -->
+    <div id="modalLevelUp" class="hidden absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-3xl p-5 sm:p-6 flex flex-col items-center text-center gap-3.5 max-h-[94vh] overflow-y-auto">
+            <div class="text-xs text-cyan-300 tracking-widest uppercase animate-pulse">
+                ★ SOUL POWER ASCENSION ★
+            </div>
+            <h2 class="text-xl sm:text-3xl text-amber-400 title-shadow">
+                LEVEL UP! CHOOSE 1 UPGRADE
+            </h2>
+            <div class="flex flex-wrap items-center justify-center gap-2 text-[10px] text-slate-300">
+                <span class="px-2 py-1 bg-slate-900 border border-slate-600 text-amber-300">◀ TAP [A] / [D] ▶ SELECT</span>
+                <span class="px-2 py-1 bg-slate-900 border border-slate-600 text-emerald-300">[ENTER] / [SPACE] CONFIRM</span>
+                <span id="lvlDiffScalingBadge" class="px-2 py-1 bg-slate-900 border border-slate-600 text-cyan-300">POTENCY: 100%</span>
+            </div>
+
+            <!-- 3 Upgrade Cards Container -->
+            <div id="upgradeChoicesContainer" class="w-full grid grid-cols-1 sm:grid-cols-3 gap-3.5 my-1">
+                <!-- Populated dynamically on Level Up -->
+            </div>
+
+            <!-- Reroll Bar -->
+            <div class="w-full flex items-center justify-between border-t-2 border-slate-800 pt-3">
+                <span class="font-retro text-base sm:text-lg text-slate-400">
+                    TIP: Break Golden Soul Chests in the arena for extra Rerolls &amp; Overdrive!
+                </span>
+                <button id="btnRerollUpgrades" class="pixel-btn px-4 py-2 text-xs text-cyan-300">
+                    🎲 REROLL [R] (<span id="rerollCountText">2</span>)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: WAVE 25 VICTORY & FREEPLAY PROMPT
+    =========================================== -->
+    <div id="modalVictory" class="hidden absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
+        <div class="pixel-box w-full max-w-lg p-6 flex flex-col items-center text-center gap-4">
+            <div class="text-xs text-emerald-400 tracking-widest uppercase">
+                ★ ALL 25 WAVES CONQUERED ★
+            </div>
+            <h2 class="text-2xl sm:text-4xl text-amber-300 title-shadow">
+                VICTORY!
+            </h2>
+            <p class="font-retro text-lg text-slate-200">
+                You survived all 25 waves of the Infernal Sandbox! Do you want to enter <strong class="text-amber-300">FREEPLAY MODE</strong> and push as far as humanly possible?
+            </p>
+
+            <div id="victoryStatsBox" class="pixel-box-dark p-4 w-full font-retro text-lg text-left space-y-1 text-slate-300">
+                <!-- Populated via JS -->
+            </div>
+
+            <div class="w-full flex flex-col sm:flex-row gap-3 mt-2">
+                <button id="btnVictoryMenu" class="pixel-btn py-3.5 px-4 text-xs flex-1">
+                    MAIN MENU
+                </button>
+                <button id="btnEnterFreeplay" class="pixel-btn pixel-btn-primary py-3.5 px-4 text-xs flex-1">
+                    🔥 ENTER FREEPLAY (WAVE 26+)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: GAME OVER
+    =========================================== -->
+    <div id="modalGameOver" class="hidden absolute inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+        <div class="pixel-box-red w-full max-w-md p-6 flex flex-col items-center text-center gap-4">
+            <div class="text-xs text-red-400 tracking-widest uppercase">
+                SOUL OVERWHELMED
+            </div>
+            <h2 class="text-2xl sm:text-4xl text-red-500 title-shadow">
+                YOU DIED
+            </h2>
+            <div id="gameOverStatsBox" class="pixel-box-dark p-4 w-full font-retro text-lg text-left space-y-1 text-slate-300">
+                <!-- Populated via JS -->
+            </div>
+            <div class="w-full flex gap-3 mt-2">
+                <button id="btnGameOverMenu" class="pixel-btn py-3.5 px-4 text-xs flex-1">
+                    MAIN MENU
+                </button>
+                <button id="btnGameOverRetry" class="pixel-btn pixel-btn-primary py-3.5 px-4 text-xs flex-1">
+                    ↻ TRY AGAIN
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         8-BIT GAME ENGINE MODULES
+    =========================================== -->
+    <script src="js/audio.js"></script>
+    <script src="js/sprites.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/abilities.js"></script>
+    <script src="js/spawning.js"></script>
+    <script src="js/combat.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
