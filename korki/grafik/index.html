@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grafik zajęć • Spokojny Angielski</title>
+  <link rel="icon" type="image/webp" href="/media/korki.webp">
+
+  <!-- Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            warmwhite: '#FAF8F5',
+            paper: '#FFFFFF',
+            pistachio: {
+              50: '#F5F8F3',
+              100: '#EAF1E7',
+              200: '#D2E3CC',
+              300: '#A9C79F',
+              500: '#5F7D4E',
+              600: '#48623B',
+              700: '#384C2E',
+              800: '#273520'
+            },
+            sand: {
+              50: '#FDFCF9',
+              100: '#F7F4EE',
+              200: '#EDE8DF',
+              300: '#E2DBD0',
+              400: '#C7BDAD'
+            },
+            terracotta: {
+              50: '#FDF5F2',
+              100: '#FCE7DF',
+              500: '#C95D3B'
+            },
+            charcoal: {
+              900: '#1F221E',
+              800: '#2E332D',
+              600: '#545C52',
+              400: '#869083'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          },
+          boxShadow: {
+            'soft': '0 6px 24px -2px rgba(31, 34, 30, 0.05)',
+            'lift': '0 14px 34px -6px rgba(40, 53, 34, 0.12)',
+            'card': '0 2px 14px 0 rgba(31, 34, 30, 0.04)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FAF8F5;
+      color: #1F221E;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .bg-warm-dots {
+      background-image: radial-gradient(#E2DBD0 1.2px, transparent 1.2px);
+      background-size: 22px 22px;
+    }
+
+    .smooth-transition {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .notebook-spine {
+      border-left: 4px solid #5F7D4E;
+    }
+
+    /* Schedule grid styles */
+    .slot-free {
+      background-color: #EAF1E7;
+      border-color: #A9C79F;
+      color: #384C2E;
+    }
+    .slot-busy {
+      background-color: #FCE7DF;
+      border-color: #C95D3B;
+      color: #7a2f18;
+    }
+    .slot-hidden {
+      background-color: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+
+    /* Toast */
+    #toast {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Modal animations */
+    .modal-enter {
+      animation: modalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(8px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0);   }
+    }
+
+    /* Slot hover admin */
+    .admin-mode .slot-cell:hover {
+      outline: 2px dashed #48623B;
+      cursor: pointer;
+    }
+
+    /* Spinner */
+    .spinner {
+      border: 3px solid #EAF1E7;
+      border-top-color: #48623B;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Mobile: day cards */
+    @media (max-width: 767px) {
+      .schedule-table { display: none; }
+      .schedule-mobile { display: block; }
+    }
+    @media (min-width: 768px) {
+      .schedule-table { display: block; }
+      .schedule-mobile { display: none; }
+    }
+
+    /* Scrollable table wrapper */
+    .table-scroll {
+      overflow-x: auto;
+    }
+    .table-scroll::-webkit-scrollbar { height: 6px; }
+    .table-scroll::-webkit-scrollbar-track { background: #EDE8DF; border-radius: 9999px; }
+    .table-scroll::-webkit-scrollbar-thumb { background: #C7BDAD; border-radius: 9999px; }
+  </style>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-warmwhite min-h-screen text-charcoal-900 selection:bg-pistachio-100 selection:text-pistachio-800">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-warmwhite/95 backdrop-blur-md border-b border-sand-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+
+      <a href="/korki" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-2xl bg-pistachio-100 border border-pistachio-200 flex items-center justify-center text-pistachio-700 font-extrabold text-xl group-hover:scale-105 smooth-transition">
+          🌱
+        </div>
+        <div>
+          <span class="text-lg font-bold tracking-tight text-charcoal-900 block leading-tight">Spokojny Angielski</span>
+          <span class="text-xs font-semibold text-pistachio-700 block">Nico Jankowiak • Ruda Śląska & Online</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-charcoal-600">
+        <a href="/korki#czasy" class="hover:text-pistachio-600 smooth-transition">Formułki i Czasy</a>
+        <a href="/korki#quizy" class="hover:text-pistachio-600 smooth-transition">Baza Quizów & Kart</a>
+        <a href="/korki#dlaczego-ja" class="hover:text-pistachio-600 smooth-transition">Dlaczego ja?</a>
+        <a href="/korki#kontakt" class="hover:text-pistachio-600 smooth-transition">Kontakt & Zapisy</a>
+        <a href="https://nico03.pl/korki/grafik" class="text-pistachio-600 font-bold smooth-transition">Grafik zajęć</a>
+      </nav>
+
+      <div class="hidden sm:flex items-center gap-3">
+        <a href="tel:+48660803916" class="text-xs font-bold text-charcoal-800 hover:text-pistachio-700 px-3.5 py-2 rounded-xl bg-sand-100 border border-sand-200 smooth-transition">
+          📞 +48 660 803 916
+        </a>
+        <a href="/korki#kontakt" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-white bg-pistachio-600 hover:bg-pistachio-700 rounded-xl shadow-soft smooth-transition">
+          Zapisz na lekcję próbną
+        </a>
+      </div>
+
+      <button id="mobileMenuBtn" aria-label="Menu" class="md:hidden p-2 rounded-xl text-charcoal-800 hover:bg-sand-100">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div id="mobileMenu" class="hidden md:hidden border-b border-sand-200 bg-warmwhite px-6 py-5 space-y-3">
+      <a href="/korki#czasy" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600">Formułki i Czasy</a>
+      <a href="/korki#quizy" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600">Baza Quizów & Kart</a>
+      <a href="/korki#dlaczego-ja" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600">Dlaczego ja?</a>
+      <a href="/korki#kontakt" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600">Kontakt & Zapisy</a>
+      <a href="https://nico03.pl/korki/grafik" class="block text-sm font-bold text-pistachio-700 hover:text-pistachio-600">Grafik zajęć</a>
+      <a href="tel:+48660803916" class="block text-center py-2.5 rounded-xl bg-sand-100 text-xs font-bold text-charcoal-800">
+        Zadzwoń: +48 660 803 916
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO / HEADING -->
+  <section class="pt-10 pb-8 bg-warm-dots">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pistachio-100 border border-pistachio-200 text-pistachio-800 text-xs font-bold mb-3">
+            <span>📅</span>
+            <span>Aktualny tydzień</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-charcoal-900 tracking-tight">Grafik Zajęć</h1>
+          <p class="text-sm text-charcoal-600 mt-2">Sprawdź dostępne terminy. Zielone = wolne, czerwone = zajęte.</p>
+        </div>
+        <a href="/korki#kontakt" class="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-sm shadow-soft smooth-transition shrink-0">
+          Zapisz się na lekcję próbną
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE SECTION -->
+  <section class="py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Loading state -->
+      <div id="loadingState" class="flex flex-col items-center justify-center py-20 gap-4">
+        <div class="spinner"></div>
+        <p class="text-sm text-charcoal-600">Wczytywanie grafiku...</p>
+      </div>
+
+      <!-- Schedule content (hidden until loaded) -->
+      <div id="scheduleContent" class="hidden">
+
+        <!-- DESKTOP TABLE -->
+        <div class="schedule-table">
+          <div class="bg-white rounded-3xl border border-sand-200 shadow-card overflow-hidden">
+            <div class="table-scroll">
+              <table class="w-full border-collapse min-w-[700px]" id="desktopTable">
+                <thead>
+                  <tr class="bg-sand-50 border-b border-sand-200">
+                    <th class="py-3 px-3 text-xs font-bold text-charcoal-500 text-left w-16">Godz.</th>
+                    <th class="py-3 px-2 text-xs font-bold text-charcoal-700 text-center">Pon</th>
+                    <th class="py-3 px-2 text-xs font-bold text-charcoal-700 text-center">Wt</th>
+                    <th class="py-3 px-2 text-xs font-bold text-charcoal-700 text-center">Śr</th>
+                    <th class="py-3 px-2 text-xs font-bold text-charcoal-700 text-center">Czw</th>
+                    <th class="py-3 px-2 text-xs font-bold text-charcoal-700 text-center">Pt</th>
+                    <th class="py-3 px-2 text-xs font-bold text-charcoal-500 text-center">Sob</th>
+                    <th class="py-3 px-2 text-xs font-bold text-charcoal-500 text-center">Nd</th>
+                  </tr>
+                </thead>
+                <tbody id="desktopTableBody" class="divide-y divide-sand-100">
+                  <!-- Rows injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- MOBILE CARDS -->
+        <div class="schedule-mobile space-y-4" id="mobileCards">
+          <!-- Day cards injected by JS -->
+        </div>
+
+        <!-- LEGEND -->
+        <div class="mt-6 flex flex-wrap gap-3 items-center">
+          <span class="text-xs font-bold text-charcoal-600">Legenda:</span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pistachio-100 border border-pistachio-300 text-pistachio-800 text-xs font-semibold">🟢 Wolne – można zarezerwować</span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-terracotta-100 border border-terracotta-500 text-terracotta-500 text-xs font-semibold">🔴 Zajęte</span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sand-100 border border-sand-200 text-charcoal-500 text-xs font-semibold">⬜ Niedostępne / brak danych</span>
+        </div>
+
+      </div><!-- /scheduleContent -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-sand-200 py-10 mt-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2.5">
+          <span class="text-lg">🌱</span>
+          <span class="text-sm font-bold text-charcoal-900">Spokojny Angielski • Nico Jankowiak (Ruda Śląska)</span>
+        </div>
+        <div class="flex items-center gap-4 text-xs font-medium text-charcoal-600">
+          <a href="/korki#czasy" class="hover:text-pistachio-700 smooth-transition">Formułki</a>
+          <a href="/korki#quizy" class="hover:text-pistachio-700 smooth-transition">Baza Quizów & Kart</a>
+          <a href="/korki#kontakt" class="hover:text-pistachio-700 smooth-transition">Kontakt</a>
+          <a href="https://nico03.pl/korki/grafik" class="hover:text-pistachio-700 smooth-transition font-bold">Grafik</a>
+        </div>
+        <p class="text-xs text-charcoal-400">© 2026 Spokojny Angielski. Wszystkie prawa zastrzeżone.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 right-6 z-[200] hidden">
+    <div id="toastInner" class="px-5 py-3 rounded-2xl shadow-lift text-sm font-semibold flex items-center gap-2"></div>
+  </div>
+
+  <!-- ADMIN LOGIN MODAL -->
+  <div id="adminLoginModal" class="fixed inset-0 z-[100] bg-charcoal-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-7 border border-sand-200 shadow-lift modal-enter">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h3 class="text-lg font-extrabold text-charcoal-900">Panel administratora</h3>
+          <p class="text-xs text-charcoal-500 mt-0.5">Wprowadź hasło, aby edytować grafik</p>
+        </div>
+        <button onclick="closeAdminLogin()" class="text-charcoal-400 hover:text-charcoal-700 smooth-transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">Hasło</label>
+          <input type="password" id="adminPasswordInput" placeholder="••••••••"
+            class="w-full px-4 py-3 rounded-xl border border-sand-200 bg-warmwhite focus:bg-white focus:outline-none focus:border-pistachio-600 text-sm smooth-transition"
+            onkeydown="if(event.key==='Enter') verifyAdminPassword()">
+        </div>
+        <button onclick="verifyAdminPassword()" id="loginBtn"
+          class="w-full py-3 rounded-xl font-bold text-white bg-pistachio-600 hover:bg-pistachio-700 smooth-transition text-sm flex items-center justify-center gap-2">
+          <span id="loginBtnText">Zaloguj się</span>
+        </button>
+        <p id="loginError" class="hidden text-xs text-terracotta-500 text-center font-semibold">Błędne hasło. Spróbuj ponownie.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel" class="hidden fixed bottom-0 left-0 right-0 z-[90] bg-pistachio-800 text-white py-3 px-4 shadow-lift">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-3 justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-bold">🛠️ Tryb admina</span>
+        <span class="text-xs text-pistachio-300">Kliknij komórkę, aby edytować</span>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="saveSchedule()" class="px-4 py-2 rounded-xl bg-white text-pistachio-800 font-bold text-xs hover:bg-pistachio-50 smooth-transition">
+          💾 Zapisz grafik
+        </button>
+        <button onclick="showChangePassword()" class="px-4 py-2 rounded-xl bg-pistachio-700 text-white font-bold text-xs hover:bg-pistachio-600 smooth-transition border border-pistachio-600">
+          🔑 Zmień hasło
+        </button>
+        <button onclick="logoutAdmin()" class="px-4 py-2 rounded-xl bg-pistachio-700 text-white font-bold text-xs hover:bg-pistachio-600 smooth-transition border border-pistachio-600">
+          ← Wyloguj
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLOT EDIT MODAL -->
+  <div id="slotEditModal" class="fixed inset-0 z-[110] bg-charcoal-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-7 border border-sand-200 shadow-lift modal-enter">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="text-lg font-extrabold text-charcoal-900" id="slotEditTitle">Edytuj slot</h3>
+        <button onclick="closeSlotEdit()" class="text-charcoal-400 hover:text-charcoal-700 smooth-transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-2">Status</label>
+          <div class="flex gap-2">
+            <button onclick="setSlotStatus('free')" id="btnFree"
+              class="flex-1 py-2.5 rounded-xl text-xs font-bold border smooth-transition slot-status-btn bg-pistachio-100 border-pistachio-300 text-pistachio-800">
+              🟢 Wolne
+            </button>
+            <button onclick="setSlotStatus('busy')" id="btnBusy"
+              class="flex-1 py-2.5 rounded-xl text-xs font-bold border smooth-transition slot-status-btn bg-sand-100 border-sand-300 text-charcoal-700">
+              🔴 Zajęte
+            </button>
+            <button onclick="setSlotStatus('hidden')" id="btnHidden"
+              class="flex-1 py-2.5 rounded-xl text-xs font-bold border smooth-transition slot-status-btn bg-sand-100 border-sand-300 text-charcoal-400">
+              ⬜ Ukryte
+            </button>
+          </div>
+        </div>
+        <div id="labelFieldWrapper">
+          <label class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">Etykieta (opcjonalna)</label>
+          <input type="text" id="slotLabelInput" placeholder="np. Anna K., Zajęte"
+            class="w-full px-4 py-3 rounded-xl border border-sand-200 bg-warmwhite focus:bg-white focus:outline-none focus:border-pistachio-600 text-sm smooth-transition">
+        </div>
+        <button onclick="confirmSlotEdit()"
+          class="w-full py-3 rounded-xl font-bold text-white bg-pistachio-600 hover:bg-pistachio-700 smooth-transition text-sm">
+          Zapisz zmiany
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHANGE PASSWORD MODAL -->
+  <div id="changePasswordModal" class="fixed inset-0 z-[120] bg-charcoal-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-7 border border-sand-200 shadow-lift modal-enter">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="text-lg font-extrabold text-charcoal-900">Zmień hasło admina</h3>
+        <button onclick="closeChangePassword()" class="text-charcoal-400 hover:text-charcoal-700 smooth-transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">Nowe hasło</label>
+          <input type="password" id="newPasswordInput" placeholder="Minimum 6 znaków"
+            class="w-full px-4 py-3 rounded-xl border border-sand-200 bg-warmwhite focus:bg-white focus:outline-none focus:border-pistachio-600 text-sm smooth-transition">
+        </div>
+        <button onclick="changeAdminPassword()"
+          class="w-full py-3 rounded-xl font-bold text-white bg-pistachio-600 hover:bg-pistachio-700 smooth-transition text-sm">
+          Zapisz nowe hasło
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Firebase ──────────────────────────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyD5Yzf3QkGnYt3TEdctax5hqXgcObbc07s",
+      authDomain: "korki-80634.firebaseapp.com",
+      projectId: "korki-80634",
+      storageBucket: "korki-80634.firebasestorage.app",
+      messagingSenderId: "931059057523",
+      appId: "1:931059057523:web:007763eb301822ec76fb06",
+      measurementId: "G-MYY955Z80R"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ── Constants ─────────────────────────────────────────────────────────────
+    const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+    const DAY_LABELS = { MON:'Poniedziałek', TUE:'Wtorek', WED:'Środa', THU:'Czwartek', FRI:'Piątek', SAT:'Sobota', SUN:'Niedziela' };
+    const DAY_SHORT  = { MON:'Pon', TUE:'Wt', WED:'Śr', THU:'Czw', FRI:'Pt', SAT:'Sob', SUN:'Nd' };
+    const HOURS = Array.from({length: 15}, (_, i) => i + 7); // 7–21
+
+    // ── State ─────────────────────────────────────────────────────────────────
+    let slots = {};       // key: "MON_09", value: { status, label }
+    let adminMode = false;
+    let currentEditKey = null;
+    let currentEditStatus = 'free';
+    let pendingEdits = {}; // unsaved changes
+
+    // ── SHA-256 helper ────────────────────────────────────────────────────────
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // ── Mobile menu ───────────────────────────────────────────────────────────
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    });
+
+    // ── Admin trigger (triple-press K within 1 second) ────────────────────────
+    let kPresses = [];
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'k' || e.key === 'K') {
+        const now = Date.now();
+        kPresses = kPresses.filter(t => now - t < 1000);
+        kPresses.push(now);
+        if (kPresses.length >= 3) {
+          kPresses = [];
+          if (!adminMode) openAdminLogin();
+        }
+      }
+    });
+
+    // ── Init: load from Firestore ─────────────────────────────────────────────
+    async function init() {
+      try {
+        // Ensure tygodniowy doc exists
+        const docRef = db.collection('grafik').doc('tygodniowy');
+        const snap = await docRef.get();
+        if (!snap.exists) {
+          const initialSlots = {};
+          DAYS.forEach(d => HOURS.forEach(h => {
+            initialSlots[`${d}_${String(h).padStart(2,'0')}`] = { status: 'hidden', label: '' };
+          }));
+          await docRef.set({ slots: initialSlots });
+          slots = initialSlots;
+        } else {
+          slots = snap.data().slots || {};
+          // Fill any missing keys as hidden
+          DAYS.forEach(d => HOURS.forEach(h => {
+            const key = `${d}_${String(h).padStart(2,'0')}`;
+            if (!slots[key]) slots[key] = { status: 'hidden', label: '' };
+          }));
+        }
+
+        // Ensure config doc exists with default password
+        const configRef = db.collection('grafik').doc('config');
+        const configSnap = await configRef.get();
+        if (!configSnap.exists) {
+          const defaultHash = await sha256('Korki123');
+          await configRef.set({ passwordHash: defaultHash });
+        }
+
+        renderSchedule();
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('scheduleContent').classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loadingState').innerHTML = `
+          <p class="text-sm text-terracotta-500 font-semibold">Błąd połączenia z bazą danych. Odśwież stronę.</p>
+        `;
+      }
+    }
+
+    // ── Render schedule ───────────────────────────────────────────────────────
+    function renderSchedule() {
+      renderDesktopTable();
+      renderMobileCards();
+    }
+
+    function getSlotDisplay(key) {
+      const s = pendingEdits[key] !== undefined ? pendingEdits[key] : (slots[key] || { status: 'hidden', label: '' });
+      return s;
+    }
+
+    function slotCellHTML(key, forDesktop) {
+      const s = getSlotDisplay(key);
+      let cls = '', label = '';
+      if (s.status === 'free') {
+        cls = 'slot-free border rounded-xl';
+        label = s.label || '🟢 Wolne';
+      } else if (s.status === 'busy') {
+        cls = 'slot-busy border rounded-xl';
+        label = s.label || '🔴 Zajęte';
+      } else {
+        cls = 'slot-hidden';
+        label = '';
+      }
+      const adminAttr = adminMode ? `onclick="openSlotEdit('${key}')"` : '';
+      if (forDesktop) {
+        return `<td class="py-1 px-1">
+          <div class="slot-cell px-2 py-2 text-[11px] font-semibold text-center leading-tight min-h-[44px] flex items-center justify-center rounded-xl ${cls}" data-key="${key}" ${adminAttr}>
+            ${label}
+          </div>
+        </td>`;
+      } else {
+        return `<div class="slot-cell px-3 py-2 text-xs font-semibold rounded-xl ${cls} flex items-center justify-between" data-key="${key}" ${adminAttr}>
+          <span class="text-charcoal-500 font-mono text-[11px] mr-2">${key.split('_')[1]}:00</span>
+          <span>${label}</span>
+        </div>`;
+      }
+    }
+
+    function renderDesktopTable() {
+      const tbody = document.getElementById('desktopTableBody');
+      tbody.innerHTML = '';
+      HOURS.forEach(h => {
+        const hourStr = String(h).padStart(2,'0');
+        let row = `<tr class="hover:bg-sand-50/50 transition-colors">
+          <td class="py-1 px-3 text-xs font-bold text-charcoal-500 font-mono whitespace-nowrap">${hourStr}:00</td>`;
+        DAYS.forEach(d => {
+          const key = `${d}_${hourStr}`;
+          row += slotCellHTML(key, true);
+        });
+        row += '</tr>';
+        tbody.innerHTML += row;
+      });
+    }
+
+    function renderMobileCards() {
+      const container = document.getElementById('mobileCards');
+      container.innerHTML = '';
+      DAYS.forEach(d => {
+        let hasVisible = false;
+        let inner = '';
+        HOURS.forEach(h => {
+          const key = `${d}_${String(h).padStart(2,'0')}`;
+          const s = getSlotDisplay(key);
+          if (s.status !== 'hidden') hasVisible = true;
+          inner += slotCellHTML(key, false);
+        });
+        // Always render all days in admin mode; otherwise only if has visible
+        if (adminMode || hasVisible) {
+          container.innerHTML += `
+            <div class="bg-white rounded-2xl border border-sand-200 shadow-card overflow-hidden">
+              <div class="px-4 py-3 bg-sand-50 border-b border-sand-200 flex items-center gap-2">
+                <span class="font-extrabold text-charcoal-800 text-sm">${DAY_LABELS[d]}</span>
+              </div>
+              <div class="p-3 space-y-1.5">${inner}</div>
+            </div>`;
+        }
+      });
+      if (!container.innerHTML) {
+        container.innerHTML = `<p class="text-sm text-charcoal-500 text-center py-8">Brak dostępnych terminów w tym tygodniu.</p>`;
+      }
+    }
+
+    // ── Admin login ───────────────────────────────────────────────────────────
+    function openAdminLogin() {
+      const modal = document.getElementById('adminLoginModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('adminPasswordInput').value = '';
+      document.getElementById('loginError').classList.add('hidden');
+    }
+
+    function closeAdminLogin() {
+      const modal = document.getElementById('adminLoginModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function verifyAdminPassword() {
+      const pw = document.getElementById('adminPasswordInput').value;
+      if (!pw) return;
+      const btn = document.getElementById('loginBtn');
+      const btnText = document.getElementById('loginBtnText');
+      btn.disabled = true;
+      btnText.textContent = 'Sprawdzam...';
+
+      try {
+        const hash = await sha256(pw);
+        const configSnap = await db.collection('grafik').doc('config').get();
+        const storedHash = configSnap.data()?.passwordHash || '';
+        if (hash === storedHash) {
+          closeAdminLogin();
+          enableAdminMode();
+        } else {
+          document.getElementById('loginError').classList.remove('hidden');
+        }
+      } catch (e) {
+        showToast('Błąd połączenia z bazą danych', 'error');
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = 'Zaloguj się';
+      }
+    }
+
+    function enableAdminMode() {
+      adminMode = true;
+      document.getElementById('adminPanel').classList.remove('hidden');
+      document.body.classList.add('admin-mode');
+      pendingEdits = {};
+      renderSchedule();
+      showToast('Zalogowano jako admin ✓', 'success');
+    }
+
+    function logoutAdmin() {
+      adminMode = false;
+      pendingEdits = {};
+      document.getElementById('adminPanel').classList.add('hidden');
+      document.body.classList.remove('admin-mode');
+      renderSchedule();
+      showToast('Wylogowano', 'info');
+    }
+
+    // ── Slot editing ──────────────────────────────────────────────────────────
+    function openSlotEdit(key) {
+      if (!adminMode) return;
+      currentEditKey = key;
+      const s = getSlotDisplay(key);
+      currentEditStatus = s.status;
+
+      const [day, hourStr] = key.split('_');
+      document.getElementById('slotEditTitle').textContent = `${DAY_LABELS[day]} ${hourStr}:00`;
+      document.getElementById('slotLabelInput').value = s.label || '';
+
+      updateStatusButtons(s.status);
+
+      const modal = document.getElementById('slotEditModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeSlotEdit() {
+      const modal = document.getElementById('slotEditModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      currentEditKey = null;
+    }
+
+    function setSlotStatus(status) {
+      currentEditStatus = status;
+      updateStatusButtons(status);
+    }
+
+    function updateStatusButtons(status) {
+      const btns = { free: 'btnFree', busy: 'btnBusy', hidden: 'btnHidden' };
+      Object.entries(btns).forEach(([s, id]) => {
+        const el = document.getElementById(id);
+        if (s === status) {
+          el.classList.add('ring-2', 'ring-pistachio-600', 'ring-offset-1');
+        } else {
+          el.classList.remove('ring-2', 'ring-pistachio-600', 'ring-offset-1');
+        }
+      });
+    }
+
+    function confirmSlotEdit() {
+      if (!currentEditKey) return;
+      const label = document.getElementById('slotLabelInput').value.trim();
+      pendingEdits[currentEditKey] = { status: currentEditStatus, label };
+      closeSlotEdit();
+      renderSchedule();
+      showToast('Zmiany zapisane lokalnie – kliknij "Zapisz grafik"', 'info');
+    }
+
+    // ── Save to Firestore ─────────────────────────────────────────────────────
+    async function saveSchedule() {
+      if (!adminMode) return;
+      try {
+        // Merge pending edits into slots
+        Object.assign(slots, pendingEdits);
+        pendingEdits = {};
+        await db.collection('grafik').doc('tygodniowy').set({ slots });
+        showToast('Grafik zapisany pomyślnie ✓', 'success');
+        renderSchedule();
+      } catch (e) {
+        showToast('Błąd zapisu: ' + e.message, 'error');
+      }
+    }
+
+    // ── Change password ───────────────────────────────────────────────────────
+    function showChangePassword() {
+      const modal = document.getElementById('changePasswordModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('newPasswordInput').value = '';
+    }
+
+    function closeChangePassword() {
+      const modal = document.getElementById('changePasswordModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function changeAdminPassword() {
+      const pw = document.getElementById('newPasswordInput').value;
+      if (!pw || pw.length < 6) {
+        showToast('Hasło musi mieć co najmniej 6 znaków', 'error');
+        return;
+      }
+      try {
+        const hash = await sha256(pw);
+        await db.collection('grafik').doc('config').set({ passwordHash: hash });
+        closeChangePassword();
+        showToast('Hasło zmienione pomyślnie ✓', 'success');
+      } catch (e) {
+        showToast('Błąd zapisu hasła: ' + e.message, 'error');
+      }
+    }
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    let toastTimer = null;
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toast');
+      const inner = document.getElementById('toastInner');
+      const colors = {
+        success: 'bg-pistachio-600 text-white',
+        error:   'bg-terracotta-500 text-white',
+        info:    'bg-charcoal-800 text-white'
+      };
+      inner.className = `px-5 py-3 rounded-2xl shadow-lift text-sm font-semibold flex items-center gap-2 ${colors[type] || colors.info}`;
+      inner.textContent = msg;
+      toast.classList.remove('hidden');
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(8px)';
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 3000);
+    }
+
+    // ── Close modals on backdrop click ────────────────────────────────────────
+    ['adminLoginModal','slotEditModal','changePasswordModal'].forEach(id => {
+      document.getElementById(id).addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.add('hidden');
+          this.classList.remove('flex');
+        }
+      });
+    });
+
+    // ── Start ─────────────────────────────────────────────────────────────────
+    init();
+  </script>
+</body>
+</html>
