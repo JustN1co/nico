@@ -432,10 +432,10 @@
     const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
     const DAY_LABELS = { MON:'Poniedziałek', TUE:'Wtorek', WED:'Środa', THU:'Czwartek', FRI:'Piątek', SAT:'Sobota', SUN:'Niedziela' };
     const DAY_SHORT  = { MON:'Pon', TUE:'Wt', WED:'Śr', THU:'Czw', FRI:'Pt', SAT:'Sob', SUN:'Nd' };
-    const HOURS = Array.from({length: 15}, (_, i) => i + 7); // 7–21
+    const HOURS = Array.from({length: 7}, (_, i) => i + 14); // 14–20
 
     // ── State ─────────────────────────────────────────────────────────────────
-    let slots = {};       // key: "MON_09", value: { status, label }
+    let slots = {};       // key: "MON_14", value: { status, label }
     let adminMode = false;
     let currentEditKey = null;
     let currentEditStatus = 'free';
