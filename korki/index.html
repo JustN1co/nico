@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
@@ -181,7 +181,7 @@
         <a href="#quizy" class="hover:text-pistachio-600 smooth-transition">Baza Quizów & Kart</a>
         <a href="#dlaczego-ja" class="hover:text-pistachio-600 smooth-transition">Dlaczego ja?</a>
         <a href="#kontakt" class="hover:text-pistachio-600 smooth-transition">Kontakt & Zapisy</a>
-        <a href="https://nico03.pl/korki/grafik" class="hover:text-pistachio-600 smooth-transition">Grafik zaj&#281;&#263;</a>
+        <a href="https://nico03.pl/korki/grafik" class="hover:text-pistachio-600 smooth-transition">Grafik zajęć</a>
       </nav>
 
       <!-- Szybki kontakt -->
@@ -208,7 +208,7 @@
       <a href="#quizy" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600 mobile-nav-link">Baza Quizów & Kart</a>
       <a href="#dlaczego-ja" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600 mobile-nav-link">Dlaczego ja?</a>
       <a href="#kontakt" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600 mobile-nav-link">Kontakt & Zapisy</a>
-      <a href="https://nico03.pl/korki/grafik" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600 mobile-nav-link">Grafik zaj&#281;&#263;</a>
+      <a href="https://nico03.pl/korki/grafik" class="block text-sm font-semibold text-charcoal-700 hover:text-pistachio-600 mobile-nav-link">Grafik zajęć</a>
       <a href="tel:+48660803916" class="block text-center py-2.5 rounded-xl bg-sand-100 text-xs font-bold text-charcoal-800">
         Zadzwoń: +48 660 803 916
       </a>
@@ -319,6 +319,7 @@
       </a>
     </div>
   </div>
+
   <section id="czasy" class="py-16 md:py-24 bg-white border-y border-sand-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
@@ -975,8 +976,8 @@
               </span>
             </button>
             
-            <p class="text-[11px] text-center text-charcoal-400">
-              Oddzwonię lub odpiszę w ciągu 24h, żeby ustalić dogodny termin pierwszego spotkania.
+            <p class="text-[11px] text-center text-charcoal-400 leading-relaxed">
+              Oddzwonię lub odpiszę w ciągu 24h. Wysyłając zgłoszenie, akceptujesz <button type="button" onclick="openPrivacyModal()" class="underline hover:text-pistachio-700 font-semibold smooth-transition">Politykę Prywatności</button>.
             </p>
           </form>
         </div>
@@ -995,10 +996,11 @@
           <span class="text-sm font-bold text-charcoal-900">Spokojny Angielski • Nico Jankowiak (Ruda Śląska)</span>
         </div>
 
-        <div class="flex items-center gap-4 text-xs font-medium text-charcoal-600">
+        <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-charcoal-600">
           <a href="#czasy" class="hover:text-pistachio-700 smooth-transition">Formułki</a>
           <a href="#quizy" class="hover:text-pistachio-700 smooth-transition">Baza Quizów & Kart</a>
           <a href="#kontakt" class="hover:text-pistachio-700 smooth-transition">Kontakt</a>
+          <button type="button" onclick="openPrivacyModal()" class="hover:text-pistachio-700 underline decoration-sand-300 underline-offset-4 smooth-transition">Polityka prywatności</button>
         </div>
 
         <p class="text-xs text-charcoal-400">
@@ -1111,6 +1113,86 @@
             <span>🖨️</span> Drukuj / Zapisz jako PDF
           </button>
         </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL POLITYKI PRYWATNOŚCI -->
+  <div id="privacyModal" class="fixed inset-0 z-50 bg-charcoal-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-sand-200 shadow-2xl relative max-h-[92vh] overflow-y-auto custom-scroll">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-sand-200">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">🛡️</span>
+          <div>
+            <h4 class="text-base sm:text-lg font-bold text-charcoal-900">Polityka Prywatności i RODO</h4>
+            <span class="text-xs text-charcoal-500">Spokojny Angielski • Nico Jankowiak</span>
+          </div>
+        </div>
+        <button onclick="closePrivacyModal()" aria-label="Zamknij" class="w-8 h-8 rounded-full bg-sand-100 text-charcoal-600 hover:bg-sand-200 flex items-center justify-center text-sm font-bold smooth-transition">
+          ✕
+        </button>
+      </div>
+
+      <div class="mt-5 space-y-5 text-xs sm:text-sm text-charcoal-800 leading-relaxed">
+        
+        <div class="p-4 rounded-2xl bg-pistachio-50 border border-pistachio-200">
+          <p class="font-bold text-pistachio-800 mb-1">1. Administrator Danych Osobowych</p>
+          <p>
+            Administratorem danych osobowych przekazywanych za pośrednictwem strony jest <strong>Nico Jankowiak</strong>, prowadzący zajęcia edukacyjne na terenie Rudy Śląskiej oraz online. W sprawach związanych z ochroną danych osobowych można kontaktować się bezpośrednio pod adresem e-mail: <a href="mailto:jankowiaknico03@gmail.com" class="font-bold text-pistachio-700 underline">jankowiaknico03@gmail.com</a> lub telefonicznie: <strong>+48 660 803 916</strong>.
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <h5 class="font-bold text-charcoal-900 text-sm">2. Zakres, cele i podstawy prawne przetwarzania danych</h5>
+          <p>Dane osobowe zbierane są dobrowolnie za pośrednictwem formularza kontaktowego dostępnego na stronie lub podczas bezpośredniego kontaktu telefonicznego/mailowego:</p>
+          <ul class="list-disc pl-5 space-y-1 text-charcoal-600">
+            <li><strong>Zakres danych:</strong> imię rodzica lub ucznia, klasa ucznia, preferowana forma zajęć (stacjonarnie/online), numer telefonu lub adres e-mail oraz ewentualne informacje o celach nauki wpisane w treści wiadomości.</li>
+            <li><strong>Cel przetwarzania:</strong> odpowiedź na przesłane zgłoszenie, kontakt w celu ustalenia terminu lekcji próbnej oraz późniejsza organizacja i realizacja korepetycji.</li>
+            <li><strong>Podstawa prawna:</strong> art. 6 ust. 1 lit. b RODO (podjęcie działań na żądanie osoby, której dane dotyczą, przed zawarciem umowy o świadczenie usług edukacyjnych) oraz art. 6 ust. 1 lit. f RODO (prawnie uzasadniony interes Administratora polegający na obsłudze korespondencji i obronie przed spamem).</li>
+          </ul>
+        </div>
+
+        <div class="space-y-2">
+          <h5 class="font-bold text-charcoal-900 text-sm">3. Odbiorcy danych i podmioty zewnętrzne</h5>
+          <p>Strona korzysta z bezpiecznych, nowoczesnych rozwiązań technicznych. Twoje dane mogą być przetwarzane przez następujące podmioty wyłącznie w zakresie niezbędnym do działania witryny i prowadzenia zajęć:</p>
+          <ul class="list-disc pl-5 space-y-1 text-charcoal-600">
+            <li><strong>Web3Forms (web3forms.com):</strong> operator techniczny obsługujący bezpieczne przesyłanie wiadomości z formularza kontaktowego bezpośrednio na skrzynkę e-mail Administratora (bez trwałego składowania treści wiadomości w zewnętrznych bazach marketingowych).</li>
+            <li><strong>GitHub, Inc. (GitHub Pages):</strong> dostawca hostingu statycznego, na którego serwerach utrzymywany jest kod strony.</li>
+            <li><strong>Cloudflare, Inc.:</strong> dostawca usług bezpieczeństwa sieciowego, DNS oraz szyfrowania połączenia SSL/HTTPS chroniącego ruch na stronie.</li>
+            <li><strong>Google Ireland Limited / Google LLC:</strong> dostawca poczty elektronicznej (Gmail), na którą trafiają zgłoszenia, oraz zewnętrznych czcionek (Google Fonts).</li>
+            <li><strong>Discord Inc.:</strong> w przypadku wyboru zajęć w formie zdalnej (online), komunikacja głosowa i współdzielenie ekranu podczas lekcji mogą odbywać się za pośrednictwem platformy Discord.</li>
+          </ul>
+          <p class="text-xs text-charcoal-500">Rozliczenia za lekcje odbywają się bezpośrednio poza stroną internetową – witryna nie zbiera ani nie przetwarza danych kart płatniczych ani loginów bankowych.</p>
+        </div>
+
+        <div class="space-y-2">
+          <h5 class="font-bold text-charcoal-900 text-sm">4. Pliki Cookies, LocalStorage i zasoby zewnętrzne</h5>
+          <ul class="list-disc pl-5 space-y-1 text-charcoal-600">
+            <li><strong>Brak śledzenia reklamowego:</strong> Strona <strong>nie wykorzystuje</strong> komercyjnych systemów śledzących ani reklamowych (takich jak Google Analytics czy Meta Pixel) i nie profiluje użytkowników.</li>
+            <li><strong>Pamięć lokalna przeglądarki (LocalStorage):</strong> Witryna zapisuje w pamięci przeglądarki techniczny znacznik czasu wysłania formularza (klucz <code>_sys_telemetry_cache</code>) wyłącznie w celu ochrony przed automatycznym spamem i nadużyciami (ograniczenie liczby wysyłanych formularzy w ciągu 7 dni). Dane te nie zawierają imienia ani numeru telefonu i pozostają wyłącznie na urządzeniu użytkownika.</li>
+            <li><strong>Zewnętrzne biblioteki (CDN):</strong> W celu prawidłowego wyświetlania stylów i czcionek przeglądarka użytkownika łączy się z serwerami Google Fonts oraz Tailwind CSS CDN, co wiąże się ze standardowym przekazaniem adresu IP w nagłówku zapytania HTTP.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-2">
+          <h5 class="font-bold text-charcoal-900 text-sm">5. Okres przechowywania danych i Twoje prawa</h5>
+          <p class="text-charcoal-600">
+            Dane z zapytań kontaktowych przechowywane są przez czas prowadzenia korespondencji oraz trwania współpracy edukacyjnej, a w przypadku braku podjęcia współpracy – są usuwane najpóźniej po upływie 6 miesięcy od zakończenia kontaktu.
+          </p>
+          <p class="text-charcoal-600">
+            Każdej osobie, której dane dotyczą, przysługuje prawo dostępu do swoich danych, ich sprostowania, usunięcia („prawo do bycia zapomnianym”), ograniczenia przetwarzania, wniesienia sprzeciwu, a także prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych (PUODO).
+          </p>
+        </div>
+
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-sand-200 flex items-center justify-between">
+        <span class="text-xs text-charcoal-400">Ostatnia aktualizacja: Październik 2026</span>
+        <button onclick="closePrivacyModal()" class="px-5 py-2.5 rounded-xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-xs shadow-soft smooth-transition">
+          Rozumiem, zamknij
+        </button>
       </div>
 
     </div>
@@ -1915,6 +1997,19 @@
       });
     }
 
+    // Obsługa modalu Polityki Prywatności
+    const privacyModal = document.getElementById('privacyModal');
+
+    function openPrivacyModal() {
+      privacyModal.classList.remove('hidden');
+      privacyModal.classList.add('flex');
+    }
+
+    function closePrivacyModal() {
+      privacyModal.classList.add('hidden');
+      privacyModal.classList.remove('flex');
+    }
+
     const worksheetModal = document.getElementById('worksheetModal');
     const worksheetTitle = document.getElementById('worksheetModalTitle');
     const worksheetContent = document.getElementById('worksheetDynamicContent');
@@ -1971,6 +2066,26 @@
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
+
+    // Zamykanie wszystkich modali klawiszem Escape oraz kliknięciem w tło
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeQuizModal();
+        closeWorksheetModal();
+        closePrivacyModal();
+      }
+    });
+
+    [document.getElementById('quizModal'), worksheetModal, privacyModal].forEach(modalEl => {
+      if (modalEl) {
+        modalEl.addEventListener('click', (e) => {
+          if (e.target === modalEl) {
+            modalEl.classList.add('hidden');
+            modalEl.classList.remove('flex');
+          }
+        });
+      }
+    });
 
     function loadQuestion() {
       answered = false;
