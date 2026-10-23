@@ -1119,7 +1119,8 @@
   </div>
 
   <!-- MODAL POLITYKI PRYWATNOŚCI -->
-  <div id="privacyModal" class="fixed inset-0 z-50 bg-charcoal-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <!-- MODAL POLITYKI PRYWATNOŚCI -->
+  <div id="privacyModal" class="fixed inset-0 z-[130] bg-charcoal-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-sand-200 shadow-2xl relative max-h-[92vh] overflow-y-auto custom-scroll">
       
       <div class="flex items-center justify-between pb-4 border-b border-sand-200">
@@ -1146,7 +1147,7 @@
 
         <div class="space-y-2">
           <h5 class="font-bold text-charcoal-900 text-sm">2. Zakres, cele i podstawy prawne przetwarzania danych</h5>
-          <p>Dane osobowe zbierane są dobrowolnie za pośrednictwem formularza kontaktowego dostępnego na stronie lub podczas bezpośredniego kontaktu telefonicznego/mailowego:</p>
+          <p>Dane osobowe zbierane są dobrowolnie za pośrednictwem formularza kontaktowego na stronie głównej lub podczas bezpośredniego kontaktu telefonicznego/mailowego:</p>
           <ul class="list-disc pl-5 space-y-1 text-charcoal-600">
             <li><strong>Zakres danych:</strong> imię rodzica lub ucznia, klasa ucznia, preferowana forma zajęć (stacjonarnie/online), numer telefonu lub adres e-mail oraz ewentualne informacje o celach nauki wpisane w treści wiadomości.</li>
             <li><strong>Cel przetwarzania:</strong> odpowiedź na przesłane zgłoszenie, kontakt w celu ustalenia terminu lekcji próbnej oraz późniejsza organizacja i realizacja korepetycji.</li>
@@ -1156,33 +1157,30 @@
 
         <div class="space-y-2">
           <h5 class="font-bold text-charcoal-900 text-sm">3. Odbiorcy danych i podmioty zewnętrzne</h5>
-          <p>Strona korzysta z bezpiecznych, nowoczesnych rozwiązań technicznych. Twoje dane mogą być przetwarzane przez następujące podmioty wyłącznie w zakresie niezbędnym do działania witryny i prowadzenia zajęć:</p>
+          <p>Strona korzysta z bezpiecznych rozwiązań technicznych. Dane techniczne lub kontaktowe mogą być przetwarzane przez następujące podmioty wyłącznie w zakresie niezbędnym do działania witryny i prowadzenia zajęć:</p>
           <ul class="list-disc pl-5 space-y-1 text-charcoal-600">
-            <li><strong>Web3Forms (web3forms.com):</strong> operator techniczny obsługujący bezpieczne przesyłanie wiadomości z formularza kontaktowego bezpośrednio na skrzynkę e-mail Administratora (bez trwałego składowania treści wiadomości w zewnętrznych bazach marketingowych).</li>
-            <li><strong>GitHub, Inc. (GitHub Pages):</strong> dostawca hostingu statycznego, na którego serwerach utrzymywany jest kod strony.</li>
-            <li><strong>Cloudflare, Inc.:</strong> dostawca usług bezpieczeństwa sieciowego, DNS oraz szyfrowania połączenia SSL/HTTPS chroniącego ruch na stronie.</li>
-            <li><strong>Google Ireland Limited / Google LLC:</strong> dostawca poczty elektronicznej (Gmail), na którą trafiają zgłoszenia, oraz zewnętrznych czcionek (Google Fonts).</li>
-            <li><strong>Discord Inc.:</strong> w przypadku wyboru zajęć w formie zdalnej (online), komunikacja głosowa i współdzielenie ekranu podczas lekcji mogą odbywać się za pośrednictwem platformy Discord.</li>
+            <li><strong>Google Ireland Limited / Google LLC (Firebase / Cloud Firestore, Gmail, Google Fonts):</strong> obsługa bazy danych grafiku zajęć w czasie rzeczywistym, poczty elektronicznej (Gmail) oraz bezpieczne dostarczanie czcionek internetowych.</li>
+            <li><strong>Web3Forms (web3forms.com):</strong> operator techniczny bezpiecznie przesyłający wiadomości z formularza kontaktowego na skrzynkę e-mail Administratora.</li>
+            <li><strong>GitHub, Inc. (GitHub Pages):</strong> dostawca hostingu statycznego kodu witryny.</li>
+            <li><strong>Cloudflare, Inc.:</strong> dostawca zabezpieczeń DNS, ochrony przed atakami DDoS oraz certyfikatu SSL/HTTPS.</li>
+            <li><strong>Discord Inc.:</strong> platforma wykorzystywana opcjonalnie do prowadzenia lekcji zdalnych (audio/wideo/udostępnianie ekranu).</li>
           </ul>
-          <p class="text-xs text-charcoal-500">Rozliczenia za lekcje odbywają się bezpośrednio poza stroną internetową – witryna nie zbiera ani nie przetwarza danych kart płatniczych ani loginów bankowych.</p>
+          <p class="text-xs text-charcoal-500">Publiczny grafik zajęć prezentuje wyłącznie dostępność godzinową (wolne/zajęte) i nie publikuje danych osobowych uczniów. Rozliczenia odbywają się bezpośrednio poza stroną.</p>
         </div>
 
         <div class="space-y-2">
           <h5 class="font-bold text-charcoal-900 text-sm">4. Pliki Cookies, LocalStorage i zasoby zewnętrzne</h5>
           <ul class="list-disc pl-5 space-y-1 text-charcoal-600">
-            <li><strong>Brak śledzenia reklamowego:</strong> Strona <strong>nie wykorzystuje</strong> komercyjnych systemów śledzących ani reklamowych (takich jak Google Analytics czy Meta Pixel) i nie profiluje użytkowników.</li>
-            <li><strong>Pamięć lokalna przeglądarki (LocalStorage):</strong> Witryna zapisuje w pamięci przeglądarki techniczny znacznik czasu wysłania formularza (klucz <code>_sys_telemetry_cache</code>) wyłącznie w celu ochrony przed automatycznym spamem i nadużyciami (ograniczenie liczby wysyłanych formularzy w ciągu 7 dni). Dane te nie zawierają imienia ani numeru telefonu i pozostają wyłącznie na urządzeniu użytkownika.</li>
-            <li><strong>Zewnętrzne biblioteki (CDN):</strong> W celu prawidłowego wyświetlania stylów i czcionek przeglądarka użytkownika łączy się z serwerami Google Fonts oraz Tailwind CSS CDN, co wiąże się ze standardowym przekazaniem adresu IP w nagłówku zapytania HTTP.</li>
+            <li><strong>Brak profilowania reklamowego:</strong> Strona <strong>nie używa</strong> komercyjnych pikseli śledzących (Meta Pixel itp.) ani nie śledzi użytkowników w celach marketingowych.</li>
+            <li><strong>Pamięć lokalna przeglądarki (LocalStorage / IndexedDB):</strong> Wykorzystywana wyłącznie technicznie do obsługi grafiku Firebase oraz ochrony formularza przed spamem (znacznik czasu wysyłki <code>_sys_telemetry_cache</code>).</li>
+            <li><strong>Zewnętrzne zasoby (CDN):</strong> Pobieranie stylów i skryptów z serwerów Google oraz Tailwind CSS CDN wiąże się ze standardowym przekazaniem adresu IP w zapytaniu HTTP.</li>
           </ul>
         </div>
 
         <div class="space-y-2">
           <h5 class="font-bold text-charcoal-900 text-sm">5. Okres przechowywania danych i Twoje prawa</h5>
           <p class="text-charcoal-600">
-            Dane z zapytań kontaktowych przechowywane są przez czas prowadzenia korespondencji oraz trwania współpracy edukacyjnej, a w przypadku braku podjęcia współpracy – są usuwane najpóźniej po upływie 6 miesięcy od zakończenia kontaktu.
-          </p>
-          <p class="text-charcoal-600">
-            Każdej osobie, której dane dotyczą, przysługuje prawo dostępu do swoich danych, ich sprostowania, usunięcia („prawo do bycia zapomnianym”), ograniczenia przetwarzania, wniesienia sprzeciwu, a także prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych (PUODO).
+            Dane z formularza kontaktowego przechowywane są przez czas trwania korespondencji lub edukacji, a w razie braku nawiązania współpracy usuwane maksymalnie do 6 miesięcy. Osobie przesyłającej dane przysługuje pełne prawo wglądu, poprawienia, usunięcia danych oraz skargi do PUODO.
           </p>
         </div>
 
