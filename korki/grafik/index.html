@@ -81,6 +81,20 @@
       border-left: 4px solid #5F7D4E;
     }
 
+    /* Custom scrollbar dla modali */
+    .custom-scroll::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #EDE8DF;
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #C7BDAD;
+      border-radius: 9999px;
+    }
+
     /* Schedule grid styles */
     .slot-free {
       background-color: #EAF1E7;
@@ -286,11 +300,12 @@
           <span class="text-lg">🌱</span>
           <span class="text-sm font-bold text-charcoal-900">Spokojny Angielski • Nico Jankowiak (Ruda Śląska)</span>
         </div>
-        <div class="flex items-center gap-4 text-xs font-medium text-charcoal-600">
+        <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-charcoal-600">
           <a href="/korki#czasy" class="hover:text-pistachio-700 smooth-transition">Formułki</a>
           <a href="/korki#quizy" class="hover:text-pistachio-700 smooth-transition">Baza Quizów & Kart</a>
           <a href="/korki#kontakt" class="hover:text-pistachio-700 smooth-transition">Kontakt</a>
           <a href="https://nico03.pl/korki/grafik" class="hover:text-pistachio-700 smooth-transition font-bold">Grafik</a>
+          <button type="button" onclick="openPrivacyModal()" class="hover:text-pistachio-700 underline decoration-sand-300 underline-offset-4 smooth-transition">Polityka prywatności</button>
         </div>
         <p class="text-xs text-charcoal-400">© 2026 Spokojny Angielski. Wszystkie prawa zastrzeżone.</p>
       </div>
@@ -379,8 +394,8 @@
           </div>
         </div>
         <div id="labelFieldWrapper">
-          <label class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">Etykieta (opcjonalna)</label>
-          <input type="text" id="slotLabelInput" placeholder="np. Anna K., Zajęte"
+          <label class="block text-xs font-bold uppercase tracking-wider text-charcoal-600 mb-1">Etykieta (opcjonalna – bez danych osobowych)</label>
+          <input type="text" id="slotLabelInput" placeholder="np. Zajęte, Klasa 6, Rezerwacja"
             class="w-full px-4 py-3 rounded-xl border border-sand-200 bg-warmwhite focus:bg-white focus:outline-none focus:border-pistachio-600 text-sm smooth-transition">
         </div>
         <button onclick="confirmSlotEdit()"
@@ -411,6 +426,86 @@
           Zapisz nowe hasło
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL POLITYKI PRYWATNOŚCI -->
+  <div id="privacyModal" class="fixed inset-0 z-[130] bg-charcoal-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-sand-200 shadow-2xl relative max-h-[92vh] overflow-y-auto custom-scroll modal-enter">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-sand-200">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">🛡️</span>
+          <div>
+            <h4 class="text-base sm:text-lg font-bold text-charcoal-900">Polityka Prywatności i RODO</h4>
+            <span class="text-xs text-charcoal-500">Spokojny Angielski • Nico Jankowiak</span>
+          </div>
+        </div>
+        <button onclick="closePrivacyModal()" aria-label="Zamknij" class="w-8 h-8 rounded-full bg-sand-100 text-charcoal-600 hover:bg-sand-200 flex items-center justify-center text-sm font-bold smooth-transition">
+          ✕
+        </button>
+      </div>
+
+      <div class="mt-5 space-y-5 text-xs sm:text-sm text-charcoal-800 leading-relaxed">
+        
+        <div class="p-4 rounded-2xl bg-pistachio-50 border border-pistachio-200">
+          <p class="font-bold text-pistachio-800 mb-1">1. Administrator Danych Osobowych</p>
+          <p>
+            Administratorem danych osobowych przekazywanych za pośrednictwem strony jest <strong>Nico Jankowiak</strong>, prowadzący zajęcia edukacyjne na terenie Rudy Śląskiej oraz online. W sprawach związanych z ochroną danych osobowych można kontaktować się bezpośrednio pod adresem e-mail: <a href="mailto:jankowiaknico03@gmail.com" class="font-bold text-pistachio-700 underline">jankowiaknico03@gmail.com</a> lub telefonicznie: <strong>+48 660 803 916</strong>.
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <h5 class="font-bold text-charcoal-900 text-sm">2. Zakres, cele i podstawy prawne przetwarzania danych</h5>
+          <p>Dane osobowe zbierane są dobrowolnie za pośrednictwem formularza kontaktowego na stronie głównej lub podczas bezpośredniego kontaktu telefonicznego/mailowego:</p>
+          <ul class="list-disc pl-5 space-y-1 text-charcoal-600">
+            <li><strong>Zakres danych:</strong> imię rodzica lub ucznia, klasa ucznia, preferowana forma zajęć (stacjonarnie/online), numer telefonu lub adres e-mail oraz ewentualne informacje o celach nauki wpisane w treści wiadomości.</li>
+            <li><strong>Cel przetwarzania:</strong> odpowiedź na przesłane zgłoszenie, kontakt w celu ustalenia terminu lekcji próbnej oraz późniejsza organizacja i realizacja korepetycji.</li>
+            <li><strong>Podstawa prawna:</strong> art. 6 ust. 1 lit. b RODO (podjęcie działań na żądanie osoby, której dane dotyczą, przed zawarciem umowy o świadczenie usług edukacyjnych) oraz art. 6 ust. 1 lit. f RODO (prawnie uzasadniony interes Administratora polegający na obsłudze korespondencji i obronie przed spamem).</li>
+          </ul>
+        </div>
+
+        <div class="space-y-2">
+          <h5 class="font-bold text-charcoal-900 text-sm">3. Odbiorcy danych i podmioty zewnętrzne</h5>
+          <p>Strona korzysta z bezpiecznych, nowoczesnych rozwiązań technicznych. Dane techniczne lub kontaktowe mogą być przetwarzane przez następujące podmioty wyłącznie w zakresie niezbędnym do działania witryny i prowadzenia zajęć:</p>
+          <ul class="list-disc pl-5 space-y-1 text-charcoal-600">
+            <li><strong>Google Ireland Limited / Google LLC (Firebase / Cloud Firestore, Gmail, Google Fonts):</strong> obsługa bazy danych wyświetlającej aktualny grafik zajęć w czasie rzeczywistym (Firebase Firestore), obsługa skrzynki pocztowej Administratora (Gmail) oraz dostarczanie czcionek internetowych (Google Fonts).</li>
+            <li><strong>Web3Forms (web3forms.com):</strong> operator techniczny obsługujący bezpieczne przesyłanie wiadomości z formularza kontaktowego bezpośrednio na skrzynkę e-mail Administratora.</li>
+            <li><strong>GitHub, Inc. (GitHub Pages):</strong> dostawca hostingu statycznego, na którego serwerach utrzymywany jest kod strony.</li>
+            <li><strong>Cloudflare, Inc.:</strong> dostawca usług bezpieczeństwa sieciowego, DNS oraz szyfrowania połączenia SSL/HTTPS chroniącego ruch na stronie.</li>
+            <li><strong>Discord Inc.:</strong> w przypadku wyboru zajęć w formie zdalnej (online), komunikacja głosowa i współdzielenie ekranu podczas lekcji mogą odbywać się za pośrednictwem platformy Discord.</li>
+          </ul>
+          <p class="text-xs text-charcoal-500">Publiczny grafik zajęć prezentuje wyłącznie dostępność godzinową (wolne/zajęte) i nie publikuje danych osobowych uczniów. Rozliczenia za lekcje odbywają się poza stroną internetową.</p>
+        </div>
+
+        <div class="space-y-2">
+          <h5 class="font-bold text-charcoal-900 text-sm">4. Pliki Cookies, LocalStorage i zasoby zewnętrzne</h5>
+          <ul class="list-disc pl-5 space-y-1 text-charcoal-600">
+            <li><strong>Brak profilowania reklamowego:</strong> Strona <strong>nie wykorzystuje</strong> zewnętrznych systemów reklamowych (takich jak Meta Pixel) i nie śledzi użytkowników w celach marketingowych.</li>
+            <li><strong>Pamięć lokalna przeglądarki (LocalStorage / IndexedDB):</strong> Witryna korzysta z lokalnej pamięci przeglądarki w celu technicznej obsługi połączenia z bazą grafiku (Firebase) oraz ochrony formularza kontaktowego przed automatycznym spamem (klucz <code>_sys_telemetry_cache</code> przechowujący wyłącznie znaczniki czasu wysłania wiadomości).</li>
+            <li><strong>Zewnętrzne biblioteki (CDN):</strong> W celu prawidłowego wyświetlania stylów, czcionek i grafiku przeglądarka użytkownika łączy się z serwerami Google (`googleapis.com`, `gstatic.com`) oraz Tailwind CSS CDN, co wiąże się ze standardowym przekazaniem adresu IP w nagłówku zapytania HTTP.</li>
+          </ul>
+        </div>
+
+        <div class="space-y-2">
+          <h5 class="font-bold text-charcoal-900 text-sm">5. Okres przechowywania danych i Twoje prawa</h5>
+          <p class="text-charcoal-600">
+            Dane z zapytań kontaktowych przechowywane są przez czas prowadzenia korespondencji oraz trwania współpracy edukacyjnej, a w przypadku braku podjęcia współpracy – są usuwane najpóźniej po upływie 6 miesięcy od zakończenia kontaktu.
+          </p>
+          <p class="text-charcoal-600">
+            Każdej osobie, której dane dotyczą, przysługuje prawo dostępu do swoich danych, ich sprostowania, usunięcia („prawo do bycia zapomnianym”), ograniczenia przetwarzania, wniesienia sprzeciwu, a także prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych (PUODO).
+          </p>
+        </div>
+
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-sand-200 flex items-center justify-between">
+        <span class="text-xs text-charcoal-400">Ostatnia aktualizacja: Październik 2026</span>
+        <button onclick="closePrivacyModal()" class="px-5 py-2.5 rounded-xl bg-pistachio-600 hover:bg-pistachio-700 text-white font-bold text-xs shadow-soft smooth-transition">
+          Rozumiem, zamknij
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -455,9 +550,29 @@
       menu.classList.toggle('hidden');
     });
 
+    // ── Privacy Modal ─────────────────────────────────────────────────────────
+    function openPrivacyModal() {
+      const modal = document.getElementById('privacyModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closePrivacyModal() {
+      const modal = document.getElementById('privacyModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
     // ── Admin trigger (triple-press K within 1 second) ────────────────────────
     let kPresses = [];
     document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeAdminLogin();
+        closeSlotEdit();
+        closeChangePassword();
+        closePrivacyModal();
+        return;
+      }
       if (e.key === 'k' || e.key === 'K') {
         const now = Date.now();
         kPresses = kPresses.filter(t => now - t < 1000);
@@ -772,13 +887,16 @@
     }
 
     // ── Close modals on backdrop click ────────────────────────────────────────
-    ['adminLoginModal','slotEditModal','changePasswordModal'].forEach(id => {
-      document.getElementById(id).addEventListener('click', function(e) {
-        if (e.target === this) {
-          this.classList.add('hidden');
-          this.classList.remove('flex');
-        }
-      });
+    ['adminLoginModal','slotEditModal','changePasswordModal','privacyModal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.classList.add('hidden');
+            this.classList.remove('flex');
+          }
+        });
+      }
     });
 
     // ── Start ─────────────────────────────────────────────────────────────────
