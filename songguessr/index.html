@@ -101,10 +101,8 @@
 </head>
 <body class="flex flex-col min-h-screen font-sans selection:bg-spotify-green selection:text-black">
 
-    <!-- Top Toast Notification Container -->
     <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
-    <!-- Header Navigation -->
     <header class="border-b border-gray-800/80 bg-gray-950/70 backdrop-blur-md sticky top-0 z-30">
         <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
@@ -114,7 +112,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white">Spot<span class="text-spotify-green">Guessr</span></h1>
-                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">API Edition</span>
+                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">Backend API</span>
                     </div>
                     <p id="activePlaylistBadge" class="text-xs text-gray-400 truncate max-w-[180px] sm:max-w-[260px]">
                         Brak załadowanej playlisty
@@ -148,7 +146,6 @@
         </div>
     </header>
 
-    <!-- Main Content Container -->
     <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 flex flex-col justify-between gap-6">
 
         <div id="audioLoadingBanner" class="hidden rounded-2xl bg-gray-900/90 border border-gray-800 p-4 flex items-center justify-center gap-3 text-sm text-gray-300 shadow-lg">
@@ -172,7 +169,7 @@
                 <div class="flex-1 text-center sm:text-left min-w-0">
                     <h2 id="revealTitle" class="text-xl sm:text-2xl font-extrabold text-white truncate">Tytuł Utworu</h2>
                     <p id="revealArtist" class="text-base sm:text-lg text-spotify-green font-semibold mt-0.5 truncate">Artysta</p>
-                    <p id="revealSubInfo" class="text-xs text-gray-400 mt-2">Odgadnięto w 1. próbie (1 sekunda) • +600 pkt</p>
+                    <p id="revealSubInfo" class="text-xs text-gray-400 mt-2">Odgadnięto w 1. próbie • +600 pkt</p>
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-4">
                         <button onclick="toggleFullPreview()" id="btnFullPreview" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold border border-gray-700 transition flex items-center gap-2">
                             <i class="fa-solid fa-headphones text-spotify-green"></i>
@@ -286,7 +283,7 @@
                     </div>
                     <div>
                         <h2 class="text-lg sm:text-xl font-extrabold text-white">Wybierz lub wklej playlistę</h2>
-                        <p class="text-xs text-gray-400">Podaj link do playlisty lub użyj oficjalnego API</p>
+                        <p class="text-xs text-gray-400">Podaj link do playlisty lub wybierz gotowy zestaw</p>
                     </div>
                 </div>
                 <button id="btnCloseModal" onclick="closePlaylistModal()" class="text-gray-400 hover:text-white p-1.5 rounded-lg bg-gray-800/60 hover:bg-gray-800 transition">
@@ -306,7 +303,7 @@
                 </button>
                 <button onclick="switchModalTab('custom')" id="tabBtnCustom" class="py-2 px-3 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 font-semibold">
                     <i class="fa-solid fa-list-ul"></i>
-                    <span>Własny tekst / Ctrl+V</span>
+                    <span>Własny tekst</span>
                 </button>
             </div>
 
@@ -341,56 +338,18 @@
                     </div>
                 </div>
 
-                <!-- API Panel (Rozwinięty domyślnie z przyciskiem zapisu i autoryzacji) -->
-                <div class="rounded-xl bg-gray-950 border border-gray-800 overflow-hidden">
-                    <div class="px-4 py-3 bg-gray-900/60 border-b border-gray-800 flex items-center justify-between">
-                        <span class="flex items-center gap-2 text-xs font-bold text-white">
-                            <i class="fa-solid fa-key text-spotify-green"></i>
-                            <span>Oficjalne Spotify Web API (Gwarantowane 100% działania)</span>
-                        </span>
-                        <span id="apiStatusBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-gray-800 text-gray-400 border border-gray-700">
-                            Brak aktywnego tokenu
-                        </span>
-                    </div>
-
-                    <div class="p-4 space-y-3 text-xs">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-gray-400 mb-1 font-semibold">Spotify Client ID</label>
-                                <input id="spotifyClientIdInput" type="text" placeholder="np. 0ba038c2eaac..." class="w-full px-3 py-2.5 rounded-lg bg-gray-900 border border-gray-700 text-white focus:border-spotify-green focus:outline-none font-mono text-xs">
-                            </div>
-                            <div>
-                                <label class="block text-gray-400 mb-1 font-semibold">Spotify Client Secret</label>
-                                <input id="spotifyClientSecretInput" type="password" placeholder="••••••••••••••••" class="w-full px-3 py-2.5 rounded-lg bg-gray-900 border border-gray-700 text-white focus:border-spotify-green focus:outline-none font-mono text-xs">
-                            </div>
-                        </div>
-
-                        <!-- Przycisk autoryzacji i zapisu -->
-                        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                            <p class="text-[11px] text-gray-400">
-                                Wpisz klucze i kliknij przycisk obok, aby pobrać token autoryzacyjny Spotify API.
-                            </p>
-                            <button id="btnAuthorizeApi" onclick="authorizeAndSaveKeys()" class="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-spotify-green/20 hover:bg-spotify-green/30 text-spotify-green border border-spotify-green/40 font-bold transition flex items-center justify-center gap-2 shrink-0">
-                                <i class="fa-solid fa-shield-halved"></i>
-                                <span>Zapisz i połącz z Spotify API</span>
-                            </button>
-                        </div>
-
-                        <!-- Opcjonalny fallback: bezposredni Access Token -->
-                        <div class="pt-2 border-t border-gray-800/80">
-                            <details class="cursor-pointer">
-                                <summary class="text-gray-400 hover:text-gray-300 font-medium text-[11px]">
-                                    Masz już gotowy Access Token (Bearer)? Kliknij tutaj, aby wkleić ręcznie
-                                </summary>
-                                <div class="mt-2 flex gap-2">
-                                    <input id="directAccessTokenInput" type="text" placeholder="Wklej token: BQD..." class="flex-1 px-3 py-2 rounded-lg bg-gray-900 border border-gray-700 text-white font-mono text-xs focus:outline-none focus:border-spotify-green">
-                                    <button onclick="applyManualToken()" class="px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold text-xs border border-gray-700">
-                                        Zastosuj
-                                    </button>
-                                </div>
-                            </details>
+                <!-- Backend Token Status Box -->
+                <div class="rounded-xl bg-gray-950 border border-gray-800 p-3.5 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-server text-spotify-green text-base"></i>
+                        <div>
+                            <div class="font-semibold text-white">Obsługa backendu (token.php)</div>
+                            <div class="text-[11px] text-gray-400">Autoryzacja po stronie serwera — zero problemów z CORS i przeglądarkami.</div>
                         </div>
                     </div>
+                    <span id="apiStatusBadge" class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-gray-900 text-gray-400 border border-gray-800 shrink-0">
+                        Sprawdzanie...
+                    </span>
                 </div>
             </div>
 
@@ -403,7 +362,7 @@
                         <p class="text-xs text-gray-400 mt-1 leading-relaxed">Taco Hemingway, Dawid Podsiadło, Mata, Quebonafide, PRO8L3M, sanah i inni.</p>
                     </div>
                     <div class="mt-4 pt-2 border-t border-gray-800/80 flex items-center justify-between text-[11px] font-mono text-spotify-green">
-                        <span>28 utworów</span>
+                        <span>13 utworów</span>
                         <span>Graj teraz →</span>
                     </div>
                 </button>
@@ -415,7 +374,7 @@
                         <p class="text-xs text-gray-400 mt-1 leading-relaxed">The Weeknd, Travis Scott, Billie Eilish, Eminem, Arctic Monkeys, Kendrick Lamar.</p>
                     </div>
                     <div class="mt-4 pt-2 border-t border-gray-800/80 flex items-center justify-between text-[11px] font-mono text-spotify-green">
-                        <span>30 utworów</span>
+                        <span>9 utworów</span>
                         <span>Graj teraz →</span>
                     </div>
                 </button>
@@ -424,10 +383,10 @@
                     <div>
                         <div class="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">🎸</div>
                         <h3 class="font-bold text-white text-sm group-hover:text-spotify-green transition">Klasyki Rocka & Metal</h3>
-                        <p class="text-xs text-gray-400 mt-1 leading-relaxed">Queen, Nirvana, Linkin Park, Metallica, AC/DC, System Of A Down, Guns N' Roses.</p>
+                        <p class="text-xs text-gray-400 mt-1 leading-relaxed">Queen, Nirvana, Linkin Park, Metallica, AC/DC, System Of A Down.</p>
                     </div>
                     <div class="mt-4 pt-2 border-t border-gray-800/80 flex items-center justify-between text-[11px] font-mono text-spotify-green">
-                        <span>30 utworów</span>
+                        <span>6 utworów</span>
                         <span>Graj teraz →</span>
                     </div>
                 </button>
@@ -438,16 +397,16 @@
                 <div class="p-3 rounded-xl bg-gray-950 border border-gray-800 text-xs text-gray-300 space-y-1">
                     <div class="font-bold text-spotify-green flex items-center gap-1.5">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span>Importuj z aplikacji Spotify lub tekstu:</span>
+                        <span>Własna lista kawałków:</span>
                     </div>
                     <p class="text-gray-400">
-                        Możesz zaznaczyć utwory w aplikacji Spotify (<kbd class="px-1.5 py-0.5 bg-gray-800 rounded">Ctrl+A</kbd> → <kbd class="px-1.5 py-0.5 bg-gray-800 rounded">Ctrl+C</kbd>) i wkleić poniżej, albo wpisać listę w formacie <code class="text-gray-200">Artysta - Tytuł</code>.
+                        Wpisz listę w formacie <code class="text-gray-200">Artysta - Tytuł</code> (po jednym w nowej linii).
                     </p>
                 </div>
                 <textarea 
                     id="customTracksTextarea" 
                     rows="6" 
-                    placeholder="Taco Hemingway - Następna stacja&#10;Dawid Podsiadło - Małomiasteczkowy&#10;lub wklej skopiowane utwory ze Spotify..."
+                    placeholder="Taco Hemingway - Następna stacja&#10;Dawid Podsiadło - Małomiasteczkowy&#10;The Weeknd - Blinding Lights"
                     class="w-full p-3.5 rounded-xl bg-gray-950 border border-gray-700 focus:border-spotify-green text-xs font-mono text-white placeholder-gray-600 focus:outline-none"
                 ></textarea>
                 <div class="flex justify-end">
@@ -461,7 +420,6 @@
         </div>
     </div>
 
-    <!-- Hidden HTML5 Audio Element -->
     <audio id="audioPlayer" preload="auto" crossorigin="anonymous"></audio>
 
     <script>
@@ -536,32 +494,32 @@
         let rafId = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            const savedClientId = localStorage.getItem('spotguessr_client_id') || '';
-            const savedClientSecret = localStorage.getItem('spotguessr_client_secret') || '';
-            const savedToken = localStorage.getItem('spotguessr_access_token') || '';
-            const tokenExpiry = parseInt(localStorage.getItem('spotguessr_token_expiry') || '0', 10);
-
-            if (savedClientId) document.getElementById('spotifyClientIdInput').value = savedClientId;
-            if (savedClientSecret) document.getElementById('spotifyClientSecretInput').value = savedClientSecret;
-            if (savedToken) document.getElementById('directAccessTokenInput').value = savedToken;
-
-            updateApiBadgeState(savedToken, tokenExpiry);
             setupSearchAutocomplete();
             setupAudioEvents();
             renderGuessSlots();
             loadPresetPlaylist('global_hits', false);
+            testTokenPhpConnection();
         });
+
+        async function testTokenPhpConnection() {
+            try {
+                await getValidAccessToken();
+            } catch (e) {
+                console.warn("Sprawdzenie token.php:", e.message);
+            }
+        }
 
         function updateApiBadgeState(token, expiry) {
             const badge = document.getElementById('apiStatusBadge');
+            if (!badge) return;
             const now = Date.now();
             if (token && expiry > now) {
                 const minsLeft = Math.round((expiry - now) / 60000);
-                badge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
-                badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Połączono (ważny: ${minsLeft} min)`;
+                badge.className = "text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+                badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> token.php aktywny (${minsLeft} min)`;
             } else {
-                badge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-gray-800 text-gray-400 border border-gray-700";
-                badge.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Brak aktywnego tokenu`;
+                badge.className = "text-[10px] font-mono px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40";
+                badge.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> token.php nie odpowiada`;
             }
         }
 
@@ -649,122 +607,35 @@
         }
 
         // ==========================================
-        // TOKEN GENERATOR & SPOTIFY API MANAGEMENT
+        // TOKEN FETCH VIA TOKEN.PHP (CLEAN & FIXED)
         // ==========================================
-        async function fetchSpotifyTokenViaProxy(clientId, clientSecret) {
-            const targetUrl = 'https://accounts.spotify.com/api/token';
-            const authHeader = 'Basic ' + btoa(clientId + ':' + clientSecret);
-            const bodyParams = new URLSearchParams({ grant_type: 'client_credentials' }).toString();
-
-            const proxyEndpoints = [
-                {
-                    name: 'Corsfix Proxy',
-                    url: `https://proxy.corsfix.com/?${targetUrl}`
-                },
-                {
-                    name: 'CorsProxy.io',
-                    url: `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`
-                }
-            ];
-
-            let lastErr = null;
-            for (const ep of proxyEndpoints) {
-                try {
-                    const res = await fetch(ep.url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'Authorization': authHeader
-                        },
-                        body: bodyParams
-                    });
-
-                    if (res.ok) {
-                        const data = await res.json();
-                        if (data && data.access_token) return data;
-                    } else {
-                        const errJson = await res.json().catch(() => null);
-                        if (errJson && errJson.error_description) {
-                            throw new Error(errJson.error_description);
-                        }
-                    }
-                } catch (e) {
-                    lastErr = e;
-                }
-            }
-            throw lastErr || new Error("Błąd sieci podczas pobierania tokenu.");
-        }
-
-        async function authorizeAndSaveKeys() {
-            const clientId = document.getElementById('spotifyClientIdInput').value.trim();
-            const clientSecret = document.getElementById('spotifyClientSecretInput').value.trim();
-            const btn = document.getElementById('btnAuthorizeApi');
-
-            if (!clientId || !clientSecret) {
-                showToast("Wpisz Client ID oraz Client Secret!", "error");
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Łączenie...`;
-
-            try {
-                const tokenData = await fetchSpotifyTokenViaProxy(clientId, clientSecret);
-                const expiryTime = Date.now() + (tokenData.expires_in * 1000);
-
-                localStorage.setItem('spotguessr_client_id', clientId);
-                localStorage.setItem('spotguessr_client_secret', clientSecret);
-                localStorage.setItem('spotguessr_access_token', tokenData.access_token);
-                localStorage.setItem('spotguessr_token_expiry', expiryTime.toString());
-
-                document.getElementById('directAccessTokenInput').value = tokenData.access_token;
-                updateApiBadgeState(tokenData.access_token, expiryTime);
-
-                showToast("Połączono ze Spotify API! Token jest aktywny.", "success");
-                btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Połączono!`;
-                btn.className = "w-full sm:w-auto px-4 py-2.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold transition flex items-center justify-center gap-2 shrink-0";
-            } catch (err) {
-                console.error("API Auth Error:", err);
-                showToast(`Błąd autoryzacji: ${err.message}`, "error");
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Spróbuj ponownie`;
-            }
-        }
-
-        function applyManualToken() {
-            const token = document.getElementById('directAccessTokenInput').value.trim();
-            if (!token) return;
-            const expiry = Date.now() + (3600 * 1000);
-            localStorage.setItem('spotguessr_access_token', token);
-            localStorage.setItem('spotguessr_token_expiry', expiry.toString());
-            updateApiBadgeState(token, expiry);
-            showToast("Zastosowano ręczny Access Token!", "success");
-        }
-
         async function getValidAccessToken() {
-    let token = localStorage.getItem('spotguessr_access_token');
-    const expiry = parseInt(localStorage.getItem('spotguessr_token_expiry') || '0', 10);
+            let token = localStorage.getItem('spotguessr_access_token');
+            const expiry = parseInt(localStorage.getItem('spotguessr_token_expiry') || '0', 10);
 
-    if (token && expiry > Date.now()) {
-        return token;
-    }
+            if (token && expiry > Date.now()) {
+                updateApiBadgeState(token, expiry);
+                return token;
+            }
 
-    // Ciągnie token z Twojego własnego serwera — zero CORS, zero blokad Brave'a
-    const res = await fetch('token.php');
-    if (!res.ok) throw new Error("Błąd pobierania tokenu z token.php");
-    
-    const data = await res.json();
-    if (!data.access_token) throw new Error("Brak tokenu w odpowiedzi");
+            const res = await fetch('token.php');
+            if (!res.ok) {
+                updateApiBadgeState(null, 0);
+                throw new Error("Błąd pobierania tokenu z pliku token.php (HTTP " + res.status + ")");
+            }
 
-    token = data.access_token;
-    const newExpiry = Date.now() + (data.expires_in * 1000);
-    localStorage.setItem('spotguessr_access_token', token);
-    localStorage.setItem('spotguessr_token_expiry', newExpiry.toString());
-    updateApiBadgeState(token, newExpiry);
-    return token;
-}
+            const data = await res.json();
+            if (!data.access_token) {
+                updateApiBadgeState(null, 0);
+                throw new Error(data.error_description || "Brak access_token w odpowiedzi token.php");
+            }
 
-            return null;
+            token = data.access_token;
+            const newExpiry = Date.now() + (data.expires_in * 1000);
+            localStorage.setItem('spotguessr_access_token', token);
+            localStorage.setItem('spotguessr_token_expiry', newExpiry.toString());
+            updateApiBadgeState(token, newExpiry);
+            return token;
         }
 
         // ==========================================
@@ -787,15 +658,11 @@
             const btnLoad = document.getElementById('btnLoadSpotifyUrl');
             btnLoad.disabled = true;
             btnLoad.classList.add('opacity-60');
-            setSpotifyStatusBox('loading', 'Łączenie z oficjalnym Spotify Web API...');
+            setSpotifyStatusBox('loading', 'Łączenie z Spotify API przez token.php...');
 
             try {
                 const token = await getValidAccessToken();
-                if (!token) {
-                    throw new Error("Brak aktywnego tokenu API. Wpisz Client ID i Secret poniżej i kliknij 'Zapisz i połącz z Spotify API'.");
-                }
 
-                // Bezpośrednie zapytanie do api.spotify.com (CORS dla Bearer token jest włączony przez Spotify!)
                 const plRes = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -824,7 +691,6 @@
 
                 addFromItems(plJson.tracks?.items);
 
-                // Paginacja do 500 utworów
                 let nextUrl = plJson.tracks?.next;
                 let pages = 0;
                 while (nextUrl && pages < 4) {
@@ -840,7 +706,7 @@
                 }
 
                 if (tracks.length === 0) {
-                    throw new Error("Playlista jest pusta lub utwory są niedostępne w Twoim regionie.");
+                    throw new Error("Playlista jest pusta lub utwory są niedostępne.");
                 }
 
                 const finalName = plJson.name || "Playlista Spotify";
@@ -852,11 +718,7 @@
 
             } catch (err) {
                 console.error("Błąd wczytywania playlisty:", err);
-                setSpotifyStatusBox(
-                    'error',
-                    'Nie udało się pobrać playlisty',
-                    err.message
-                );
+                setSpotifyStatusBox('error', 'Nie udało się pobrać playlisty', err.message);
                 showToast(err.message, "error");
             } finally {
                 btnLoad.disabled = false;
