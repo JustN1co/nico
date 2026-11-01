@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="pl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpotGuessr — Jaka to melodia ze Spotify</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        spotify: {
+                            green: '#1DB954',
+                            light: '#1ed760',
+                            dark: '#121212',
+                            card: '#181818',
+                            elevated: '#242424'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styling & Animations */
+        body {
+            background-color: #090d16;
+            background-image: 
+                radial-gradient(at 15% 10%, rgba(29, 185, 84, 0.12) 0px, transparent 45%),
+                radial-gradient(at 85% 90%, rgba(59, 130, 246, 0.08) 0px, transparent 50%);
+            color: #f3f4f6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1DB954;
+        }
+
+        /* Equalizer Animation */
+        @keyframes eq-bar {
+            0%, 100% { transform: scaleY(0.25); }
+            50% { transform: scaleY(1); }
+        }
+        .eq-bar {
+            transform-origin: bottom;
+            transition: transform 0.2s ease;
+        }
+        .playing .eq-bar-1 { animation: eq-bar 0.6s infinite ease-in-out 0.0s; }
+        .playing .eq-bar-2 { animation: eq-bar 0.5s infinite ease-in-out 0.15s; }
+        .playing .eq-bar-3 { animation: eq-bar 0.7s infinite ease-in-out 0.3s; }
+        .playing .eq-bar-4 { animation: eq-bar 0.55s infinite ease-in-out 0.1s; }
+        .playing .eq-bar-5 { animation: eq-bar 0.65s infinite ease-in-out 0.25s; }
+
+        /* Pulse Ring for Play Button */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(29, 185, 84, 0.6); }
+            70% { transform: scale(1); box-shadow: 0 0 0 16px rgba(29, 185, 84, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(29, 185, 84, 0); }
+        }
+        .play-btn-pulse {
+            animation: pulse-ring 2s infinite;
+        }
+
+        /* Smooth transitions */
+        .guess-slot {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .guess-slot.active-slot {
+            border-color: rgba(29, 185, 84, 0.6);
+            box-shadow: 0 0 15px -3px rgba(29, 185, 84, 0.15);
+        }
+
+        /* Range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            margin-top: -5px;
+            box-shadow: 0 0 6px rgba(0,0,0,0.5);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #374151;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans selection:bg-spotify-green selection:text-black">
+
+    <!-- Top Toast Notification Container (z-[100] so it always renders above modals) -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- Header Navigation -->
+    <header class="border-b border-gray-800/80 bg-gray-950/70 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- Brand -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-spotify-green to-emerald-700 flex items-center justify-center shadow-lg shadow-spotify-green/20">
+                    <i class="fa-brands fa-spotify text-2xl text-black"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white">Spot<span class="text-spotify-green">Guessr</span></h1>
+                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">PL Edition</span>
+                    </div>
+                    <p id="activePlaylistBadge" class="text-xs text-gray-400 truncate max-w-[180px] sm:max-w-[260px]">
+                        Brak załadowanej playlisty
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats & Actions -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Scoreboard Pills -->
+                <div class="flex items-center bg-gray-900/90 border border-gray-800 rounded-xl px-3 py-1.5 gap-3 text-xs sm:text-sm">
+                    <div class="text-center" title="Wynik punktowy">
+                        <span class="text-gray-400 block text-[10px] uppercase">Punkty</span>
+                        <span id="statScore" class="font-mono font-bold text-white">0</span>
+                    </div>
+                    <div class="h-6 w-px bg-gray-800"></div>
+                    <div class="text-center" title="Seria trafień z rzędu">
+                        <span class="text-gray-400 block text-[10px] uppercase">Seria</span>
+                        <span id="statStreak" class="font-mono font-bold text-spotify-green">0 🔥</span>
+                    </div>
+                    <div class="h-6 w-px bg-gray-800 hidden sm:block"></div>
+                    <div class="text-center hidden sm:block" title="Odgadnięte utwory">
+                        <span class="text-gray-400 block text-[10px] uppercase">Trafione</span>
+                        <span id="statGuessed" class="font-mono font-bold text-emerald-400">0/0</span>
+                    </div>
+                </div>
+
+                <!-- Change Playlist Button -->
+                <button onclick="openPlaylistModal()" class="px-3.5 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium text-xs sm:text-sm border border-gray-700 transition flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-compact-disc text-spotify-green"></i>
+                    <span>Playlista</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 flex flex-col justify-between gap-6">
+
+        <!-- Loading / Searching Audio State Banner -->
+        <div id="audioLoadingBanner" class="hidden rounded-2xl bg-gray-900/90 border border-gray-800 p-4 flex items-center justify-center gap-3 text-sm text-gray-300 shadow-lg">
+            <i class="fa-solid fa-circle-notch fa-spin text-spotify-green text-lg"></i>
+            <span id="audioLoadingText">Losowanie utworu i pobieranie próbki audio z iTunes...</span>
+        </div>
+
+        <!-- Guess Slots (6 Attempts like Heardle / Lessgames) -->
+        <section aria-label="Próby odgadnięcia" class="flex flex-col gap-2">
+            <div class="flex items-center justify-between text-xs text-gray-400 px-1 mb-0.5">
+                <span class="font-medium uppercase tracking-wider">Kolejne próby (6 etapów)</span>
+                <span id="remainingPoolInfo" class="font-mono text-gray-400">Pula: 0 utworów</span>
+            </div>
+
+            <div id="guessSlotsContainer" class="flex flex-col gap-2">
+                <!-- Dynamically populated 6 slots -->
+            </div>
+        </section>
+
+        <!-- End-of-Round Reveal Card (Hidden during active guessing) -->
+        <section id="revealCard" class="hidden rounded-2xl bg-gradient-to-b from-gray-900 to-gray-950 border border-gray-800 p-5 shadow-2xl relative overflow-hidden">
+            <div id="revealStatusBanner" class="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-4">
+                <!-- Filled dynamically -->
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-5">
+                <img id="revealCover" src="https://placehold.co/300x300/181818/1DB954?text=SpotGuessr" alt="Okładka albumu" class="w-28 h-28 sm:w-32 sm:h-32 rounded-xl object-cover shadow-xl border border-gray-700/60 shrink-0">
+                
+                <div class="flex-1 text-center sm:text-left min-w-0">
+                    <h2 id="revealTitle" class="text-xl sm:text-2xl font-extrabold text-white truncate">Tytuł Utworu</h2>
+                    <p id="revealArtist" class="text-base sm:text-lg text-spotify-green font-semibold mt-0.5 truncate">Artysta</p>
+                    <p id="revealSubInfo" class="text-xs text-gray-400 mt-2">Odgadnięto w 1. próbie (1 sekunda) • +600 pkt</p>
+
+                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-4">
+                        <button onclick="toggleFullPreview()" id="btnFullPreview" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold border border-gray-700 transition flex items-center gap-2">
+                            <i class="fa-solid fa-headphones text-spotify-green"></i>
+                            <span>Słuchaj całe 30s</span>
+                        </button>
+                        <a id="revealSpotifySearch" href="#" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-[#1DB954]/15 hover:bg-[#1DB954]/25 text-spotify-green text-xs font-semibold border border-[#1DB954]/30 transition flex items-center gap-1.5">
+                            <i class="fa-brands fa-spotify"></i>
+                            <span>Otwórz w Spotify</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="w-full sm:w-auto mt-3 sm:mt-0">
+                    <button onclick="startNextRound()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-spotify-green hover:bg-spotify-light text-black font-extrabold text-sm shadow-lg shadow-spotify-green/25 transition flex items-center justify-center gap-2">
+                        <span>Następny utwór</span>
+                        <i class="fa-solid fa-forward-step"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Audio Player & Segmented Timeline Section -->
+        <section class="rounded-2xl bg-gray-900/90 border border-gray-800/90 p-4 sm:p-5 shadow-xl backdrop-blur-sm">
+            <!-- Timeline Header Info -->
+            <div class="flex items-center justify-between text-xs font-mono mb-2">
+                <div class="flex items-center gap-2">
+                    <span id="currentTimeLabel" class="text-spotify-green font-bold">0.0s</span>
+                    <span class="text-gray-600">/</span>
+                    <span id="unlockedTimeLabel" class="text-gray-300">Odblokowano: 1.0s</span>
+                </div>
+                <div class="flex items-center gap-1.5 text-gray-400">
+                    <span>Max: 16s</span>
+                </div>
+            </div>
+
+            <!-- Segmented Progress Bar (16 seconds total during guessing) -->
+            <div class="relative h-5 bg-gray-950 rounded-xl overflow-hidden border border-gray-800 p-0.5 select-none">
+                <!-- Unlocked zone background -->
+                <div id="unlockedZoneBar" class="absolute top-0 bottom-0 left-0 bg-gray-800/90 transition-all duration-300" style="width: 6.25%;"></div>
+                
+                <!-- Active Playback Fill -->
+                <div id="playbackFillBar" class="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-emerald-500 to-spotify-green transition-none" style="width: 0%;"></div>
+
+                <!-- Stage Markers at 1s, 2s, 4s, 7s, 11s, 16s -->
+                <!-- Percentages of 16s: 1/16=6.25%, 2/16=12.5%, 4/16=25%, 7/16=43.75%, 11/16=68.75% -->
+                <div class="absolute inset-0 pointer-events-none">
+                    <div class="stage-marker absolute top-0 bottom-0 border-r border-gray-700/80 flex items-end justify-end pr-1 pb-0.5 text-[9px] font-mono text-gray-400" style="left: 0%; width: 6.25%;">1s</div>
+                    <div class="stage-marker absolute top-0 bottom-0 border-r border-gray-700/80 flex items-end justify-end pr-1 pb-0.5 text-[9px] font-mono text-gray-400" style="left: 6.25%; width: 6.25%;">2s</div>
+                    <div class="stage-marker absolute top-0 bottom-0 border-r border-gray-700/80 flex items-end justify-end pr-1 pb-0.5 text-[9px] font-mono text-gray-400" style="left: 12.5%; width: 12.5%;">4s</div>
+                    <div class="stage-marker absolute top-0 bottom-0 border-r border-gray-700/80 flex items-end justify-end pr-1 pb-0.5 text-[9px] font-mono text-gray-400" style="left: 25%; width: 18.75%;">7s</div>
+                    <div class="stage-marker absolute top-0 bottom-0 border-r border-gray-700/80 flex items-end justify-end pr-1 pb-0.5 text-[9px] font-mono text-gray-400" style="left: 43.75%; width: 25%;">11s</div>
+                    <div class="stage-marker absolute top-0 bottom-0 flex items-end justify-end pr-1.5 pb-0.5 text-[9px] font-mono text-gray-400" style="left: 68.75%; width: 31.25%;">16s</div>
+                </div>
+            </div>
+
+            <!-- Controls Row: Equalizer, Play Button, Volume -->
+            <div class="mt-4 flex items-center justify-between gap-4">
+                <!-- Left: Mini Equalizer Visualizer -->
+                <div id="visualizerContainer" class="flex items-end gap-1 h-7 w-24 px-2 py-1 bg-gray-950/70 rounded-lg border border-gray-800/80">
+                    <div class="eq-bar eq-bar-1 w-1.5 h-full bg-spotify-green rounded-full" style="transform: scaleY(0.25);"></div>
+                    <div class="eq-bar eq-bar-2 w-1.5 h-full bg-spotify-green rounded-full" style="transform: scaleY(0.25);"></div>
+                    <div class="eq-bar eq-bar-3 w-1.5 h-full bg-spotify-green rounded-full" style="transform: scaleY(0.25);"></div>
+                    <div class="eq-bar eq-bar-4 w-1.5 h-full bg-spotify-green rounded-full" style="transform: scaleY(0.25);"></div>
+                    <div class="eq-bar eq-bar-5 w-1.5 h-full bg-spotify-green rounded-full" style="transform: scaleY(0.25);"></div>
+                    <span id="playerStatusMini" class="text-[10px] font-mono text-gray-400 ml-1.5">GOTOWY</span>
+                </div>
+
+                <!-- Center: Main Play / Stop Snippet Button -->
+                <button id="btnPlaySnippet" onclick="togglePlaySnippet()" class="w-14 h-14 rounded-full bg-spotify-green hover:bg-spotify-light text-black flex items-center justify-center text-xl shadow-lg transition transform active:scale-95 play-btn-pulse focus:outline-none" title="Odtwórz fragment (Spacja)">
+                    <i id="playIcon" class="fa-solid fa-play ml-0.5"></i>
+                </button>
+
+                <!-- Right: Volume Control -->
+                <div class="flex items-center gap-2 w-24 sm:w-28 justify-end">
+                    <button onclick="toggleMute()" class="text-gray-400 hover:text-white text-sm w-6 text-center">
+                        <i id="volumeIcon" class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <input id="volumeSlider" type="range" min="0" max="1" step="0.02" value="0.8" oninput="updateVolume(this.value)" class="w-16 sm:w-20" aria-label="Głośność">
+                </div>
+            </div>
+
+            <!-- Interactive Controls: Search Input + Autocomplete + Submit / Skip -->
+            <div id="guessingControlsArea" class="mt-5 pt-4 border-t border-gray-800/80">
+                <div class="relative">
+                    <!-- Autocomplete Dropdown (opens upwards so it's never cut off) -->
+                    <div id="autocompleteDropdown" class="hidden absolute bottom-full left-0 right-0 mb-2 max-h-60 overflow-y-auto rounded-xl bg-gray-900 border border-gray-700 shadow-2xl z-40 divide-y divide-gray-800/70">
+                        <!-- Dynamically populated suggestions -->
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="relative flex items-center">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 text-gray-400 pointer-events-none"></i>
+                        <input 
+                            id="guessInput" 
+                            type="text" 
+                            autocomplete="off"
+                            placeholder="Wpisz tytuł lub artystę, aby wyszukać z playlisty..." 
+                            class="w-full pl-11 pr-10 py-3.5 rounded-xl bg-gray-950 border border-gray-700/90 focus:border-spotify-green focus:ring-2 focus:ring-spotify-green/20 text-sm text-white placeholder-gray-500 focus:outline-none transition"
+                        >
+                        <button id="btnClearInput" onclick="clearGuessInput()" class="hidden absolute right-3 text-gray-500 hover:text-gray-300 p-1">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons: Skip & Submit -->
+                <div class="flex items-center justify-between gap-3 mt-3">
+                    <button id="btnSkipAttempt" onclick="handleSkipAttempt()" class="px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold text-xs sm:text-sm border border-gray-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-forward"></i>
+                        <span id="skipBtnLabel">Pomiń (+1s)</span>
+                    </button>
+
+                    <button id="btnSubmitGuess" onclick="handleSubmitGuess()" class="flex-1 sm:flex-initial sm:min-w-[180px] px-6 py-3 rounded-xl bg-spotify-green hover:bg-spotify-light text-black font-extrabold text-xs sm:text-sm shadow-lg shadow-spotify-green/20 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Zatwierdź odpowiedź</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-4xl w-full mx-auto px-4 py-4 text-center text-xs text-gray-500 border-t border-gray-900 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div>
+            SpotGuessr • Inspirowane <span class="text-gray-400">lessgames.com</span> oraz <span class="text-gray-400">Heardle</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <span>Audio: <strong class="text-gray-400">iTunes Search API (30s M4A)</strong></span>
+            <span>•</span>
+            <span>Dane: <strong class="text-gray-400">Spotify Embed / Web API</strong></span>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- PLAYLIST LOADER MODAL                      -->
+    <!-- ========================================== -->
+    <div id="playlistModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl my-8 relative">
+            
+            <!-- Modal Header -->
+            <div class="flex items-start justify-between gap-4 pb-4 border-b border-gray-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-spotify-green/15 border border-spotify-green/30 flex items-center justify-center text-spotify-green text-xl">
+                        <i class="fa-brands fa-spotify"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-extrabold text-white">Wybierz lub wklej playlistę</h2>
+                        <p class="text-xs text-gray-400">Wklej link do dowolnej publicznej playlisty Spotify albo wybierz gotowy zestaw</p>
+                    </div>
+                </div>
+                <button id="btnCloseModal" onclick="closePlaylistModal()" class="text-gray-400 hover:text-white p-1.5 rounded-lg bg-gray-800/60 hover:bg-gray-800 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="grid grid-cols-3 gap-1.5 bg-gray-950 p-1.5 rounded-xl border border-gray-800 mt-4 text-xs sm:text-sm font-semibold">
+                <button onclick="switchModalTab('spotify')" id="tabBtnSpotify" class="py-2 px-3 rounded-lg bg-spotify-green text-black transition flex items-center justify-center gap-1.5">
+                    <i class="fa-brands fa-spotify"></i>
+                    <span>Link Spotify</span>
+                </button>
+                <button onclick="switchModalTab('presets')" id="tabBtnPresets" class="py-2 px-3 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-fire"></i>
+                    <span>Gotowe (3)</span>
+                </button>
+                <button onclick="switchModalTab('custom')" id="tabBtnCustom" class="py-2 px-3 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-list-ul"></i>
+                    <span>Własny tekst / Ctrl+V</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: SPOTIFY LINK -->
+            <div id="tabContentSpotify" class="mt-5 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2">
+                        Link do publicznej playlisty Spotify (lub samo ID)
+                    </label>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input 
+                            id="spotifyUrlInput" 
+                            type="text" 
+                            placeholder="https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M" 
+                            class="flex-1 px-4 py-3 rounded-xl bg-gray-950 border border-gray-700 focus:border-spotify-green text-sm text-white placeholder-gray-500 focus:outline-none"
+                        >
+                        <button id="btnLoadSpotifyUrl" onclick="loadFromSpotifyUrl()" class="px-5 py-3 rounded-xl bg-spotify-green hover:bg-spotify-light text-black font-extrabold text-sm transition flex items-center justify-center gap-2 shrink-0">
+                            <i class="fa-solid fa-cloud-arrow-down"></i>
+                            <span>Wczytaj playlistę</span>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 mt-2 text-xs text-gray-400">
+                        <span>Przykładowe linki do przetestowania:</span>
+                        <button onclick="fillExampleSpotifyUrl('https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M')" class="text-spotify-green hover:underline">Today's Top Hits</button>
+                        <span>•</span>
+                        <button onclick="fillExampleSpotifyUrl('https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd')" class="text-spotify-green hover:underline">RapCaviar</button>
+                        <span>•</span>
+                        <button onclick="fillExampleSpotifyUrl('https://open.spotify.com/playlist/37i9dQZF1DXcRXFNfZr7Tp')" class="text-spotify-green hover:underline">Polskie Hity</button>
+                    </div>
+                </div>
+
+                <!-- Persistent Loader / Error / Success Status Box (NEVER disappears silently) -->
+                <div id="spotifyLoaderStatus" class="hidden rounded-xl bg-gray-950 border border-gray-800 p-4 text-xs text-gray-300 space-y-2">
+                    <div class="flex items-start gap-3">
+                        <i id="spotifyLoaderIcon" class="fa-solid fa-spinner fa-spin text-spotify-green text-base mt-0.5 shrink-0"></i>
+                        <div class="flex-1 min-w-0">
+                            <div id="spotifyLoaderStatusText" class="font-semibold text-white">Łączenie ze Spotify...</div>
+                            <div id="spotifyLoaderSubText" class="text-gray-400 mt-1 leading-relaxed"></div>
+                        </div>
+                    </div>
+                    <!-- Action buttons shown when CORS proxies fail or playlist is restricted -->
+                    <div id="spotifyLoaderErrorActions" class="hidden pt-2 border-t border-gray-800/80 flex flex-wrap gap-2">
+                        <button onclick="openApiDrawerFromError()" class="px-3 py-1.5 rounded-lg bg-spotify-green/20 hover:bg-spotify-green/30 text-spotify-green border border-spotify-green/40 font-semibold transition">
+                            <i class="fa-solid fa-key mr-1"></i> Użyj klucza Spotify API (100% skuteczności)
+                        </button>
+                        <button onclick="switchModalTab('custom')" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 font-semibold transition">
+                            <i class="fa-solid fa-paste mr-1"></i> Wklej skopiowane utwory (Ctrl+C ze Spotify)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Optional Official Spotify API Keys Accordion -->
+                <div class="rounded-xl bg-gray-950/80 border border-gray-800/90 overflow-hidden">
+                    <button onclick="toggleApiSettingsDrawer()" class="w-full px-4 py-3 text-left text-xs font-semibold text-gray-300 hover:text-white flex items-center justify-between transition">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-key text-spotify-green"></i>
+                            <span>Niezawodny tryb: Własne klucze Spotify API (Omija proxy CORS i pobiera do 500 utworów)</span>
+                        </span>
+                        <i id="apiDrawerChevron" class="fa-solid fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div id="apiSettingsDrawer" class="hidden px-4 pb-4 pt-2 border-t border-gray-800/80 space-y-3 text-xs">
+                        <div class="p-3 rounded-lg bg-gray-900/90 border border-gray-800 text-gray-300 space-y-1.5">
+                            <p class="font-semibold text-white">Jak zdobyć darmowy klucz w 30 sekund (działa z każdą Twoją playlistą bez proxy):</p>
+                            <ol class="list-decimal list-inside space-y-1 text-gray-400">
+                                <li>Wejdź na <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener" class="text-spotify-green underline font-medium">developer.spotify.com/dashboard</a> i zaloguj się.</li>
+                                <li>Kliknij <strong>Create app</strong> (wpisz dowolną nazwę, w <em>Redirect URI</em> wpisz np. <code class="text-gray-300">http://localhost</code> i zaznacz <em>Web API</em>).</li>
+                                <li>Wejdź w <strong>Settings</strong> i skopiuj <strong>Client ID</strong> oraz <strong>Client Secret</strong> poniżej:</li>
+                            </ol>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-gray-400 mb-1">Spotify Client ID</label>
+                                <input id="spotifyClientIdInput" type="text" placeholder="np. 4a1b2c3d4e5f..." class="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-700 text-white focus:border-spotify-green focus:outline-none font-mono text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-gray-400 mb-1">Spotify Client Secret</label>
+                                <input id="spotifyClientSecretInput" type="password" placeholder="••••••••••••••" class="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-700 text-white focus:border-spotify-green focus:outline-none font-mono text-xs">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Jump to Presets Info -->
+                <div class="rounded-xl bg-emerald-950/20 border border-emerald-800/40 p-3.5 flex items-center justify-between gap-3">
+                    <div class="text-xs text-gray-300">
+                        <strong class="text-spotify-green block mb-0.5">Chcesz zagrać natychmiast bez wklejania linków?</strong>
+                        Wybierz jedną z wbudowanych playlist poniżej (Polski Trap/Pop, Światowe Hity, Rock & Metal):
+                    </div>
+                    <button onclick="switchModalTab('presets')" class="px-3 py-2 rounded-lg bg-spotify-green/20 hover:bg-spotify-green/30 text-spotify-green font-bold text-xs shrink-0 border border-spotify-green/30 transition">
+                        Gotowe playlisty →
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 2: BUILT-IN PRESETS -->
+            <div id="tabContentPresets" class="hidden mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- Preset 1: PL Trap & Alternatywa -->
+                <button onclick="loadPresetPlaylist('pl_hits')" class="text-left p-4 rounded-xl bg-gray-950 hover:bg-gray-800/80 border border-gray-800 hover:border-spotify-green/60 transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-rose-500/20 border border-rose-500/30 text-rose-400 flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                            🇵🇱
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-spotify-green transition">Polskie Hity: Rap & Pop</h3>
+                        <p class="text-xs text-gray-400 mt-1 leading-relaxed">
+                            Taco Hemingway, Dawid Podsiadło, Sanah, Mata, Quebonafide, PRO8L3M, Lady Pank, Myslovitz i inni.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-2 border-t border-gray-800/80 flex items-center justify-between text-[11px] font-mono text-spotify-green">
+                        <span>28 utworów</span>
+                        <span>Graj teraz →</span>
+                    </div>
+                </button>
+
+                <!-- Preset 2: Światowe Hity -->
+                <button onclick="loadPresetPlaylist('global_hits')" class="text-left p-4 rounded-xl bg-gray-950 hover:bg-gray-800/80 border border-gray-800 hover:border-spotify-green/60 transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-spotify-green/20 border border-spotify-green/30 text-spotify-green flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                            🌍
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-spotify-green transition">Światowe Mega Hity</h3>
+                        <p class="text-xs text-gray-400 mt-1 leading-relaxed">
+                            The Weeknd, Travis Scott, Dua Lipa, Billie Eilish, Post Malone, Eminem, Daft Punk, Arctic Monkeys.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-2 border-t border-gray-800/80 flex items-center justify-between text-[11px] font-mono text-spotify-green">
+                        <span>30 utworów</span>
+                        <span>Graj teraz →</span>
+                    </div>
+                </button>
+
+                <!-- Preset 3: Klasyki Rocka & Metal -->
+                <button onclick="loadPresetPlaylist('rock_classics')" class="text-left p-4 rounded-xl bg-gray-950 hover:bg-gray-800/80 border border-gray-800 hover:border-spotify-green/60 transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                            🎸
+                        </div>
+                        <h3 class="font-bold text-white text-sm group-hover:text-spotify-green transition">Klasyki Rocka & Metal</h3>
+                        <p class="text-xs text-gray-400 mt-1 leading-relaxed">
+                            Queen, Nirvana, Linkin Park, Metallica, AC/DC, Red Hot Chili Peppers, System Of A Down, Guns N' Roses.
+            <!-- TAB 3: CUSTOM TEXT LIST / SPOTIFY CTRL+C IMPORT -->
+            <div id="tabContentCustom" class="hidden mt-5 space-y-3">
+                <div class="p-3 rounded-xl bg-gray-950 border border-gray-800 text-xs text-gray-300 space-y-1">
+                    <div class="font-bold text-spotify-green flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Obsługuje 3 sposoby wklejania (Smart Parser):</span>
+                    </div>
+                    <ul class="list-disc list-inside text-gray-400 space-y-0.5">
+                        <li>Format klasyczny: <code class="text-gray-200">Artysta - Tytuł</code> (każdy utwór w nowej linii)</li>
+                        <li>Kopiuj-Wklej prosto z aplikacji Spotify: otwórz playlistę w Spotify, naciśnij <kbd class="px-1.5 py-0.5 bg-gray-800 rounded text-gray-200">Ctrl+A</kbd>, potem <kbd class="px-1.5 py-0.5 bg-gray-800 rounded text-gray-200">Ctrl+C</kbd> i wklej tutaj linki <code class="text-gray-200">open.spotify.com/track/...</code>!</li>
+                        <li>Skopiowany tekst tabeli ze strony internetowej Spotify Web Player.</li>
+                    </ul>
+                </div>
+                <textarea 
+                    id="customTracksTextarea" 
+                    rows="7" 
+                    placeholder="Taco Hemingway - Następna stacja&#10;Dawid Podsiadło - Małomiasteczkowy&#10;The Weeknd - Blinding Lights&#10;lub wklej skopiowane linki utworów (Ctrl+A -> Ctrl+C w Spotify)..."
+                    class="w-full p-3.5 rounded-xl bg-gray-950 border border-gray-700 focus:border-spotify-green text-xs sm:text-sm font-mono text-white placeholder-gray-600 focus:outline-none"
+                ></textarea>
+                <div id="customImportStatus" class="hidden text-xs text-spotify-green font-mono"></div>
+                <div class="flex justify-end">
+                    <button id="btnLoadCustom" onclick="loadFromCustomText()" class="px-5 py-2.5 rounded-xl bg-spotify-green hover:bg-spotify-light text-black font-extrabold text-xs sm:text-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Utwórz quiz z tej listy</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Hidden HTML5 Audio Element -->
+    <audio id="audioPlayer" preload="auto" crossorigin="anonymous"></audio>
+
+    <!-- ========================================== -->
+    <!-- APPLICATION JAVASCRIPT                     -->
+    <!-- ========================================== -->
+    <script>
+        /**
+         * BUILT-IN PRESET PLAYLISTS
+         * Carefully curated popular songs guaranteed to have fast, accurate iTunes 30s previews.
+         */
+        const PRESET_PLAYLISTS = {
+            pl_hits: {
+                name: "Polskie Hity: Rap & Pop 🇵🇱",
+                tracks: [
+                    { artist: "Taco Hemingway", title: "Następna stacja" },
+                    { artist: "Taco Hemingway", title: "Fiji" },
+                    { artist: "Dawid Podsiadło", title: "Małomiasteczkowy" },
+                    { artist: "Dawid Podsiadło", title: "Trójkąty i Kwadraty" },
+                    { artist: "Dawid Podsiadło", title: "mori" },
+                    { artist: "sanah", title: "Szampan" },
+                    { artist: "sanah", title: "Ale jazz!" },
+                    { artist: "Mata", title: "Kiss Cam (podryw roku)" },
+                    { artist: "Mata", title: "Patoreakcja" },
+                    { artist: "Quebonafide", title: "Candy" },
+                    { artist: "Quebonafide", title: "Bubbletea" },
+                    { artist: "Sobel", title: "Fiołkowe pole" },
+                    { artist: "White 2115", title: "California" },
+                    { artist: "Bedoes 2115", title: "1998 (mam to we krwi)" },
+                    { artist: "OKI", title: "Jeżyk!" },
+                    { artist: "Otsochodzi", title: "Nie, nie" },
+                    { artist: "PRO8L3M", title: "Ground Zero" },
+                    { artist: "Daria Zawiałow", title: "Hej Hej!" },
+                    { artist: "Mrozu", title: "Złoto" },
+                    { artist: "Vito Bambino", title: "Etna" },
+                    { artist: "Bambii", title: "IRL" },
+                    { artist: "Gibbs", title: "Stan" },
+                    { artist: "Myslovitz", title: "Długość dźwięku samotności" },
+                    { artist: "Lady Pank", title: "Mniej niż zero" },
+                    { artist: "Lady Pank", title: "Kryzysowa narzeczona" },
+                    { artist: "Wilki", title: "Baśka" },
+                    { artist: "Kult", title: "Gdy nie ma dzieci" },
+                    { artist: "Brodka", title: "Granda" }
+                ]
+            },
+            global_hits: {
+                name: "Światowe Mega Hity 🌍",
+                tracks: [
+                    { artist: "The Weeknd", title: "Blinding Lights" },
+                    { artist: "The Weeknd", title: "Starboy" },
+                    { artist: "Travis Scott", title: "SICKO MODE" },
+                    { artist: "Travis Scott", title: "goosebumps" },
+                    { artist: "Dua Lipa", title: "Don't Start Now" },
+                    { artist: "Dua Lipa", title: "Levitating" },
+                    { artist: "Billie Eilish", title: "bad guy" },
+                    { artist: "Billie Eilish", title: "BIRDS OF A FEATHER" },
+                    { artist: "Post Malone", title: "Circles" },
+                    { artist: "Post Malone", title: "rockstar" },
+                    { artist: "Drake", title: "God's Plan" },
+                    { artist: "Drake", title: "One Dance" },
+                    { artist: "Kendrick Lamar", title: "HUMBLE." },
+                    { artist: "Kendrick Lamar", title: "Not Like Us" },
+                    { artist: "Eminem", title: "Lose Yourself" },
+                    { artist: "Eminem", title: "Without Me" },
+                    { artist: "Daft Punk", title: "Get Lucky" },
+                    { artist: "Daft Punk", title: "One More Time" },
+                    { artist: "Arctic Monkeys", title: "Do I Wanna Know?" },
+                    { artist: "Arctic Monkeys", title: "505" },
+                    { artist: "Lana Del Rey", title: "Summertime Sadness" },
+                    { artist: "Bruno Mars", title: "Locked Out of Heaven" },
+                    { artist: "Rihanna", title: "Umbrella" },
+                    { artist: "Kanye West", title: "Stronger" },
+                    { artist: "Outkast", title: "Hey Ya!" },
+                    { artist: "Gorillaz", title: "Feel Good Inc." },
+                    { artist: "Twenty One Pilots", title: "Stressed Out" },
+                    { artist: "Imagine Dragons", title: "Believer" },
+                    { artist: "Ed Sheeran", title: "Shape of You" },
+                    { artist: "Harry Styles", title: "As It Was" }
+                ]
+            },
+            rock_classics: {
+                name: "Klasyki Rocka & Metal 🎸",
+                tracks: [
+                    { artist: "Queen", title: "Bohemian Rhapsody" },
+                    { artist: "Queen", title: "Don't Stop Me Now" },
+                    { artist: "Nirvana", title: "Smells Like Teen Spirit" },
+                    { artist: "Nirvana", title: "Come As You Are" },
+                    { artist: "Linkin Park", title: "In the End" },
+                    { artist: "Linkin Park", title: "Numb" },
+                    { artist: "Metallica", title: "Enter Sandman" },
+                    { artist: "Metallica", title: "Nothing Else Matters" },
+                    { artist: "AC/DC", title: "Back In Black" },
+                    { artist: "AC/DC", title: "Highway to Hell" },
+                    { artist: "Red Hot Chili Peppers", title: "Californication" },
+                    { artist: "Red Hot Chili Peppers", title: "Under the Bridge" },
+                    { artist: "System Of A Down", title: "Chop Suey!" },
+                    { artist: "System Of A Down", title: "Toxicity" },
+                    { artist: "Guns N' Roses", title: "Sweet Child O' Mine" },
+                    { artist: "Guns N' Roses", title: "Welcome to the Jungle" },
+                    { artist: "Green Day", title: "Basket Case" },
+                    { artist: "Green Day", title: "Boulevard of Broken Dreams" },
+                    { artist: "Foo Fighters", title: "Everlong" },
+                    { artist: "Radiohead", title: "Creep" },
+                    { artist: "The Cranberries", title: "Zombie" },
+                    { artist: "Evanescence", title: "Bring Me To Life" },
+                    { artist: "Bon Jovi", title: "Livin' on a Prayer" },
+                    { artist: "Depeche Mode", title: "Enjoy the Silence" },
+                    { artist: "The White Stripes", title: "Seven Nation Army" },
+                    { artist: "Muse", title: "Supermassive Black Hole" },
+                    { artist: "Rammstein", title: "Du hast" },
+                    { artist: "Oasis", title: "Wonderwall" }
+                ]
+            }
+        };
+
+        /**
+         * GAME CONSTANTS & STATE
+         */
+        const STAGE_TIMES = [1, 2, 4, 7, 11, 16]; // Seconds unlocked per attempt (6 attempts total)
+        const STAGE_POINTS = [600, 500, 400, 300, 200, 100];
+
+        let state = {
+            playlistName: "",
+            allTracks: [],           // Full array of { artist, title, fullLabel }
+            unplayedIndices: [],     // Indices not yet played in current session
+            currentTrack: null,      // { artist, title, previewUrl, artworkUrl }
+            currentAttempt: 0,       // 0..5
+            guesses: [],             // Array of { type: 'skip'|'wrong'|'artist'|'correct', text: '' }
+            roundOver: false,
+            playingFullPreview: false,
+            isPlaying: false,
+            score: 0,
+            streak: 0,
+            guessedCount: 0,
+            roundsPlayed: 0,
+            selectedSuggestionIndex: -1,
+            filteredSuggestions: []
+        };
+
+        const audio = document.getElementById('audioPlayer');
+        let rafId = null;
+
+        /**
+         * INITIALIZATION ON PAGE LOAD
+         */
+        window.addEventListener('DOMContentLoaded', () => {
+            // Restore saved optional API keys if present
+            const savedClientId = localStorage.getItem('spotguessr_client_id') || '';
+            const savedClientSecret = localStorage.getItem('spotguessr_client_secret') || '';
+            document.getElementById('spotifyClientIdInput').value = savedClientId;
+            document.getElementById('spotifyClientSecretInput').value = savedClientSecret;
+
+            // Setup autocomplete events
+            setupSearchAutocomplete();
+
+            // Setup audio event listeners
+            setupAudioEvents();
+
+            // Render initial empty 6 slots
+            renderGuessSlots();
+
+            // Load default preset in background so user can also close modal and play right away
+            loadPresetPlaylist('global_hits', false);
+        });
+
+        /**
+         * TOAST NOTIFICATION HELPER (No alert() used anywhere)
+         */
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let icon = 'fa-circle-info text-spotify-green';
+            let border = 'border-gray-700';
+            if (type === 'success') {
+                icon = 'fa-circle-check text-spotify-green';
+                border = 'border-spotify-green/50';
+            } else if (type === 'error') {
+                icon = 'fa-triangle-exclamation text-rose-400';
+                border = 'border-rose-500/50';
+            } else if (type === 'warning') {
+                icon = 'fa-bolt text-amber-400';
+                border = 'border-amber-500/50';
+            }
+
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-900/95 backdrop-blur-md border ${border} shadow-2xl text-xs sm:text-sm text-white transition-all duration-300 transform translate-y-0 opacity-100`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-base shrink-0"></i>
+                <span class="flex-1 leading-snug">${message}</span>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3800);
+        }
+
+        /**
+         * MODAL NAVIGATION & PLAYLIST LOADING
+         */
+        function openPlaylistModal() {
+            stopAudioPlayback();
+            document.getElementById('playlistModal').classList.remove('hidden');
+        }
+
+        function closePlaylistModal() {
+            if (state.allTracks.length === 0) {
+                loadPresetPlaylist('global_hits', true);
+                return;
+            }
+            document.getElementById('playlistModal').classList.add('hidden');
+        }
+
+        function switchModalTab(tab) {
+            const tabs = ['spotify', 'presets', 'custom'];
+            tabs.forEach(t => {
+                const content = document.getElementById('tabContent' + t.charAt(0).toUpperCase() + t.slice(1));
+                const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+                if (t === tab) {
+                    content.classList.remove('hidden');
+                    btn.className = "py-2 px-3 rounded-lg bg-spotify-green text-black transition flex items-center justify-center gap-1.5 font-bold";
+                } else {
+                    content.classList.add('hidden');
+                    btn.className = "py-2 px-3 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 font-semibold";
+                }
+            });
+        }
+
+        function toggleApiSettingsDrawer() {
+            const drawer = document.getElementById('apiSettingsDrawer');
+            const chevron = document.getElementById('apiDrawerChevron');
+            drawer.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        function openApiDrawerFromError() {
+            const drawer = document.getElementById('apiSettingsDrawer');
+            const chevron = document.getElementById('apiDrawerChevron');
+            drawer.classList.remove('hidden');
+            chevron.classList.add('rotate-180');
+            document.getElementById('spotifyClientIdInput').focus();
+        }
+
+        function fillExampleSpotifyUrl(url) {
+            document.getElementById('spotifyUrlInput').value = url;
+            loadFromSpotifyUrl();
+        }
+
+        /**
+         * HELPER TO UPDATE THE PERSISTENT STATUS BOX INSIDE MODAL
+         */
+        function setSpotifyStatusBox(mode, mainText, subText = '', showActions = false) {
+            const box = document.getElementById('spotifyLoaderStatus');
+            const icon = document.getElementById('spotifyLoaderIcon');
+            const mainEl = document.getElementById('spotifyLoaderStatusText');
+            const subEl = document.getElementById('spotifyLoaderSubText');
+            const actionsEl = document.getElementById('spotifyLoaderErrorActions');
+
+            box.classList.remove('hidden', 'border-gray-800', 'border-rose-500/50', 'border-spotify-green/50', 'bg-gray-950', 'bg-rose-950/20', 'bg-emerald-950/20');
+
+            if (mode === 'loading') {
+                box.classList.add('bg-gray-950', 'border-gray-800');
+                icon.className = "fa-solid fa-spinner fa-spin text-spotify-green text-base mt-0.5 shrink-0";
+                mainEl.className = "font-semibold text-white";
+            } else if (mode === 'error') {
+                box.classList.add('bg-rose-950/20', 'border-rose-500/50');
+                icon.className = "fa-solid fa-triangle-exclamation text-rose-400 text-base mt-0.5 shrink-0";
+                mainEl.className = "font-bold text-rose-300";
+            } else if (mode === 'success') {
+                box.classList.add('bg-emerald-950/20', 'border-spotify-green/50');
+                icon.className = "fa-solid fa-circle-check text-spotify-green text-base mt-0.5 shrink-0";
+                mainEl.className = "font-bold text-spotify-green";
+            }
+
+            mainEl.textContent = mainText;
+            subEl.innerHTML = subText;
+            subEl.classList.toggle('hidden', !subText);
+            actionsEl.classList.toggle('hidden', !showActions);
+        }
+
+        /**
+         * EXTRACT SPOTIFY PLAYLIST ID FROM ANY URL OR URI
+         */
+        function extractSpotifyPlaylistId(input) {
+            if (!input) return null;
+            const trimmed = input.trim();
+            // Direct 22-char ID check
+            if (/^[a-zA-Z0-9]{22}$/.test(trimmed)) return trimmed;
+            // Match /playlist/{id} with optional query params like ?si=... or intl-pl/playlist/...
+            const match = trimmed.match(/playlist[/:]([a-zA-Z0-9]{22})/i);
+            return match ? match[1] : null;
+        }
+
+        /**
+         * LOAD PLAYLIST FROM SPOTIFY URL
+         * Method A: Official Web API if Client ID & Client Secret are provided
+         * Method B: Multi-Proxy + Multi-Layer Spotify Embed & Page Scraper
+         */
+        async function loadFromSpotifyUrl() {
+            const rawInput = document.getElementById('spotifyUrlInput').value;
+            const playlistId = extractSpotifyPlaylistId(rawInput);
+
+            if (!playlistId) {
+                setSpotifyStatusBox(
+                    'error',
+                    'Nie rozpoznano linku do playlisty Spotify!',
+                    'Upewnij się, że wklejasz link do <strong>playlisty</strong> (np. <code>https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M</code>), a nie do pojedynczego utworu lub artysty.',
+                    false
+                );
+                showToast("Niepoprawny link! Wklej link do playlisty Spotify.", "error");
+                return;
+            }
+
+            const clientId = document.getElementById('spotifyClientIdInput').value.trim();
+            const clientSecret = document.getElementById('spotifyClientSecretInput').value.trim();
+
+            if (clientId) localStorage.setItem('spotguessr_client_id', clientId);
+            if (clientSecret) localStorage.setItem('spotguessr_client_secret', clientSecret);
+
+            const btnLoad = document.getElementById('btnLoadSpotifyUrl');
+            btnLoad.disabled = true;
+            btnLoad.classList.add('opacity-60');
+
+            setSpotifyStatusBox('loading', 'Sprawdzanie playlisty w Spotify...', `ID playlisty: <code>${playlistId}</code>`);
+
+            let oembedTitle = null;
+            try {
+                // Quick native CORS check via Spotify oEmbed to verify playlist exists and get its title
+                const oembedRes = await fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent('https://open.spotify.com/playlist/' + playlistId)}`);
+                if (oembedRes.ok) {
+                    const oembedData = await oembedRes.json();
+                    if (oembedData && oembedData.title) {
+                        oembedTitle = oembedData.title;
+                        setSpotifyStatusBox('loading', `Znaleziono playlistę: "${oembedTitle}"`, 'Pobieranie listy utworów...');
+                    }
+                }
+            } catch (e) {
+                // Ignore oEmbed failure, continue to main fetchers
+            }
+
+            try {
+                let playlistData = null;
+                let diagnosticLogs = [];
+
+                // 1. Try Official Spotify Web API if user supplied keys
+                if (clientId && clientSecret) {
+                    setSpotifyStatusBox('loading', 'Autoryzacja przez oficjalne Spotify Web API...', 'Pobieranie pełnej listy utworów (bez proxy)...');
+                    try {
+                        playlistData = await fetchViaOfficialSpotifyApi(playlistId, clientId, clientSecret);
+                    } catch (apiErr) {
+                        diagnosticLogs.push(`Spotify API: ${apiErr.message}`);
+                    }
+                }
+
+                // 2. Otherwise (or if keys failed), use Multi-Proxy + 4-Layer Scraper
+                if (!playlistData || playlistData.tracks.length === 0) {
+                    playlistData = await fetchViaSpotifyEmbedScraper(playlistId, oembedTitle, (stepTitle, stepSub) => {
+                        setSpotifyStatusBox('loading', stepTitle, stepSub);
+                    }, diagnosticLogs);
+                }
+
+                if (!playlistData || !playlistData.tracks || playlistData.tracks.length === 0) {
+                    throw new Error("Nie udało się wyciągnąć listy utworów z tej playlisty.");
+                }
+
+                // Success! Show green status briefly, apply playlist, close modal
+                const finalName = playlistData.name || oembedTitle || "Playlista Spotify";
+                setSpotifyStatusBox(
+                    'success',
+                    `Sukces! Załadowano "${finalName}"`,
+                    `Wczytano <strong>${playlistData.tracks.length} utworów</strong>. Rozpoczynanie gry...`,
+                    false
+                );
+
+                btnLoad.disabled = false;
+                btnLoad.classList.remove('opacity-60');
+
+                applyLoadedPlaylist(finalName, playlistData.tracks);
+                showToast(`Załadowano "${finalName}" (${playlistData.tracks.length} utworów)!`, "success");
+
+                setTimeout(() => {
+                    closePlaylistModal();
+                }, 450);
+
+            } catch (err) {
+                console.error("Spotify Load Error:", err);
+                btnLoad.disabled = false;
+                btnLoad.classList.remove('opacity-60');
+
+                // Keep error box visible inside modal so user sees exact reason and 1-click workarounds!
+                setSpotifyStatusBox(
+                    'error',
+                    `Nie udało się pobrać utworów z playlisty ${oembedTitle ? '"' + oembedTitle + '"' : '(' + playlistId + ')'}`,
+                    `${err.message}<br><span class="text-gray-400 mt-1 block">Wskazówka: Jeśli Twoja przeglądarka (np. Brave / uBlock) blokuje serwery proxy CORS albo playlista jest prywatna, wpisz darmowy klucz <strong>Spotify API</strong> poniżej lub wklej utwory przez <strong>Ctrl+C / Ctrl+V</strong>!</span>`,
+                    true
+                );
+                showToast("Nie udało się wczytać playlisty przez proxy — zobacz szczegóły w oknie.", "error");
+            }
+        }
+
+        /**
+         * METHOD A: OFFICIAL SPOTIFY API (Client Credentials Flow in Browser - up to 500 tracks)
+         */
+        async function fetchViaOfficialSpotifyApi(playlistId, clientId, clientSecret) {
+            const tokenRes = await fetch('https://accounts.spotify.com/api/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret)
+                },
+                body: 'grant_type=client_credentials'
+            });
+
+            if (!tokenRes.ok) {
+                throw new Error("Błędny Client ID lub Client Secret w ustawieniach Spotify API.");
+            }
+
+            const tokenData = await tokenRes.json();
+            const accessToken = tokenData.access_token;
+
+            const plRes = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+
+            if (!plRes.ok) {
+                throw new Error(`Spotify API zwróciło kod ${plRes.status} (upewnij się, że playlista jest publiczna).`);
+            }
+
+            const plJson = await plRes.json();
+            const tracks = [];
+
+            const extractItems = (itemsArray) => {
+                (itemsArray || []).forEach(item => {
+                    const t = item?.track;
+                    if (t && t.name && Array.isArray(t.artists) && t.artists.length > 0) {
+                        tracks.push({
+                            artist: t.artists.map(a => a.name).join(', '),
+                            title: t.name,
+                            previewUrl: t.preview_url || null
+                        });
+                    }
+                });
+            };
+
+            extractItems(plJson.tracks?.items);
+
+            // Fetch up to 4 additional pages (up to 500 tracks total)
+            let nextUrl = plJson.tracks?.next;
+            let pageCount = 0;
+            while (nextUrl && pageCount < 4) {
+                pageCount++;
+                const nextRes = await fetch(nextUrl, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                if (!nextRes.ok) break;
+                const nextJson = await nextRes.json();
+                extractItems(nextJson.items);
+                nextUrl = nextJson.next;
+            }
+
+            return {
+                name: plJson.name || "Playlista Spotify",
+                tracks
+            };
+        }
+
+        /**
+         * DECODE BASE64 DATA URI IF RETURNED BY ALLORIGINS
+         */
+        function decodeProxyPayload(rawText) {
+            if (!rawText || typeof rawText !== 'string') return '';
+            const trimmed = rawText.trim();
+            if (trimmed.startsWith('data:text/html')) {
+                const commaIdx = trimmed.indexOf(',');
+                if (commaIdx !== -1) {
+                    const b64 = trimmed.slice(commaIdx + 1);
+                    try {
+                        const binStr = atob(b64);
+                        const bytes = Uint8Array.from(binStr, c => c.charCodeAt(0));
+                        return new TextDecoder('utf-8').decode(bytes);
+                    } catch (e) {
+                        console.warn("Base64 decode error:", e);
+                    }
+                }
+            }
+            return rawText;
+        }
+
+        /**
+         * METHOD B: RESILIENT MULTI-PROXY & 4-LAYER SPOTIFY EMBED SCRAPER
+         */
+        async function fetchViaSpotifyEmbedScraper(playlistId, fallbackTitle, onProgress, diagnosticLogs = []) {
+            const embedUrl = `https://open.spotify.com/embed/playlist/${playlistId}`;
+            const normalUrl = `https://open.spotify.com/playlist/${playlistId}`;
+
+            const proxyTargets = [
+                {
+                    name: "CorsProxy.io (Embed)",
+                    url: `https://corsproxy.io/?${encodeURIComponent(embedUrl)}`,
+                    mode: 'text'
+                },
+                {
+                    name: "AllOrigins Raw (Embed)",
+                    url: `https://api.allorigins.win/raw?url=${encodeURIComponent(embedUrl)}`,
+                    mode: 'text'
+                },
+                {
+                    name: "AllOrigins JSON (Embed)",
+                    url: `https://api.allorigins.win/get?url=${encodeURIComponent(embedUrl)}`,
+                    mode: 'allorigins_json'
+                },
+                {
+                    name: "CodeTabs Proxy (Embed)",
+                    url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(embedUrl)}`,
+                    mode: 'text'
+                },
+                {
+                    name: "AllOrigins JSON (Strona główna)",
+                    url: `https://api.allorigins.win/get?url=${encodeURIComponent(normalUrl)}`,
+                    mode: 'allorigins_json'
+                }
+            ];
+
+            for (let i = 0; i < proxyTargets.length; i++) {
+                const target = proxyTargets[i];
+                try {
+                    if (onProgress) {
+                        onProgress(
+                            `Pobieranie utworów ze Spotify (Próba ${i + 1}/${proxyTargets.length}: ${target.name})...`,
+                            fallbackTitle ? `Playlista: <strong>${fallbackTitle}</strong>` : `ID: <code>${playlistId}</code>`
+                        );
+                    }
+
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+                    const res = await fetch(target.url, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
+                    if (!res.ok) {
+                        diagnosticLogs.push(`${target.name}: HTTP ${res.status}`);
+                        continue;
+                    }
+
+                    let html = '';
+                    if (target.mode === 'allorigins_json') {
+                        const data = await res.json();
+                        html = decodeProxyPayload(data?.contents || '');
+                    } else {
+                        html = decodeProxyPayload(await res.text());
+                    }
+
+                    if (!html || html.length < 300) {
+                        diagnosticLogs.push(`${target.name}: Pusta odpowiedź`);
+                        continue;
+                    }
+
+                    const parsed = parseSpotifyHtmlMultiLayer(html, fallbackTitle);
+                    if (parsed && parsed.tracks && parsed.tracks.length > 0) {
+                        return parsed;
+                    } else {
+                        diagnosticLogs.push(`${target.name}: Brak listy utworów w kodzie HTML`);
+                    }
+                } catch (e) {
+                    diagnosticLogs.push(`${target.name}: ${e.name === 'AbortError' ? 'Timeout' : e.message}`);
+                    console.warn(`Proxy ${target.name} failed:`, e);
+                }
+            }
+
+            throw new Error(
+                `Wszystkie publiczne serwery proxy CORS zostały zablokowane lub playlista jest prywatna (${diagnosticLogs.slice(0, 3).join(', ')}).`
+            );
+        }
+
+        /**
+         * 4-LAYER PARSER FOR SPOTIFY EMBED & PLAYLIST HTML
+         */
+        function parseSpotifyHtmlMultiLayer(htmlString, fallbackTitle = null) {
+            let playlistName = fallbackTitle || "Playlista Spotify";
+            const tracks = [];
+            const seenKeys = new Set();
+
+            const addTrack = (artist, title, previewUrl = null) => {
+                if (!artist || !title) return;
+                const cleanArtist = decodeHtmlEntities(String(artist)).replace(/\u00a0/g, ' ').trim();
+                const cleanTitle = decodeHtmlEntities(String(title)).replace(/\u00a0/g, ' ').trim();
+                if (!cleanArtist || !cleanTitle) return;
+                // Avoid generic Spotify UI labels
+                if (cleanTitle.toLowerCase() === 'spotify' || cleanArtist.toLowerCase() === 'spotify') return;
+
+                const key = `${cleanArtist.toLowerCase()}___${cleanTitle.toLowerCase()}`;
+                if (!seenKeys.has(key)) {
+                    seenKeys.add(key);
+                    tracks.push({
+                        artist: cleanArtist,
+                        title: cleanTitle,
+                        previewUrl: previewUrl || null
+                    });
+                }
+            };
+
+            // =================================================================
+            // LAYER 1 & 2: DOMParser + __NEXT_DATA__ / initial-state JSON tree
+            // =================================================================
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlString, 'text/html');
+
+                // Extract title from <title> or og:title if available
+                const ogTitle = doc.querySelector('meta[property="og:title"]')?.getAttribute('content');
+                if (ogTitle) {
+                    playlistName = ogTitle.replace(/\s*-\s*playlist by.*$/i, '').replace(/\s*\|\s*Spotify.*$/i, '').trim() || playlistName;
+                }
+
+                // Check #__NEXT_DATA__
+                const nextDataScript = doc.getElementById('__NEXT_DATA__');
+                if (nextDataScript && nextDataScript.textContent) {
+                    const json = JSON.parse(nextDataScript.textContent);
+                    const entity = json?.props?.pageProps?.state?.data?.entity;
+
+                    if (entity) {
+                        if (entity.name || entity.title) {
+                            playlistName = entity.name || entity.title;
+                        }
+                        if (Array.isArray(entity.trackList)) {
+                            entity.trackList.forEach(t => {
+                                addTrack(t.subtitle, t.title, t.audioPreview?.url || null);
+                            });
+                        }
+                    }
+
+                    // Layer 2: Deep recursive search inside __NEXT_DATA__ if Layer 1 found nothing
+                    if (tracks.length === 0) {
+                        deepExtractTracksFromJson(json, addTrack);
+                    }
+                }
+
+                // Check #initial-state (Base64 encoded JSON used on some Spotify views)
+                if (tracks.length === 0) {
+                    const initScript = doc.getElementById('initial-state');
+                    if (initScript && initScript.textContent) {
+                        try {
+                            const binStr = atob(initScript.textContent.trim());
+                            const bytes = Uint8Array.from(binStr, c => c.charCodeAt(0));
+                            const decodedJsonStr = new TextDecoder('utf-8').decode(bytes);
+                            const initJson = JSON.parse(decodedJsonStr);
+                            deepExtractTracksFromJson(initJson, addTrack);
+                        } catch (e) {
+                            console.warn("initial-state decode non-fatal:", e);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("DOM/JSON Layer warning:", e);
+            }
+
+            // =================================================================
+            // LAYER 3: Raw Regex Extraction on HTML / JSON String
+            // Handles cases where proxy mangled HTML tags or escaped quotes
+            // =================================================================
+            if (tracks.length === 0) {
+                try {
+                    const normalizedRaw = htmlString.replace(/\\"/g, '"');
+
+                    // Pattern A: "title":"...","subtitle":"..." (with optional fields in between)
+                    const regexTitleFirst = /"title"\s*:\s*"((?:[^"\\]|\\.)+)"\s*,\s*"subtitle"\s*:\s*"((?:[^"\\]|\\.)+)"/g;
+                    let match;
+                    while ((match = regexTitleFirst.exec(normalizedRaw)) !== null) {
+                        const tTitle = unescapeJsonString(match[1]);
+                        const tArtist = unescapeJsonString(match[2]);
+                        addTrack(tArtist, tTitle, null);
+                    }
+
+                    // Pattern B: "subtitle":"...","title":"..."
+                    const regexSubtitleFirst = /"subtitle"\s*:\s*"((?:[^"\\]|\\.)+)"\s*,\s*"title"\s*:\s*"((?:[^"\\]|\\.)+)"/g;
+                    while ((match = regexSubtitleFirst.exec(normalizedRaw)) !== null) {
+                        const tArtist = unescapeJsonString(match[1]);
+                        const tTitle = unescapeJsonString(match[2]);
+                        addTrack(tArtist, tTitle, null);
+                    }
+                } catch (e) {
+                    console.warn("Regex Layer warning:", e);
+                }
+            }
+
+            // =================================================================
+            // LAYER 4: HTML DOM Track Rows Fallback (for rendered embed/page DOM)
+            // =================================================================
+            if (tracks.length === 0) {
+                try {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlString, 'text/html');
+                    const rows = doc.querySelectorAll('[data-testid="tracklist-row"], li[ role="listitem" ]');
+                    rows.forEach(row => {
+                        const texts = Array.from(row.querySelectorAll('a, span, div, p'))
+                            .map(el => el.textContent?.trim())
+                            .filter(Boolean);
+                        if (texts.length >= 2) {
+                            addTrack(texts[1], texts[0], null);
+                        }
+                    });
+                } catch (e) {}
+            }
+
+            if (tracks.length > 0) {
+                return { name: playlistName, tracks };
+            }
+            return null;
+        }
+
+        function deepExtractTracksFromJson(obj, addTrackFn, depth = 0) {
+            if (!obj || typeof obj !== 'object' || depth > 14) return;
+
+            if (Array.isArray(obj)) {
+                obj.forEach(item => deepExtractTracksFromJson(item, addTrackFn, depth + 1));
+                return;
+            }
+
+            // Match Spotify Embed track object: { title: "...", subtitle: "..." }
+            if (typeof obj.title === 'string' && typeof obj.subtitle === 'string') {
+                addTrackFn(obj.subtitle, obj.title, obj.audioPreview?.url || null);
+            }
+
+            // Match Spotify API track object: { name: "...", artists: [{ name: "..." }] }
+            if (typeof obj.name === 'string' && Array.isArray(obj.artists) && obj.artists.length > 0 && obj.artists[0]?.name) {
+                const artistStr = obj.artists.map(a => a.name).filter(Boolean).join(', ');
+                addTrackFn(artistStr, obj.name, obj.preview_url || obj.audioPreview?.url || null);
+            }
+
+            for (const key of Object.keys(obj)) {
+                const val = obj[key];
+                if (val && typeof val === 'object') {
+                    deepExtractTracksFromJson(val, addTrackFn, depth + 1);
+                }
+            }
+        }
+
+        function unescapeJsonString(str) {
+            try {
+                return JSON.parse(`"${str.replace(/"/g, '\\"')}"`);
+            } catch (e) {
+                return str.replace(/\\u00a0/g, ' ').replace(/\\"/g, '"');
+            }
+        }
+
+        function decodeHtmlEntities(str) {
+            const txt = document.createElement('textarea');
+            txt.innerHTML = str;
+            return txt.value;
+        }
+
+        /**
+         * LOAD PRESET PLAYLIST OR CUSTOM TEXT LIST (Supports Ctrl+A / Ctrl+C from Spotify!)
+         */
+        function loadPresetPlaylist(presetKey, notify = true) {
+            const preset = PRESET_PLAYLISTS[presetKey];
+            if (!preset) return;
+
+            applyLoadedPlaylist(preset.name, preset.tracks);
+            document.getElementById('playlistModal').classList.add('hidden');
+            if (notify) {
+                showToast(`Załadowano zestaw: ${preset.name}`, "success");
+            }
+        }
+
+        async function loadFromCustomText() {
+            const raw = document.getElementById('customTracksTextarea').value.trim();
+            if (!raw) {
+                showToast("Wklej listę utworów lub linki skopiowane ze Spotify!", "warning");
+                return;
+            }
+
+            const statusEl = document.getElementById('customImportStatus');
+            const btn = document.getElementById('btnLoadCustom');
+            const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+            const tracks = [];
+
+            // Case 1: Check if user pasted Spotify Track URLs (copied via Ctrl+A -> Ctrl+C in Spotify Desktop App)
+            const trackUrlMatches = raw.match(/https?:\/\/open\.spotify\.com\/(?:intl-[a-z]+\/)?track\/([a-zA-Z0-9]{22})/gi);
+            if (trackUrlMatches && trackUrlMatches.length > 0) {
+                const uniqueUrls = [...new Set(trackUrlMatches)].slice(0, 60);
+                statusEl.classList.remove('hidden');
+                btn.disabled = true;
+                btn.classList.add('opacity-60');
+
+                let resolvedCount = 0;
+                // Resolve in parallel batches of 6 via Spotify's native CORS oEmbed API
+                for (let i = 0; i < uniqueUrls.length; i += 6) {
+                    const batch = uniqueUrls.slice(i, i + 6);
+                    statusEl.textContent = `Rozpoznawanie linków Spotify (${Math.min(i + 6, uniqueUrls.length)}/${uniqueUrls.length})...`;
+                    await Promise.all(batch.map(async (tUrl) => {
+                        try {
+                            const res = await fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(tUrl)}`);
+                            if (res.ok) {
+                                const data = await res.json();
+                                // oEmbed title is usually "Song Title" and author_name or title format
+                                if (data && data.title) {
+                                    // Try fetching embed or splitting if title has artist
+                                    const parts = data.title.split(/\s+-\s+|\s+by\s+/i);
+                                    if (parts.length >= 2) {
+                                        tracks.push({ artist: parts[1].trim(), title: parts[0].trim() });
+                                    } else {
+                                        tracks.push({ artist: data.author_name || "Spotify", title: data.title.trim() });
+                                    }
+                                    resolvedCount++;
+                                }
+                            }
+                        } catch (e) {}
+                    }));
+                }
+
+                statusEl.classList.add('hidden');
+                btn.disabled = false;
+                btn.classList.remove('opacity-60');
+            }
+
+            // Case 2: Standard "Artist - Title" or tab-separated lines
+            if (tracks.length === 0) {
+                lines.forEach(line => {
+                    // Ignore pure numbers or duration timestamps like "3:45"
+                    if (/^\d+$/.test(line) || /^\d{1,2}:\d{2}$/.test(line)) return;
+
+                    // Support "Artist - Title", "Artist – Title", or Tab-separated columns
+                    const dashParts = line.split(/\s+[-–—]\s+/);
+                    if (dashParts.length >= 2) {
+                        tracks.push({
+                            artist: dashParts[0].trim(),
+                            title: dashParts.slice(1).join(' - ').trim()
+                        });
+                    } else if (line.includes('\t')) {
+                        const tabParts = line.split('\t').map(s => s.trim()).filter(Boolean);
+                        if (tabParts.length >= 2) {
+                            tracks.push({
+                                title: tabParts[0],
+                                artist: tabParts[1]
+                            });
+                        }
+                    }
+                });
+            }
+
+            if (tracks.length < 1) {
+                showToast("Nie rozpoznano utworów. Wpisz w formacie: Artysta - Tytuł (po jednym w linii).", "error");
+                return;
+            }
+
+            applyLoadedPlaylist(`Własna lista (${tracks.length} utw.)`, tracks);
+            closePlaylistModal();
+            showToast(`Wczytano własną listę (${tracks.length} utworów)!`, "success");
+        }
+
+        /**
+         * APPLY LOADED PLAYLIST TO STATE & START NEW GAME ROUND
+         */
+        function applyLoadedPlaylist(name, rawTracks) {
+            // Deduplicate tracks
+            const seen = new Set();
+            const cleanTracks = [];
+
+            rawTracks.forEach(t => {
+                const key = `${t.artist.toLowerCase()}___${t.title.toLowerCase()}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    cleanTracks.push({
+                        artist: t.artist,
+                        title: t.title,
+                        fullLabel: `${t.artist} - ${t.title}`,
+                        previewUrl: t.previewUrl || null
+                    });
+                }
+            });
+
+            state.playlistName = name;
+            state.allTracks = cleanTracks;
+            state.unplayedIndices = cleanTracks.map((_, idx) => idx);
+
+            document.getElementById('activePlaylistBadge').textContent = `${name} (${cleanTracks.length} utw.)`;
+            updateRemainingPoolUI();
+
+            startNextRound();
+        }
+
+        function updateRemainingPoolUI() {
+            document.getElementById('remainingPoolInfo').textContent = 
+                `Pula: ${state.unplayedIndices.length}/${state.allTracks.length} utw.`;
+        }
+
+        /**
+         * START NEXT ROUND & FETCH AUDIO PREVIEW FROM ITUNES API (OR SPOTIFY NATIVE PREVIEW)
+         */
+        async function startNextRound() {
+            stopAudioPlayback();
+
+            // Reset round UI
+            state.currentAttempt = 0;
+            state.guesses = [];
+            state.roundOver = false;
+            state.playingFullPreview = false;
+            state.currentTrack = null;
+
+            document.getElementById('revealCard').classList.add('hidden');
+            document.getElementById('guessingControlsArea').classList.remove('hidden');
+            clearGuessInput();
+            renderGuessSlots();
+            updateTimelineMarkersUI();
+
+            if (state.allTracks.length === 0) return;
+
+            // Refill pool if all songs were played
+            if (state.unplayedIndices.length === 0) {
+                state.unplayedIndices = state.allTracks.map((_, idx) => idx);
+                showToast("Przesłuchano całą playlistę! Pula utworów została przetasowana od nowa.", "info");
+            }
+
+            const banner = document.getElementById('audioLoadingBanner');
+            const bannerText = document.getElementById('audioLoadingText');
+            banner.classList.remove('hidden');
+
+            // Try up to 8 random songs from the playlist until one has a valid audio preview
+            let foundTrack = null;
+            let attempts = 0;
+
+            while (!foundTrack && attempts < 8 && state.unplayedIndices.length > 0) {
+                attempts++;
+                const randPoolIdx = Math.floor(Math.random() * state.unplayedIndices.length);
+                const trackIdx = state.unplayedIndices.splice(randPoolIdx, 1)[0];
+                const candidate = state.allTracks[trackIdx];
+
+                bannerText.textContent = `Szukanie próbki audio (${attempts}): ${candidate.artist} — ${candidate.title}...`;
+
+                try {
+                    const itunesData = await fetchItunesPreview(candidate.artist, candidate.title);
+                    if (itunesData && itunesData.previewUrl) {
+                        foundTrack = {
+                            artist: candidate.artist,
+                            title: candidate.title,
+                            fullLabel: candidate.fullLabel,
+                            previewUrl: itunesData.previewUrl,
+                            artworkUrl: itunesData.artworkUrl
+                        };
+                    } else if (candidate.previewUrl) {
+                        // Use Spotify Embed native preview URL if iTunes didn't find the song!
+                        foundTrack = {
+                            artist: candidate.artist,
+                            title: candidate.title,
+                            fullLabel: candidate.fullLabel,
+                            previewUrl: candidate.previewUrl,
+                            artworkUrl: 'https://placehold.co/400x400/181818/1DB954?text=SpotGuessr'
+                        };
+                    }
+                } catch (e) {
+                    if (candidate.previewUrl) {
+                        foundTrack = {
+                            artist: candidate.artist,
+                            title: candidate.title,
+                            fullLabel: candidate.fullLabel,
+                            previewUrl: candidate.previewUrl,
+                            artworkUrl: 'https://placehold.co/400x400/181818/1DB954?text=SpotGuessr'
+                        };
+                    }
+                }
+            }
+
+            banner.classList.add('hidden');
+            updateRemainingPoolUI();
+
+            if (!foundTrack) {
+                showToast("Nie udało się pobrać próbki audio dla wylosowanych utworów. Kliknij 'Pomiń' lub wybierz inną playlistę.", "error");
+                return;
+            }
+
+            state.currentTrack = foundTrack;
+            audio.src = foundTrack.previewUrl;
+            audio.currentTime = 0;
+            audio.load();
+
+            document.getElementById('playerStatusMini').textContent = "GOTOWY";
+        }
+
+        /**
+         * QUERY ITUNES SEARCH API FOR 30S M4A PREVIEW & HIGH-RES ARTWORK
+         */
+        async function fetchItunesPreview(artist, title) {
+            // Clean query from feat., remastered, prod., brackets etc. for better iTunes matching
+            const cleanTitle = title
+                .replace(/\(feat\..*?\)/gi, '')
+                .replace(/\(ft\..*?\)/gi, '')
+                .replace(/\(with.*?\)/gi, '')
+                .replace(/\[.*?\]/g, '')
+                .replace(/-\s*remaster.*$/gi, '')
+                .replace(/-\s*single.*$/gi, '')
+                .trim();
+
+            const mainArtist = artist === 'Spotify' ? '' : artist.split(/[,&/]/)[0].trim();
+            const queriesToTry = [
+                `${mainArtist} ${cleanTitle}`.trim(),
+                cleanTitle
+            ];
+
+            for (const q of queriesToTry) {
+                if (!q) continue;
+                const url = `https://itunes.apple.com/search?term=${encodeURIComponent(q)}&entity=song&limit=5`;
+                const res = await fetch(url);
+                if (!res.ok) continue;
+
+                const data = await res.json();
+                if (!data.results || data.results.length === 0) continue;
+
+                const match = data.results.find(r => r.previewUrl);
+                if (match) {
+                    const hiResArt = match.artworkUrl100 
+                        ? match.artworkUrl100.replace('100x100bb', '600x600bb') 
+                        : 'https://placehold.co/400x400/181818/1DB954?text=SpotGuessr';
+
+                    return {
+                        previewUrl: match.previewUrl,
+                        artworkUrl: hiResArt
+                    };
+                }
+            }
+            return null;
+        }
+
+        /**
+         * AUDIO PLAYBACK & PROGRESSIVE TIMELINE ENGINE
+         */
+        function setupAudioEvents() {
+            audio.volume = parseFloat(document.getElementById('volumeSlider').value);
+
+            audio.addEventListener('play', () => {
+                state.isPlaying = true;
+                document.getElementById('playIcon').className = "fa-solid fa-stop";
+                document.getElementById('visualizerContainer').classList.add('playing');
+                document.getElementById('playerStatusMini').textContent = "GRA...";
+                startProgressLoop();
+            });
+
+            audio.addEventListener('pause', () => {
+                state.isPlaying = false;
+                document.getElementById('playIcon').className = "fa-solid fa-play ml-0.5";
+                document.getElementById('visualizerContainer').classList.remove('playing');
+                document.getElementById('playerStatusMini').textContent = "PAUZA";
+                cancelAnimationFrame(rafId);
+            });
+
+            audio.addEventListener('ended', () => {
+                stopAudioPlayback();
+            });
+        }
+
+        function togglePlaySnippet() {
+            if (!state.currentTrack) {
+                showToast("Trwa ładowanie utworu, chwilę cierpliwości...", "info");
+                return;
+            }
+
+            if (state.isPlaying) {
+                stopAudioPlayback();
+            } else {
+                audio.currentTime = 0;
+                audio.play().catch(err => {
+                    console.warn("Autoplay blocked:", err);
+                    showToast("Kliknij ponownie przycisk Play, aby odblokować dźwięk w przeglądarce.", "warning");
+                });
+            }
+        }
+
+        function stopAudioPlayback() {
+            audio.pause();
+            audio.currentTime = 0;
+            state.isPlaying = false;
+            cancelAnimationFrame(rafId);
+            document.getElementById('playbackFillBar').style.width = '0%';
+            document.getElementById('currentTimeLabel').textContent = '0.0s';
+            document.getElementById('playIcon').className = "fa-solid fa-play ml-0.5";
+            document.getElementById('visualizerContainer').classList.remove('playing');
+            document.getElementById('playerStatusMini').textContent = "GOTOWY";
+        }
+
+        function startProgressLoop() {
+            const maxAllowedTime = state.roundOver 
+                ? (state.playingFullPreview ? 30 : 16) 
+                : STAGE_TIMES[state.currentAttempt];
+
+            const totalBarScale = (state.roundOver && state.playingFullPreview) ? 30 : 16;
+
+            function update() {
+                if (!state.isPlaying) return;
+
+                const current = audio.currentTime;
+                document.getElementById('currentTimeLabel').textContent = `${current.toFixed(1)}s`;
+
+                const pct = Math.min(100, (current / totalBarScale) * 100);
+                document.getElementById('playbackFillBar').style.width = `${pct}%`;
+
+                // Stop automatically once current stage limit is reached
+                if (current >= maxAllowedTime) {
+                    stopAudioPlayback();
+                    return;
+                }
+
+                rafId = requestAnimationFrame(update);
+            }
+
+            cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(update);
+        }
+
+        function updateTimelineMarkersUI() {
+            const unlockedSec = state.roundOver ? 16 : STAGE_TIMES[state.currentAttempt];
+            const unlockedPct = (unlockedSec / 16) * 100;
+
+            document.getElementById('unlockedZoneBar').style.width = `${unlockedPct}%`;
+            document.getElementById('unlockedTimeLabel').textContent = state.roundOver 
+                ? `Odblokowano: Pełna próbka` 
+                : `Odblokowano: ${unlockedSec}.0s`;
+
+            // Update skip button label to show how many extra seconds next stage gives
+            const skipLabel = document.getElementById('skipBtnLabel');
+            if (state.currentAttempt < STAGE_TIMES.length - 1) {
+                const diff = STAGE_TIMES[state.currentAttempt + 1] - STAGE_TIMES[state.currentAttempt];
+                skipLabel.textContent = `Pomiń (+${diff}s)`;
+            } else {
+                skipLabel.textContent = `Poddaj się (Pokaż tytuł)`;
+            }
+        }
+
+        function updateVolume(val) {
+            audio.volume = parseFloat(val);
+            const icon = document.getElementById('volumeIcon');
+            if (audio.volume === 0) {
+                icon.className = "fa-solid fa-volume-xmark text-rose-400";
+            } else if (audio.volume < 0.5) {
+                icon.className = "fa-solid fa-volume-low";
+            } else {
+                icon.className = "fa-solid fa-volume-high";
+            }
+        }
+
+        function toggleMute() {
+            const slider = document.getElementById('volumeSlider');
+            if (audio.volume > 0) {
+                slider.dataset.prevVol = audio.volume;
+                slider.value = 0;
+                updateVolume(0);
+            } else {
+                const restore = slider.dataset.prevVol || 0.8;
+                slider.value = restore;
+                updateVolume(restore);
+            }
+        }
+
+        /**
+         * RENDER 6 GUESS SLOTS
+         */
+        function renderGuessSlots() {
+            const container = document.getElementById('guessSlotsContainer');
+            container.innerHTML = '';
+
+            for (let i = 0; i < 6; i++) {
+                const guess = state.guesses[i];
+                const isCurrent = (!state.roundOver && i === state.currentAttempt);
+
+                const slot = document.createElement('div');
+                slot.className = `guess-slot h-11 px-3.5 rounded-xl border flex items-center justify-between gap-3 text-xs sm:text-sm ${
+                    isCurrent 
+                        ? 'bg-gray-900/90 active-slot' 
+                        : 'bg-gray-900/50 border-gray-800/80'
+                }`;
+
+                if (guess) {
+                    let badgeHtml = '';
+                    let iconHtml = '';
+
+                    if (guess.type === 'skip') {
+                        iconHtml = `<i class="fa-solid fa-forward text-gray-500"></i>`;
+                        badgeHtml = `<span class="px-2 py-0.5 rounded bg-gray-800 text-gray-400 font-mono text-[10px] uppercase">Pominięto</span>`;
+                    } else if (guess.type === 'artist') {
+                        iconHtml = `<i class="fa-solid fa-user-check text-amber-400"></i>`;
+                        badgeHtml = `<span class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono text-[10px] uppercase">Ten sam artysta!</span>`;
+                    } else if (guess.type === 'wrong') {
+                        iconHtml = `<i class="fa-solid fa-xmark text-rose-400"></i>`;
+                        badgeHtml = `<span class="px-2 py-0.5 rounded bg-rose-500/15 border border-rose-500/30 text-rose-400 font-mono text-[10px] uppercase">Pudło</span>`;
+                    } else if (guess.type === 'correct') {
+                        iconHtml = `<i class="fa-solid fa-check text-spotify-green"></i>`;
+                        badgeHtml = `<span class="px-2 py-0.5 rounded bg-spotify-green/20 border border-spotify-green/40 text-spotify-green font-mono text-[10px] uppercase">Trafione!</span>`;
+                    }
+
+                    slot.innerHTML = `
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            ${iconHtml}
+                            <span class="truncate font-medium ${guess.type === 'skip' ? 'text-gray-500 italic' : 'text-gray-200'}">${guess.text}</span>
+                        </div>
+                        <div class="shrink-0 flex items-center gap-2">
+                            ${badgeHtml}
+                            <span class="text-[10px] font-mono text-gray-600">${STAGE_TIMES[i]}s</span>
+                        </div>
+                    `;
+                } else {
+                    slot.innerHTML = `
+                        <div class="flex items-center gap-2.5 text-gray-600">
+                            <span class="font-mono text-xs">${i + 1}.</span>
+                            <span>${isCurrent ? 'Twoja aktualna próba...' : 'Wolny slot'}</span>
+                        </div>
+                        <span class="text-[10px] font-mono ${isCurrent ? 'text-spotify-green font-bold' : 'text-gray-600'}">${STAGE_TIMES[i]}s</span>
+                    `;
+                }
+
+                container.appendChild(slot);
+            }
+        }
+
+        /**
+         * SMART AUTOCOMPLETE SEARCH ENGINE (Polish diacritics insensitive)
+         */
+        function normalizeStr(str) {
+            return str
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/ł/g, "l")
+                .replace(/[^a-z0-9\s]/g, "")
+                .trim();
+        }
+
+        function setupSearchAutocomplete() {
+            const input = document.getElementById('guessInput');
+            const dropdown = document.getElementById('autocompleteDropdown');
+            const clearBtn = document.getElementById('btnClearInput');
+
+            input.addEventListener('input', () => {
+                const val = input.value;
+                clearBtn.classList.toggle('hidden', val.length === 0);
+
+                if (val.trim().length === 0) {
+                    dropdown.classList.add('hidden');
+                    state.filteredSuggestions = [];
+                    return;
+                }
+
+                const normQuery = normalizeStr(val);
+                const matches = state.allTracks.filter(t => {
+                    return normalizeStr(t.fullLabel).includes(normQuery);
+                }).slice(0, 12);
+
+                state.filteredSuggestions = matches;
+                state.selectedSuggestionIndex = matches.length > 0 ? 0 : -1;
+                renderAutocompleteDropdown();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown') {
+                    if (state.filteredSuggestions.length > 0) {
+                        e.preventDefault();
+                        state.selectedSuggestionIndex = (state.selectedSuggestionIndex + 1) % state.filteredSuggestions.length;
+                        renderAutocompleteDropdown();
+                    }
+                } else if (e.key === 'ArrowUp') {
+                    if (state.filteredSuggestions.length > 0) {
+                        e.preventDefault();
+                        state.selectedSuggestionIndex = (state.selectedSuggestionIndex - 1 + state.filteredSuggestions.length) % state.filteredSuggestions.length;
+                        renderAutocompleteDropdown();
+                    }
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (!dropdown.classList.contains('hidden') && state.selectedSuggestionIndex >= 0) {
+                        const chosen = state.filteredSuggestions[state.selectedSuggestionIndex];
+                        selectSuggestion(chosen.fullLabel);
+                    } else {
+                        handleSubmitGuess();
+                    }
+                } else if (e.key === 'Escape') {
+                    dropdown.classList.add('hidden');
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        function renderAutocompleteDropdown() {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            dropdown.innerHTML = '';
+
+            if (state.filteredSuggestions.length === 0) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+
+            state.filteredSuggestions.forEach((item, idx) => {
+                const row = document.createElement('button');
+                row.type = 'button';
+                const isSelected = idx === state.selectedSuggestionIndex;
+                row.className = `w-full text-left px-4 py-2.5 text-xs sm:text-sm flex items-center justify-between gap-2 transition ${
+                    isSelected ? 'bg-spotify-green/20 text-white' : 'hover:bg-gray-800 text-gray-300'
+                }`;
+                row.innerHTML = `
+                    <div class="truncate">
+                        <span class="font-bold text-white">${item.title}</span>
+                        <span class="text-gray-400"> — ${item.artist}</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-turn-down fa-rotate-90 text-[10px] text-gray-500"></i>
+                `;
+                row.onclick = () => selectSuggestion(item.fullLabel);
+                dropdown.appendChild(row);
+            });
+
+            dropdown.classList.remove('hidden');
+        }
+
+        function selectSuggestion(fullLabel) {
+            const input = document.getElementById('guessInput');
+            input.value = fullLabel;
+            document.getElementById('autocompleteDropdown').classList.add('hidden');
+            document.getElementById('btnClearInput').classList.remove('hidden');
+            input.focus();
+        }
+
+        function clearGuessInput() {
+            const input = document.getElementById('guessInput');
+            input.value = '';
+            document.getElementById('btnClearInput').classList.add('hidden');
+            document.getElementById('autocompleteDropdown').classList.add('hidden');
+        }
+
+        /**
+         * SUBMIT GUESS OR SKIP ATTEMPT LOGIC
+         */
+        function handleSkipAttempt() {
+            if (state.roundOver || !state.currentTrack) return;
+
+            state.guesses.push({
+                type: 'skip',
+                text: 'Pominięto próbę'
+            });
+
+            advanceOrFinishRound(false);
+        }
+
+        function handleSubmitGuess() {
+            if (state.roundOver || !state.currentTrack) return;
+
+            const rawGuess = document.getElementById('guessInput').value.trim();
+            if (!rawGuess) {
+                showToast("Wpisz i wybierz utwór z listy lub kliknij 'Pomiń'!", "warning");
+                return;
+            }
+
+            const normGuess = normalizeStr(rawGuess);
+            const normTargetTitle = normalizeStr(state.currentTrack.title);
+            const normTargetArtist = normalizeStr(state.currentTrack.artist);
+            const normTargetFull = normalizeStr(state.currentTrack.fullLabel);
+
+            // Check if song title matches
+            const isCorrectSong = (normGuess === normTargetFull) || 
+                                  (normGuess.includes(normTargetTitle) && normTargetTitle.length >= 3);
+
+            // Check if at least the artist matches
+            const isSameArtist = !isCorrectSong && normGuess.includes(normTargetArtist);
+
+            if (isCorrectSong) {
+                state.guesses.push({
+                    type: 'correct',
+                    text: state.currentTrack.fullLabel
+                });
+                advanceOrFinishRound(true);
+            } else if (isSameArtist) {
+                state.guesses.push({
+                    type: 'artist',
+                    text: rawGuess
+                });
+                clearGuessInput();
+                advanceOrFinishRound(false);
+            } else {
+                state.guesses.push({
+                    type: 'wrong',
+                    text: rawGuess
+                });
+                clearGuessInput();
+                advanceOrFinishRound(false);
+            }
+        }
+
+        function advanceOrFinishRound(won) {
+            if (won) {
+                const earnedPoints = STAGE_POINTS[state.currentAttempt];
+                state.score += earnedPoints;
+                state.streak += 1;
+                state.guessedCount += 1;
+                state.roundsPlayed += 1;
+                finishRound(true, earnedPoints);
+                return;
+            }
+
+            // Move to next attempt
+            state.currentAttempt += 1;
+
+            if (state.currentAttempt >= STAGE_TIMES.length) {
+                // Out of attempts
+                state.streak = 0;
+                state.roundsPlayed += 1;
+                finishRound(false, 0);
+            } else {
+                renderGuessSlots();
+                updateTimelineMarkersUI();
+                // Automatically play the newly unlocked longer snippet
+                stopAudioPlayback();
+                togglePlaySnippet();
+            }
+        }
+
+        /**
+         * FINISH ROUND & REVEAL TRACK CARD
+         */
+        function finishRound(won, earnedPoints) {
+            state.roundOver = true;
+            state.playingFullPreview = true;
+            renderGuessSlots();
+            updateScoreboardUI();
+            updateTimelineMarkersUI();
+
+            // Hide guessing input area and show reveal card
+            document.getElementById('guessingControlsArea').classList.add('hidden');
+            const revealCard = document.getElementById('revealCard');
+            revealCard.classList.remove('hidden');
+
+            const banner = document.getElementById('revealStatusBanner');
+            if (won) {
+                banner.className = "text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-4 bg-spotify-green/20 text-spotify-green border border-spotify-green/40";
+                banner.innerHTML = `<i class="fa-solid fa-trophy"></i> Odgadnięto śpiewająco! (+${earnedPoints} pkt)`;
+                document.getElementById('revealSubInfo').textContent = 
+                    `Trafiono w ${state.currentAttempt + 1}. próbie (${STAGE_TIMES[state.currentAttempt]}s audio) • Seria: ${state.streak} 🔥`;
+            } else {
+                banner.className = "text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-4 bg-rose-500/20 text-rose-400 border border-rose-500/40";
+                banner.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Nie udało się odgadnąć`;
+                document.getElementById('revealSubInfo').textContent = 
+                    `Wykorzystano wszystkie 6 prób • Posłuchaj i spróbuj kolejnego utworu!`;
+            }
+
+            document.getElementById('revealCover').src = state.currentTrack.artworkUrl;
+            document.getElementById('revealTitle').textContent = state.currentTrack.title;
+            document.getElementById('revealArtist').textContent = state.currentTrack.artist;
+            document.getElementById('revealSpotifySearch').href = 
+                `https://open.spotify.com/search/${encodeURIComponent(state.currentTrack.fullLabel)}`;
+
+            // Celebrate by playing the full 30s preview
+            stopAudioPlayback();
+            togglePlaySnippet();
+        }
+
+        function toggleFullPreview() {
+            state.playingFullPreview = true;
+            togglePlaySnippet();
+        }
+
+        function updateScoreboardUI() {
+            document.getElementById('statScore').textContent = state.score;
+            document.getElementById('statStreak').textContent = `${state.streak} 🔥`;
+            document.getElementById('statGuessed').textContent = `${state.guessedCount}/${state.roundsPlayed}`;
+        }
+    </script>
+</body>
+</html>
