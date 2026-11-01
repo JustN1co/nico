@@ -112,7 +112,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white">Spot<span class="text-spotify-green">Guessr</span></h1>
-                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">Worker Engine</span>
+                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">AutoSkip Edition</span>
                     </div>
                     <p id="activePlaylistBadge" class="text-xs text-gray-400 truncate max-w-[180px] sm:max-w-[260px]">
                         Brak załadowanej playlisty
@@ -150,7 +150,7 @@
 
         <div id="audioLoadingBanner" class="hidden rounded-2xl bg-gray-900/90 border border-gray-800 p-4 flex items-center justify-center gap-3 text-sm text-gray-300 shadow-lg">
             <i class="fa-solid fa-circle-notch fa-spin text-spotify-green text-lg"></i>
-            <span id="audioLoadingText">Losowanie utworu i pobieranie próbki audio z iTunes...</span>
+            <span id="audioLoadingText">Wyszukiwanie utworu z próbką audio...</span>
         </div>
 
         <section aria-label="Próby odgadnięcia" class="flex flex-col gap-2">
@@ -513,6 +513,9 @@
             } else if (type === 'error') {
                 icon = 'fa-triangle-exclamation text-rose-400';
                 border = 'border-rose-500/50';
+            } else if (type === 'warning') {
+                icon = 'fa-triangle-exclamation text-amber-400';
+                border = 'border-amber-500/50';
             }
             toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-900/95 backdrop-blur-md border ${border} shadow-2xl text-xs sm:text-sm text-white transition-all duration-300`;
             toast.innerHTML = `<i class="fa-solid ${icon} text-base shrink-0"></i><span class="flex-1 leading-snug">${message}</span>`;
@@ -728,7 +731,6 @@
                     const normTargetTitle = normalizeStr(cleanTitle);
                     const normTargetArtist = normalizeStr(mainArtist);
 
-                    // Ścisła weryfikacja: utwór musi pasować zarówno tytułem, jak i artystą
                     const match = data.results.find(r => {
                         if (!r.previewUrl) return false;
 
@@ -757,6 +759,9 @@
             return null;
         }
 
+        // ==========================================
+        // GAME ROUND MANAGEMENT & AUTOSKIP
+        // ==========================================
         async function startNextRound() {
             stopAudioPlayback();
             state.currentAttempt = 0;
@@ -772,33 +777,41 @@
             updateTimelineMarkersUI();
 
             if (state.allTracks.length === 0) return;
-            if (state.unplayedIndices.length === 0) {
-                state.unplayedIndices = state.allTracks.map((_, idx) => idx);
-                showToast("Przesłuchano całą playlistę! Reset puli utworów.", "info");
-            }
 
             const banner = document.getElementById('audioLoadingBanner');
             const bannerText = document.getElementById('audioLoadingText');
             banner.classList.remove('hidden');
 
             let foundTrack = null;
-            let attempts = 0;
+            let checkedCount = 0;
+            const totalTracks = state.allTracks.length;
+            let poolReshuffled = false;
 
-            // Próbujemy do 14 utworów pod rząd, aby ominąć te bez próbek w iTunes
-            while (!foundTrack && attempts < 14 && state.unplayedIndices.length > 0) {
-                attempts++;
+            // Pętla szuka aż do skutku — odrzucane kawałki pomijają się w locie bez udziału gracza
+            while (!foundTrack) {
+                if (state.unplayedIndices.length === 0) {
+                    if (poolReshuffled) break; // Przeszukano absolutnie wszystko
+                    state.unplayedIndices = state.allTracks.map((_, idx) => idx);
+                    poolReshuffled = true;
+                }
+
+                checkedCount++;
+                if (checkedCount > totalTracks * 2) break; // Zabezpieczenie pętli
+
                 const randPoolIdx = Math.floor(Math.random() * state.unplayedIndices.length);
                 const trackIdx = state.unplayedIndices.splice(randPoolIdx, 1)[0];
                 const candidate = state.allTracks[trackIdx];
 
-                bannerText.textContent = `Szukanie próbki audio (${attempts}): ${candidate.artist} — ${candidate.title}...`;
+                bannerText.textContent = `Dobieranie utworu z próbką (${checkedCount}): ${candidate.artist} — ${candidate.title}...`;
                 const itunesData = await fetchItunesPreview(candidate.artist, candidate.title);
+                
                 if (itunesData && itunesData.previewUrl) {
                     foundTrack = {
                         ...candidate,
                         previewUrl: itunesData.previewUrl,
                         artworkUrl: itunesData.artworkUrl
                     };
+                    break;
                 }
             }
 
@@ -806,7 +819,8 @@
             updateRemainingPoolUI();
 
             if (!foundTrack) {
-                showToast("Nie znaleziono oficjalnej próbki audio w iTunes dla wylosowanych utworów. Kliknij 'Pomiń' lub spróbuj ponownie.", "error");
+                showToast("Żaden utwór na tej playliście nie posiada próbki audio w iTunes. Wybierz inną.", "error");
+                openPlaylistModal();
                 return;
             }
 
@@ -819,6 +833,7 @@
 
         function setupAudioEvents() {
             audio.volume = parseFloat(document.getElementById('volumeSlider').value);
+            
             audio.addEventListener('play', () => {
                 state.isPlaying = true;
                 document.getElementById('playIcon').className = "fa-solid fa-stop";
@@ -826,6 +841,7 @@
                 document.getElementById('playerStatusMini').textContent = "GRA...";
                 startProgressLoop();
             });
+
             audio.addEventListener('pause', () => {
                 state.isPlaying = false;
                 document.getElementById('playIcon').className = "fa-solid fa-play ml-0.5";
@@ -833,11 +849,22 @@
                 document.getElementById('playerStatusMini').textContent = "PAUZA";
                 cancelAnimationFrame(rafId);
             });
+
             audio.addEventListener('ended', stopAudioPlayback);
+
+            // Jeśli plik audio rzuci błędem sieciowym/odtwarzania, automatycznie losujemy kolejny
+            audio.addEventListener('error', (e) => {
+                console.warn("Błąd strumienia audio, automatyczny przeskok do kolejnego:", e);
+                showToast("Błąd pliku dźwiękowego — automatyczne losowanie kolejnego...", "warning");
+                startNextRound();
+            });
         }
 
         function togglePlaySnippet() {
-            if (!state.currentTrack) return;
+            if (!state.currentTrack) {
+                startNextRound();
+                return;
+            }
             if (state.isPlaying) {
                 stopAudioPlayback();
             } else {
@@ -1028,13 +1055,22 @@
         }
 
         function handleSkipAttempt() {
-            if (state.roundOver || !state.currentTrack) return;
+            if (state.roundOver) return;
+            // Bezpiecznik: jeśli nie ma utworu, natychmiast forsujemy losowanie kolejnego
+            if (!state.currentTrack) {
+                startNextRound();
+                return;
+            }
             state.guesses.push({ type: 'skip', text: 'Pominięto próbę' });
             advanceOrFinishRound(false);
         }
 
         function handleSubmitGuess() {
-            if (state.roundOver || !state.currentTrack) return;
+            if (state.roundOver) return;
+            if (!state.currentTrack) {
+                startNextRound();
+                return;
+            }
             const raw = document.getElementById('guessInput').value.trim();
             if (!raw) return;
 
