@@ -112,7 +112,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white">Spot<span class="text-spotify-green">Guessr</span></h1>
-                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">Worker Edition</span>
+                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">Worker Engine</span>
                     </div>
                     <p id="activePlaylistBadge" class="text-xs text-gray-400 truncate max-w-[180px] sm:max-w-[260px]">
                         Brak załadowanej playlisty
@@ -344,11 +344,11 @@
                         <i class="fa-brands fa-cloudflare text-amber-500 text-lg"></i>
                         <div>
                             <div class="font-semibold text-white">Cloudflare Worker API</div>
-                            <div class="text-[11px] text-gray-400">Automatyczny token dla każdego użytkownika bez wpisywania kluczy.</div>
+                            <div class="text-[11px] text-gray-400">Bezpośrednie pobieranie utworów z pominięciem ograniczeń konta dev.</div>
                         </div>
                     </div>
-                    <span id="apiStatusBadge" class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-gray-900 text-gray-400 border border-gray-800 shrink-0">
-                        Sprawdzanie...
+                    <span id="apiStatusBadge" class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shrink-0">
+                        <i class="fa-solid fa-circle-check mr-1"></i> Połączono
                     </span>
                 </div>
             </div>
@@ -500,30 +500,7 @@
             setupAudioEvents();
             renderGuessSlots();
             loadPresetPlaylist('global_hits', false);
-            testWorkerConnection();
         });
-
-        async function testWorkerConnection() {
-            try {
-                await getValidAccessToken();
-            } catch (e) {
-                console.warn("Sprawdzenie Workera:", e.message);
-            }
-        }
-
-        function updateApiBadgeState(token, expiry) {
-            const badge = document.getElementById('apiStatusBadge');
-            if (!badge) return;
-            const now = Date.now();
-            if (token && expiry > now) {
-                const minsLeft = Math.round((expiry - now) / 60000);
-                badge.className = "text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
-                badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Aktywny (${minsLeft} min)`;
-            } else {
-                badge.className = "text-[10px] font-mono px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40";
-                badge.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Błąd Workera`;
-            }
-        }
 
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
@@ -609,50 +586,14 @@
         }
 
         // ==========================================
-        // TOKEN FETCH VIA CLOUDFLARE WORKER
-        // ==========================================
-        async function getValidAccessToken() {
-            let token = localStorage.getItem('spotguessr_access_token');
-            const expiry = parseInt(localStorage.getItem('spotguessr_token_expiry') || '0', 10);
-
-            if (token && expiry > Date.now()) {
-                updateApiBadgeState(token, expiry);
-                return token;
-            }
-
-            const res = await fetch(WORKER_URL);
-            if (!res.ok) {
-                updateApiBadgeState(null, 0);
-                throw new Error("Błąd pobierania tokenu z Cloudflare Workera (HTTP " + res.status + ")");
-            }
-
-            const data = await res.json();
-            if (!data.access_token) {
-                updateApiBadgeState(null, 0);
-                throw new Error(data.error_description || "Brak access_token w odpowiedzi");
-            }
-
-            token = data.access_token;
-            const newExpiry = Date.now() + (data.expires_in * 1000);
-            localStorage.setItem('spotguessr_access_token', token);
-            localStorage.setItem('spotguessr_token_expiry', newExpiry.toString());
-            updateApiBadgeState(token, newExpiry);
-            return token;
-        }
-
-        // ==========================================
-        // FETCH PLAYLIST FROM SPOTIFY API
+        // FETCH PLAYLIST DIRECTLY VIA WORKER
         // ==========================================
         async function loadFromSpotifyUrl() {
             const rawInput = document.getElementById('spotifyUrlInput').value;
             const playlistId = extractSpotifyPlaylistId(rawInput);
 
             if (!playlistId) {
-                setSpotifyStatusBox(
-                    'error',
-                    'Brak poprawnego linku!',
-                    'Wklej link w formacie <code>https://open.spotify.com/playlist/...</code>'
-                );
+                setSpotifyStatusBox('error', 'Brak poprawnego linku!', 'Wklej link w formacie <code>https://open.spotify.com/playlist/...</code>');
                 showToast("Wklej poprawny link do playlisty Spotify!", "error");
                 return;
             }
@@ -660,61 +601,24 @@
             const btnLoad = document.getElementById('btnLoadSpotifyUrl');
             btnLoad.disabled = true;
             btnLoad.classList.add('opacity-60');
-            setSpotifyStatusBox('loading', 'Łączenie z Spotify API...');
+            setSpotifyStatusBox('loading', 'Pobieranie playlisty przez Cloudflare Worker...');
 
             try {
-                const token = await getValidAccessToken();
+                const res = await fetch(`${WORKER_URL}?playlist=${encodeURIComponent(playlistId)}`);
+                const data = await res.json();
 
-                const plRes = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (!plRes.ok) {
-                    const errData = await plRes.json().catch(() => ({}));
-                    const msg = errData?.error?.message || `HTTP ${plRes.status}`;
-                    throw new Error(`Spotify API: ${msg} (upewnij się, że playlista jest publiczna)`);
+                if (!res.ok || !data.success) {
+                    throw new Error(data.error || "Nie udało się odczytać utworów z tej playlisty.");
                 }
 
-                const plJson = await plRes.json();
-                const tracks = [];
-
-                const addFromItems = (items) => {
-                    (items || []).forEach(item => {
-                        const t = item?.track;
-                        if (t && t.name && Array.isArray(t.artists) && t.artists.length > 0) {
-                            tracks.push({
-                                artist: t.artists.map(a => a.name).join(', '),
-                                title: t.name,
-                                previewUrl: t.preview_url || null
-                            });
-                        }
-                    });
-                };
-
-                addFromItems(plJson.tracks?.items);
-
-                let nextUrl = plJson.tracks?.next;
-                let pages = 0;
-                while (nextUrl && pages < 4) {
-                    pages++;
-                    setSpotifyStatusBox('loading', `Pobieranie kolejnych utworów (${tracks.length})...`);
-                    const nextRes = await fetch(nextUrl, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (!nextRes.ok) break;
-                    const nextJson = await nextRes.json();
-                    addFromItems(nextJson.items);
-                    nextUrl = nextJson.next;
+                if (!data.tracks || data.tracks.length === 0) {
+                    throw new Error("Playlista jest pusta lub brak publicznego dostępu.");
                 }
 
-                if (tracks.length === 0) {
-                    throw new Error("Playlista jest pusta lub utwory są niedostępne.");
-                }
-
-                const finalName = plJson.name || "Playlista Spotify";
-                setSpotifyStatusBox('success', `Załadowano: "${finalName}"`, `Wczytano ${tracks.length} utworów.`);
-                applyLoadedPlaylist(finalName, tracks);
-                showToast(`Wczytano "${finalName}" (${tracks.length} utworów)!`, "success");
+                const finalName = data.name || "Playlista Spotify";
+                setSpotifyStatusBox('success', `Załadowano: "${finalName}"`, `Wczytano ${data.tracks.length} utworów.`);
+                applyLoadedPlaylist(finalName, data.tracks);
+                showToast(`Wczytano "${finalName}" (${data.tracks.length} utworów)!`, "success");
 
                 setTimeout(() => closePlaylistModal(), 450);
 
@@ -776,8 +680,7 @@
                     cleanTracks.push({
                         artist: t.artist,
                         title: t.title,
-                        fullLabel: `${t.artist} - ${t.title}`,
-                        previewUrl: t.previewUrl || null
+                        fullLabel: `${t.artist} - ${t.title}`
                     });
                 }
             });
