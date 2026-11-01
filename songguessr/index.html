@@ -742,25 +742,27 @@
         }
 
         async function getValidAccessToken() {
-            let token = localStorage.getItem('spotguessr_access_token');
-            const expiry = parseInt(localStorage.getItem('spotguessr_token_expiry') || '0', 10);
+    let token = localStorage.getItem('spotguessr_access_token');
+    const expiry = parseInt(localStorage.getItem('spotguessr_token_expiry') || '0', 10);
 
-            if (token && expiry > Date.now()) {
-                return token;
-            }
+    if (token && expiry > Date.now()) {
+        return token;
+    }
 
-            const clientId = document.getElementById('spotifyClientIdInput').value.trim();
-            const clientSecret = document.getElementById('spotifyClientSecretInput').value.trim();
+    // Ciągnie token z Twojego własnego serwera — zero CORS, zero blokad Brave'a
+    const res = await fetch('token.php');
+    if (!res.ok) throw new Error("Błąd pobierania tokenu z token.php");
+    
+    const data = await res.json();
+    if (!data.access_token) throw new Error("Brak tokenu w odpowiedzi");
 
-            if (clientId && clientSecret) {
-                const tokenData = await fetchSpotifyTokenViaProxy(clientId, clientSecret);
-                token = tokenData.access_token;
-                const newExpiry = Date.now() + (tokenData.expires_in * 1000);
-                localStorage.setItem('spotguessr_access_token', token);
-                localStorage.setItem('spotguessr_token_expiry', newExpiry.toString());
-                updateApiBadgeState(token, newExpiry);
-                return token;
-            }
+    token = data.access_token;
+    const newExpiry = Date.now() + (data.expires_in * 1000);
+    localStorage.setItem('spotguessr_access_token', token);
+    localStorage.setItem('spotguessr_token_expiry', newExpiry.toString());
+    updateApiBadgeState(token, newExpiry);
+    return token;
+}
 
             return null;
         }
