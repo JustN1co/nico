@@ -112,7 +112,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white">Spot<span class="text-spotify-green">Guessr</span></h1>
-                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">Backend API</span>
+                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">Worker Edition</span>
                     </div>
                     <p id="activePlaylistBadge" class="text-xs text-gray-400 truncate max-w-[180px] sm:max-w-[260px]">
                         Brak załadowanej playlisty
@@ -283,7 +283,7 @@
                     </div>
                     <div>
                         <h2 class="text-lg sm:text-xl font-extrabold text-white">Wybierz lub wklej playlistę</h2>
-                        <p class="text-xs text-gray-400">Podaj link do playlisty lub wybierz gotowy zestaw</p>
+                        <p class="text-xs text-gray-400">Podaj link do dowolnej publicznej playlisty Spotify</p>
                     </div>
                 </div>
                 <button id="btnCloseModal" onclick="closePlaylistModal()" class="text-gray-400 hover:text-white p-1.5 rounded-lg bg-gray-800/60 hover:bg-gray-800 transition">
@@ -317,7 +317,7 @@
                         <input 
                             id="spotifyUrlInput" 
                             type="text" 
-                            placeholder="Wklej tutaj link: https://open.spotify.com/playlist/..." 
+                            placeholder="Wklej link: https://open.spotify.com/playlist/..." 
                             class="flex-1 px-4 py-3 rounded-xl bg-gray-950 border border-gray-700 focus:border-spotify-green text-sm text-white placeholder-gray-500 focus:outline-none"
                         >
                         <button id="btnLoadSpotifyUrl" onclick="loadFromSpotifyUrl()" class="px-5 py-3 rounded-xl bg-spotify-green hover:bg-spotify-light text-black font-extrabold text-sm transition flex items-center justify-center gap-2 shrink-0">
@@ -338,13 +338,13 @@
                     </div>
                 </div>
 
-                <!-- Backend Token Status Box -->
+                <!-- Cloudflare Worker Status Box -->
                 <div class="rounded-xl bg-gray-950 border border-gray-800 p-3.5 flex items-center justify-between text-xs">
                     <div class="flex items-center gap-2.5">
-                        <i class="fa-solid fa-server text-spotify-green text-base"></i>
+                        <i class="fa-brands fa-cloudflare text-amber-500 text-lg"></i>
                         <div>
-                            <div class="font-semibold text-white">Obsługa backendu (token.php)</div>
-                            <div class="text-[11px] text-gray-400">Autoryzacja po stronie serwera — zero problemów z CORS i przeglądarkami.</div>
+                            <div class="font-semibold text-white">Cloudflare Worker API</div>
+                            <div class="text-[11px] text-gray-400">Automatyczny token dla każdego użytkownika bez wpisywania kluczy.</div>
                         </div>
                     </div>
                     <span id="apiStatusBadge" class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-gray-900 text-gray-400 border border-gray-800 shrink-0">
@@ -423,6 +423,8 @@
     <audio id="audioPlayer" preload="auto" crossorigin="anonymous"></audio>
 
     <script>
+        const WORKER_URL = 'https://spotify-token.nick-gamerpl.workers.dev/';
+
         const PRESET_PLAYLISTS = {
             pl_hits: {
                 name: "Polskie Hity: Rap & Pop 🇵🇱",
@@ -498,14 +500,14 @@
             setupAudioEvents();
             renderGuessSlots();
             loadPresetPlaylist('global_hits', false);
-            testTokenPhpConnection();
+            testWorkerConnection();
         });
 
-        async function testTokenPhpConnection() {
+        async function testWorkerConnection() {
             try {
                 await getValidAccessToken();
             } catch (e) {
-                console.warn("Sprawdzenie token.php:", e.message);
+                console.warn("Sprawdzenie Workera:", e.message);
             }
         }
 
@@ -516,10 +518,10 @@
             if (token && expiry > now) {
                 const minsLeft = Math.round((expiry - now) / 60000);
                 badge.className = "text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
-                badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> token.php aktywny (${minsLeft} min)`;
+                badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Aktywny (${minsLeft} min)`;
             } else {
                 badge.className = "text-[10px] font-mono px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40";
-                badge.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> token.php nie odpowiada`;
+                badge.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Błąd Workera`;
             }
         }
 
@@ -607,7 +609,7 @@
         }
 
         // ==========================================
-        // TOKEN FETCH VIA TOKEN.PHP (CLEAN & FIXED)
+        // TOKEN FETCH VIA CLOUDFLARE WORKER
         // ==========================================
         async function getValidAccessToken() {
             let token = localStorage.getItem('spotguessr_access_token');
@@ -618,16 +620,16 @@
                 return token;
             }
 
-            const res = await fetch('token.php');
+            const res = await fetch(WORKER_URL);
             if (!res.ok) {
                 updateApiBadgeState(null, 0);
-                throw new Error("Błąd pobierania tokenu z pliku token.php (HTTP " + res.status + ")");
+                throw new Error("Błąd pobierania tokenu z Cloudflare Workera (HTTP " + res.status + ")");
             }
 
             const data = await res.json();
             if (!data.access_token) {
                 updateApiBadgeState(null, 0);
-                throw new Error(data.error_description || "Brak access_token w odpowiedzi token.php");
+                throw new Error(data.error_description || "Brak access_token w odpowiedzi");
             }
 
             token = data.access_token;
@@ -658,7 +660,7 @@
             const btnLoad = document.getElementById('btnLoadSpotifyUrl');
             btnLoad.disabled = true;
             btnLoad.classList.add('opacity-60');
-            setSpotifyStatusBox('loading', 'Łączenie z Spotify API przez token.php...');
+            setSpotifyStatusBox('loading', 'Łączenie z Spotify API...');
 
             try {
                 const token = await getValidAccessToken();
