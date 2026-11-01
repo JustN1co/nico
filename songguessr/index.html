@@ -112,7 +112,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white">Spot<span class="text-spotify-green">Guessr</span></h1>
-                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">AutoSkip Edition</span>
+                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-spotify-green/15 text-spotify-green border border-spotify-green/30">No-Repeat Engine</span>
                     </div>
                     <p id="activePlaylistBadge" class="text-xs text-gray-400 truncate max-w-[180px] sm:max-w-[260px]">
                         Brak załadowanej playlisty
@@ -150,13 +150,13 @@
 
         <div id="audioLoadingBanner" class="hidden rounded-2xl bg-gray-900/90 border border-gray-800 p-4 flex items-center justify-center gap-3 text-sm text-gray-300 shadow-lg">
             <i class="fa-solid fa-circle-notch fa-spin text-spotify-green text-lg"></i>
-            <span id="audioLoadingText">Wyszukiwanie utworu z próbką audio...</span>
+            <span id="audioLoadingText">Wyszukiwanie unikalnego utworu...</span>
         </div>
 
         <section aria-label="Próby odgadnięcia" class="flex flex-col gap-2">
             <div class="flex items-center justify-between text-xs text-gray-400 px-1 mb-0.5">
                 <span class="font-medium uppercase tracking-wider">Kolejne próby (6 etapów)</span>
-                <span id="remainingPoolInfo" class="font-mono text-gray-400">Pula: 0 utworów</span>
+                <span id="remainingPoolInfo" class="font-mono text-gray-400">Pula: 0/0 utw.</span>
             </div>
             <div id="guessSlotsContainer" class="flex flex-col gap-2"></div>
         </section>
@@ -477,7 +477,8 @@
         let state = {
             playlistName: "",
             allTracks: [],
-            unplayedIndices: [],
+            playedIndices: new Set(), // Trwale rozegrane utwory (blokada powtórek)
+            failedIndices: new Set(), // Czarna lista utworów bez próbek w iTunes
             currentTrack: null,
             currentAttempt: 0,
             guesses: [],
@@ -690,7 +691,8 @@
 
             state.playlistName = name;
             state.allTracks = cleanTracks;
-            state.unplayedIndices = cleanTracks.map((_, idx) => idx);
+            state.playedIndices = new Set();
+            state.failedIndices = new Set();
 
             document.getElementById('activePlaylistBadge').textContent = `${name} (${cleanTracks.length} utw.)`;
             updateRemainingPoolUI();
@@ -698,8 +700,10 @@
         }
 
         function updateRemainingPoolUI() {
+            const playableCount = state.allTracks.length - state.failedIndices.size;
+            const remainingCount = playableCount - state.playedIndices.size;
             document.getElementById('remainingPoolInfo').textContent = 
-                `Pula: ${state.unplayedIndices.length}/${state.allTracks.length} utw.`;
+                `Pula: ${Math.max(0, remainingCount)}/${Math.max(0, playableCount)} utw.`;
         }
 
         // ==========================================
@@ -760,7 +764,7 @@
         }
 
         // ==========================================
-        // GAME ROUND MANAGEMENT & AUTOSKIP
+        // GUARANTEED NON-REPEATING ROUND ENGINE
         // ==========================================
         async function startNextRound() {
             stopAudioPlayback();
@@ -778,51 +782,69 @@
 
             if (state.allTracks.length === 0) return;
 
+            // Filtrujemy tylko te utwory, które jeszcze NIE BYŁY grane i NIE SĄ na czarnej liście iTunes
+            let availableIndices = state.allTracks
+                .map((_, idx) => idx)
+                .filter(idx => !state.playedIndices.has(idx) && !state.failedIndices.has(idx));
+
+            // Jeśli przesłuchano wszystkie działające utwory z playlisty, resetujemy historię
+            if (availableIndices.length === 0) {
+                const totalWorking = state.allTracks.length - state.failedIndices.size;
+                if (totalWorking <= 0) {
+                    showToast("Żaden utwór na tej playliście nie posiada próbki w iTunes!", "error");
+                    openPlaylistModal();
+                    return;
+                }
+                state.playedIndices.clear();
+                showToast("Przesłuchano całą playlistę bez powtórek! Pula zresetowana.", "info");
+                availableIndices = state.allTracks
+                    .map((_, idx) => idx)
+                    .filter(idx => !state.failedIndices.has(idx));
+            }
+
             const banner = document.getElementById('audioLoadingBanner');
             const bannerText = document.getElementById('audioLoadingText');
             banner.classList.remove('hidden');
 
             let foundTrack = null;
-            let checkedCount = 0;
-            const totalTracks = state.allTracks.length;
-            let poolReshuffled = false;
 
-            // Pętla szuka aż do skutku — odrzucane kawałki pomijają się w locie bez udziału gracza
-            while (!foundTrack) {
-                if (state.unplayedIndices.length === 0) {
-                    if (poolReshuffled) break; // Przeszukano absolutnie wszystko
-                    state.unplayedIndices = state.allTracks.map((_, idx) => idx);
-                    poolReshuffled = true;
-                }
-
-                checkedCount++;
-                if (checkedCount > totalTracks * 2) break; // Zabezpieczenie pętli
-
-                const randPoolIdx = Math.floor(Math.random() * state.unplayedIndices.length);
-                const trackIdx = state.unplayedIndices.splice(randPoolIdx, 1)[0];
+            // Szukamy po kolei w unikalnej puli — niedziałające numery natychmiast trafiają na czarną listę
+            while (availableIndices.length > 0) {
+                const randSlot = Math.floor(Math.random() * availableIndices.length);
+                const trackIdx = availableIndices.splice(randSlot, 1)[0];
                 const candidate = state.allTracks[trackIdx];
 
-                bannerText.textContent = `Dobieranie utworu z próbką (${checkedCount}): ${candidate.artist} — ${candidate.title}...`;
-                const itunesData = await fetchItunesPreview(candidate.artist, candidate.title);
-                
-                if (itunesData && itunesData.previewUrl) {
-                    foundTrack = {
-                        ...candidate,
-                        previewUrl: itunesData.previewUrl,
-                        artworkUrl: itunesData.artworkUrl
-                    };
+                bannerText.textContent = `Szukanie próbki: ${candidate.artist} — ${candidate.title}...`;
+
+                // Jeśli mamy już pobraną próbkę w cache
+                if (candidate.previewUrl) {
+                    foundTrack = { ...candidate, trackIdx };
                     break;
+                }
+
+                const itunesData = await fetchItunesPreview(candidate.artist, candidate.title);
+                if (itunesData && itunesData.previewUrl) {
+                    candidate.previewUrl = itunesData.previewUrl;
+                    candidate.artworkUrl = itunesData.artworkUrl;
+                    foundTrack = { ...candidate, trackIdx };
+                    break;
+                } else {
+                    // Brak próbki na Apple Music — wpisujemy na stałą czarną listę, by nigdy więcej nie psuł puli
+                    state.failedIndices.add(trackIdx);
                 }
             }
 
             banner.classList.add('hidden');
-            updateRemainingPoolUI();
 
             if (!foundTrack) {
-                showToast("Żaden utwór na tej playliście nie posiada próbki audio w iTunes. Wybierz inną.", "error");
-                openPlaylistModal();
+                updateRemainingPoolUI();
+                showToast("Brak kolejnych utworów z dostępnymi próbkami audio.", "warning");
                 return;
             }
+
+            // Oznaczamy utwór jako ZAGRANY — nie ma prawa pojawić się ponownie aż do wyczerpania playlisty
+            state.playedIndices.add(foundTrack.trackIdx);
+            updateRemainingPoolUI();
 
             state.currentTrack = foundTrack;
             audio.src = foundTrack.previewUrl;
@@ -852,10 +874,14 @@
 
             audio.addEventListener('ended', stopAudioPlayback);
 
-            // Jeśli plik audio rzuci błędem sieciowym/odtwarzania, automatycznie losujemy kolejny
+            // Jeśli plik audio wywali błąd sieciowy lub kodeka, usuwamy go i automatycznie bierzemy kolejny
             audio.addEventListener('error', (e) => {
-                console.warn("Błąd strumienia audio, automatyczny przeskok do kolejnego:", e);
-                showToast("Błąd pliku dźwiękowego — automatyczne losowanie kolejnego...", "warning");
+                console.warn("Błąd strumienia audio, automatyczny przeskok:", e);
+                if (state.currentTrack && state.currentTrack.trackIdx !== undefined) {
+                    state.failedIndices.add(state.currentTrack.trackIdx);
+                    state.playedIndices.delete(state.currentTrack.trackIdx);
+                }
+                showToast("Problem z odtworzeniem pliku — losowanie unikalnego numeru...", "warning");
                 startNextRound();
             });
         }
@@ -1056,7 +1082,6 @@
 
         function handleSkipAttempt() {
             if (state.roundOver) return;
-            // Bezpiecznik: jeśli nie ma utworu, natychmiast forsujemy losowanie kolejnego
             if (!state.currentTrack) {
                 startNextRound();
                 return;
