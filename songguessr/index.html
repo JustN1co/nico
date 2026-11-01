@@ -700,25 +700,60 @@
         }
 
         // ==========================================
-        // ITUNES AUDIO PREVIEWS & GAMEPLAY
+        // ITUNES AUDIO PREVIEWS & STRICT MATCHING
         // ==========================================
         async function fetchItunesPreview(artist, title) {
-            const cleanTitle = title.replace(/\(feat\..*?\)/gi, '').replace(/\[.*?\]/g, '').replace(/-\s*remaster.*$/gi, '').trim();
+            const cleanTitle = title
+                .replace(/\(feat\..*?\)/gi, '')
+                .replace(/\(ft\..*?\)/gi, '')
+                .replace(/\(prod\..*?\)/gi, '')
+                .replace(/\[.*?\]/g, '')
+                .replace(/-\s*remaster.*$/gi, '')
+                .replace(/-\s*single.*$/gi, '')
+                .trim();
+
             const mainArtist = artist.split(/[,&/]/)[0].trim();
             const query = `${mainArtist} ${cleanTitle}`.trim();
 
-            try {
-                const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=4`);
-                if (!res.ok) return null;
-                const data = await res.json();
-                const match = data.results?.find(r => r.previewUrl);
-                if (match) {
-                    return {
-                        previewUrl: match.previewUrl,
-                        artworkUrl: match.artworkUrl100 ? match.artworkUrl100.replace('100x100bb', '600x600bb') : 'https://placehold.co/400x400/181818/1DB954?text=SpotGuessr'
-                    };
+            const stores = ['PL', 'US'];
+
+            for (const country of stores) {
+                try {
+                    const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=6&country=${country}`);
+                    if (!res.ok) continue;
+
+                    const data = await res.json();
+                    if (!data.results || data.results.length === 0) continue;
+
+                    const normTargetTitle = normalizeStr(cleanTitle);
+                    const normTargetArtist = normalizeStr(mainArtist);
+
+                    // Ścisła weryfikacja: utwór musi pasować zarówno tytułem, jak i artystą
+                    const match = data.results.find(r => {
+                        if (!r.previewUrl) return false;
+
+                        const rTitle = normalizeStr(r.trackName || '');
+                        const rArtist = normalizeStr(r.artistName || '');
+
+                        const titleMatches = rTitle.includes(normTargetTitle) || normTargetTitle.includes(rTitle);
+                        const artistMatches = rArtist.includes(normTargetArtist) || normTargetArtist.includes(rArtist);
+
+                        return titleMatches && artistMatches;
+                    });
+
+                    if (match) {
+                        return {
+                            previewUrl: match.previewUrl,
+                            artworkUrl: match.artworkUrl100 
+                                ? match.artworkUrl100.replace('100x100bb', '600x600bb') 
+                                : 'https://placehold.co/400x400/181818/1DB954?text=SpotGuessr'
+                        };
+                    }
+                } catch (e) {
+                    console.warn("Błąd wyszukiwania próbki w iTunes:", e);
                 }
-            } catch (e) {}
+            }
+
             return null;
         }
 
@@ -749,7 +784,8 @@
             let foundTrack = null;
             let attempts = 0;
 
-            while (!foundTrack && attempts < 8 && state.unplayedIndices.length > 0) {
+            // Próbujemy do 14 utworów pod rząd, aby ominąć te bez próbek w iTunes
+            while (!foundTrack && attempts < 14 && state.unplayedIndices.length > 0) {
                 attempts++;
                 const randPoolIdx = Math.floor(Math.random() * state.unplayedIndices.length);
                 const trackIdx = state.unplayedIndices.splice(randPoolIdx, 1)[0];
@@ -770,7 +806,7 @@
             updateRemainingPoolUI();
 
             if (!foundTrack) {
-                showToast("Nie znaleziono próbki audio dla wylosowanych utworów. Spróbuj pominąć.", "error");
+                showToast("Nie znaleziono oficjalnej próbki audio w iTunes dla wylosowanych utworów. Kliknij 'Pomiń' lub spróbuj ponownie.", "error");
                 return;
             }
 
